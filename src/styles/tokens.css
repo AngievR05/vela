@@ -1,0 +1,42 @@
+:root {
+  /* Vela brand colours */
+  --colour-parchment: #f3eee5;
+  --colour-paper: #fbf8f2;
+  --colour-ink: #22201e;
+  --colour-evergreen: #183b34;
+  --colour-plum: #75465a;
+  --colour-mauve: #827aa6;
+  --colour-brass: #ae9157;
+  --colour-mist: #d9ded7;
+  --colour-danger: #a4473f;
+
+  /* Type */
+  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body: "Geist", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --content-max: 72rem;
+  --reading-max: 46rem;
+  --touch-target: 44px;
+
+  /* Effects */
+  --shadow-soft: 0 12px 30px rgba(34, 32, 30, 0.08);
+  --focus-ring: 0 0 0 3px rgba(130, 122, 166, 0.42);
+}

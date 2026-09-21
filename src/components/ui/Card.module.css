@@ -1,0 +1,22 @@
+.card {
+  padding: var(--space-5);
+  border: 1px solid rgba(34, 32, 30, 0.11);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.paper {
+  background: var(--colour-paper);
+  color: var(--colour-ink);
+}
+
+.evergreen {
+  border-color: var(--colour-evergreen);
+  background: var(--colour-evergreen);
+  color: var(--colour-paper);
+}
+
+.evergreen :global(.eyebrow),
+.evergreen :global(.subheading) {
+  color: inherit;
+}

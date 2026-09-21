@@ -1,0 +1,35 @@
+.button {
+  display: inline-flex;
+  min-height: var(--touch-target);
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.68rem 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--colour-evergreen);
+  color: var(--colour-paper);
+}
+
+.secondary {
+  border-color: var(--colour-evergreen);
+  background: transparent;
+  color: var(--colour-evergreen);
+}
+
+.danger {
+  border-color: var(--colour-danger);
+  background: transparent;
+  color: var(--colour-danger);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
