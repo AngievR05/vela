@@ -1,3 +1,6 @@
+import "server-only";
+import { serverEnv } from "@/lib/env/server";
+
 const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes";
 
 export async function searchGoogleBooks(query, maxResults = 10) {
@@ -5,10 +8,7 @@ export async function searchGoogleBooks(query, maxResults = 10) {
   url.searchParams.set("q", query);
   url.searchParams.set("maxResults", String(Math.min(maxResults, 20)));
   url.searchParams.set("printType", "books");
-
-  if (process.env.GOOGLE_BOOKS_API_KEY) {
-    url.searchParams.set("key", process.env.GOOGLE_BOOKS_API_KEY);
-  }
+  url.searchParams.set("key", serverEnv.GOOGLE_BOOKS_API_KEY);
 
   const response = await fetch(url, {
     headers: { Accept: "application/json" },
@@ -16,17 +16,15 @@ export async function searchGoogleBooks(query, maxResults = 10) {
   });
 
   if (!response.ok) {
-    throw new Error(`Google Books responded with ${response.status}`);
+    throw new Error(`Google Books responded with ${response.status}.`);
   }
 
   const data = await response.json();
-
   return (data.items ?? []).map(mapGoogleBook);
 }
 
 function mapGoogleBook(item) {
   const info = item.volumeInfo ?? {};
-
   return {
     googleBooksId: item.id,
     title: info.title ?? "Untitled",
