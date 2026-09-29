@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Button from "@/components/ui/Button";
 
 export default function NotFound() {
@@ -8,7 +7,7 @@ export default function NotFound() {
       <h1 className="heading">This page is not on the shelf.</h1>
       <p className="lead">The page may have moved or does not exist.</p>
       <div className="heroActions">
-        <Button as={Link} href="/">
+        <Button href="/">
           Return to Vela
         </Button>
       </div>

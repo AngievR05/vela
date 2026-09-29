@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -11,10 +10,10 @@ export default function LandingPage() {
       <p className="lead">Your reading life, intelligently organised.</p>
 
       <div className="heroActions">
-        <Button as={Link} href="/signup">
+        <Button href="/signup">
           Create account
         </Button>
-        <Button as={Link} href="/login" variant="secondary">
+        <Button href="/login" variant="secondary">
           Log in
         </Button>
       </div>
