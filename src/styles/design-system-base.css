@@ -1,0 +1,9 @@
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+*,*::before,*::after{box-sizing:border-box}
+button,input,textarea,select{font:inherit}
+button,a,input,textarea,select{-webkit-tap-highlight-color:transparent}
+img{max-width:100%;height:auto}
+.screen-content{display:flex;flex-direction:column;gap:var(--section-gap);width:100%;padding:var(--space-16)}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
