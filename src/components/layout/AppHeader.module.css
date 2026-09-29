@@ -1,0 +1,76 @@
+.header {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  width: 100%;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.parchment {
+  background: var(--colour-parchment);
+}
+
+.paper {
+  background: var(--colour-paper);
+}
+
+.scrolled {
+  border-bottom: 1px solid var(--colour-mist);
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 56px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.leading,
+.actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+
+.actions {
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.action {
+  display: inline-flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  min-width: 0;
+  margin: 0;
+  color: var(--colour-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.titleRoot {
+  font-family: var(--font-display);
+  font-size: var(--type-h1-size, 28px);
+  font-weight: var(--type-h1-weight, 600);
+  line-height: var(--type-h1-line, 32px);
+}
+
+.titleCompact {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.leading:empty,
+.actions:empty {
+  display: none;
+}

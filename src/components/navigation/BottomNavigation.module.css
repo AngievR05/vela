@@ -1,0 +1,103 @@
+.wrapper {
+  position: fixed;
+  z-index: 40;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-top: 1px solid var(--colour-mist);
+  background: var(--colour-paper);
+}
+
+.navigation {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: 100%;
+  height: 64px;
+}
+
+.safeArea {
+  height: env(safe-area-inset-bottom, 0px);
+  background: var(--colour-paper);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 2px 4px;
+  color: color-mix(in srgb, var(--colour-ink) 60%, transparent);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    color var(--motion-quick, 120ms) ease-out,
+    background-color var(--motion-quick, 120ms) ease-out;
+}
+
+.item:hover {
+  background: color-mix(in srgb, var(--colour-ink) 4%, transparent);
+}
+
+.item:active {
+  background: color-mix(in srgb, var(--colour-ink) 8%, transparent);
+}
+
+.item:focus-visible {
+  z-index: 1;
+  outline: var(--focus-width, 2px) solid var(--colour-plum);
+  outline-offset: -4px;
+}
+
+.itemActive {
+  color: var(--colour-evergreen);
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  stroke-width: 2;
+}
+
+.label {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--font-body);
+  font-size: var(--type-nav-size, 11px);
+  font-weight: var(--type-nav-weight, 500);
+  line-height: var(--type-nav-line, 14px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemActive .label {
+  font-weight: 600;
+}
+
+.activeIndicator {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 24px;
+  height: 4px;
+  border-radius: 0 0 var(--radius-pill, 999px) var(--radius-pill, 999px);
+  background: var(--colour-brass);
+  opacity: 0;
+  transform: translateX(-50%);
+}
+
+.itemActive .activeIndicator {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    transition: none;
+  }
+}

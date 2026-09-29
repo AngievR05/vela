@@ -1,0 +1,81 @@
+.sectionHeader {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+}
+
+.topRow {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title {
+  min-width: 0;
+  margin: 0;
+  color: var(--colour-ink);
+}
+
+.h2 .title {
+  font-family: var(--font-display);
+  font-size: var(--type-h2-size, 22px);
+  font-weight: var(--type-h2-weight, 600);
+  line-height: var(--type-h2-line, 28px);
+}
+
+.h3 .title {
+  font-family: var(--font-display);
+  font-size: var(--type-h3-size, 18px);
+  font-weight: var(--type-h3-weight, 600);
+  line-height: var(--type-h3-line, 24px);
+}
+
+.compact .title {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.description {
+  max-width: 65ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--colour-ink) 70%, transparent);
+  font-family: var(--font-body);
+  font-size: var(--type-body-s-size, 14px);
+  font-weight: var(--type-body-s-weight, 400);
+  line-height: var(--type-body-s-line, 20px);
+}
+
+.action {
+  display: inline-flex;
+  min-height: 44px;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0 4px;
+  border: 0;
+  border-radius: var(--radius-control, 12px);
+  background: transparent;
+  color: var(--colour-evergreen);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.action:hover {
+  background: color-mix(in srgb, var(--colour-evergreen) 5%, transparent);
+}
+
+.action:active {
+  background: color-mix(in srgb, var(--colour-evergreen) 9%, transparent);
+}
+
+.action:focus-visible {
+  outline: var(--focus-width, 2px) solid var(--colour-plum);
+  outline-offset: var(--focus-offset, 2px);
+}

@@ -1,17 +1,29 @@
-import BottomNav from "@/components/navigation/BottomNav";
+import BottomNavigation from "@/components/navigation/BottomNavigation";
 import styles from "./AppShell.module.css";
 
-export default function AppShell({ children }) {
+export default function AppShell({
+  children,
+  header = null,
+  showBottomNavigation = true,
+  className = "",
+}) {
   return (
-    <div className={styles.shell}>
-      <header className={styles.header}>
-        <a className={styles.brand} href="/home" aria-label="Vela home">
-          VELA
-        </a>
-        <span className={styles.tagline}>Your reading life, intelligently organised.</span>
-      </header>
-      <main>{children}</main>
-      <BottomNav />
+    <div
+      className={[
+        styles.shell,
+        showBottomNavigation ? styles.withBottomNavigation : "",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      {header}
+
+      <main className={styles.main} id="main-content">
+        {children}
+      </main>
+
+      {showBottomNavigation ? <BottomNavigation /> : null}
     </div>
   );
 }
