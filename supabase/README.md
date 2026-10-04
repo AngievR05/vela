@@ -30,6 +30,8 @@ Password recovery URL:
 
 Both callback routes verify tokens before creating a session and remove token parameters from the destination URL. Expired links offer a path to request a new link.
 
+Temporary Auth outages return 503 with a retry instruction rather than treating a valid session or email link as expired. Password-reset verification retains input on connection failures; successful changes show a confirmation before continuing. Private pages recheck the session when restored through browser Back as well as when a tab becomes visible.
+
 ## Session and route protection
 
 The browser client stores sessions in cookies and refreshes them automatically. `src/proxy.js` refreshes/validates sessions with Supabase Auth and propagates updated cookies. Home, Library, Discover, DNA and Settings (including descendants) require a verified user. API requests without a verified user return 401. API handlers and the app layout also verify users through `src/lib/auth/server.js`; use its reader-scoped client for future data access. Auth responses are marked private/no-store. Logout clears this browser's session and discards cached app pages; other devices remain signed in. This follows the [Supabase SSR guide](https://supabase.com/docs/guides/auth/server-side/creating-a-client).

@@ -7,5 +7,5 @@ import { createClient } from "@/lib/supabase/server";
 export const getReader = cache(async () => {
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();
-  return { user: error ? null : user, supabase };
+  return { user: error ? null : user, supabase, error };
 });
