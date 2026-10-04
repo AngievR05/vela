@@ -101,10 +101,14 @@ Never commit `.env.local`.
 This starter deliberately sets up the project architecture without pretending unfinished features are complete.
 
 - Google Books has a basic server search route.
-- Supabase client helpers are prepared.
+- Supabase authentication and protected routes are implemented; hosted email configuration is required.
 - The recommendation request and response schemas are prepared.
 - The Gemini recommendation route is scaffolded but intentionally returns `501` until the Week 5 AI implementation.
 - The five main product areas are represented: Home, Library, Discover, DNA and Settings.
 - Vela's colour tokens and mobile-first visual foundation are included.
 
 See `docs/PROJECT_SCOPE.md` and `docs/FOLDER_STRUCTURE.md` before adding features.
+
+## Authentication
+
+Email/password sign-up, login, logout, password recovery, persistent cookie sessions and protected app/API routes are implemented. See [Supabase setup and verification](supabase/README.md) for migrations, email redirect configuration and security checks. Run `npm test` for return-route safety and PostgreSQL RLS tests.

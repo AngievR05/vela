@@ -25,8 +25,8 @@ export default function LandingPage() {
             Track → Reflect → Learn → Recommend → Correct → Read
           </h2>
           <p className="muted">
-            The starter structure is ready. Authentication, Library CRUD, Reading DNA
-            and AI recommendations will be implemented sprint by sprint.
+            Create your private reading space. Library tracking, Reading DNA
+            and AI recommendations are coming next.
           </p>
         </Card>
       </div>

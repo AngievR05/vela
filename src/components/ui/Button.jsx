@@ -1,6 +1,7 @@
 "use client";
 
 import { LoaderCircle } from "lucide-react";
+import Link from "next/link";
 import styles from "./PrimitiveControls.module.css";
 
 export default function Button({
@@ -13,6 +14,7 @@ export default function Button({
   trailingIcon: TrailingIcon,
   type = "button",
   className = "",
+  href,
   ...props
 }) {
   const variantClass = {
@@ -22,21 +24,15 @@ export default function Button({
     destructive: styles.buttonDestructive,
   }[variant];
 
-  return (
-    <button
-      type={type}
-      className={[
+  const classNames = [
         styles.button,
         variantClass,
         width === "fill" ? styles.buttonFill : "",
         className,
       ]
         .filter(Boolean)
-        .join(" ")}
-      disabled={disabled || loading}
-      aria-busy={loading || undefined}
-      {...props}
-    >
+        .join(" ");
+  const content = <>
       {loading ? (
         <LoaderCircle className={styles.buttonSpinner} aria-hidden="true" />
       ) : LeadingIcon ? (
@@ -48,6 +44,15 @@ export default function Button({
       {!loading && TrailingIcon ? (
         <TrailingIcon className={styles.icon} aria-hidden="true" />
       ) : null}
-    </button>
-  );
+    </>;
+  if (href) {
+    return <Link href={href} className={classNames} aria-busy={loading || undefined}
+      aria-disabled={disabled || loading || undefined} {...props}
+      onClick={(event) => {
+        if (disabled || loading) event.preventDefault();
+        else props.onClick?.(event);
+      }}>{content}</Link>;
+  }
+  return <button type={type} className={classNames} disabled={disabled || loading}
+    aria-busy={loading || undefined} {...props}>{content}</button>;
 }

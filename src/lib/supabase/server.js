@@ -21,7 +21,8 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Cookie writes are unavailable in some Server Component contexts.
+            // Server Components cannot write cookies. src/proxy.js refreshes
+            // the session and copies cookies to both request and response.
           }
         },
       },

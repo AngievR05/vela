@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { searchGoogleBooks } from "@/lib/google-books";
+import { getReader } from "@/lib/auth/server";
 
 const searchSchema = z.object({
   q: z.string().trim().min(2, "Search must contain at least two characters."),
@@ -7,6 +8,8 @@ const searchSchema = z.object({
 });
 
 export async function GET(request) {
+  const { user } = await getReader();
+  if (!user) return Response.json({ error: "Please log in to continue." }, { status: 401 });
   const { searchParams } = new URL(request.url);
 
   const parsed = searchSchema.safeParse({

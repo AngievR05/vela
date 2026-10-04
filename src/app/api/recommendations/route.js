@@ -1,8 +1,11 @@
 import {
   recommendationRequestSchema,
 } from "@/lib/validation/recommendation";
+import { getReader } from "@/lib/auth/server";
 
 export async function POST(request) {
+  const { user } = await getReader();
+  if (!user) return Response.json({ error: "Please log in to continue." }, { status: 401 });
   const body = await request.json().catch(() => null);
   const parsed = recommendationRequestSchema.safeParse(body);
 

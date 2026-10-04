@@ -1,4 +1,5 @@
 import Card from "@/components/ui/Card";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 export const metadata = { title: "Settings" };
 
@@ -12,6 +13,10 @@ export default function SettingsPage() {
       </p>
 
       <div className="stack" style={{ marginTop: "2rem" }}>
+        <Card>
+          <h2 className="subheading">Account</h2>
+          <LogoutButton />
+        </Card>
         <Card>
           <h2 className="subheading">AI + personalisation</h2>
           <p className="muted">
