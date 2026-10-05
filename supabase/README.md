@@ -9,10 +9,10 @@ Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.e
 In Supabase Authentication URL Configuration:
 
 - Set Site URL to the application's public origin.
-- Allow `http://localhost:3000/auth/callback` and `http://127.0.0.1:3000/auth/callback` for local development.
+- Allow `http://localhost:3000/auth/callback**` and `http://127.0.0.1:3000/auth/callback**` for local development. These patterns cover the callback's return-route query parameters. The hosted project also allows the same callback paths on port 3104 for verification.
 - Add the deployed application's `/auth/callback` URL for production. Query parameters carry the safe return route or `/reset-password`.
 - Enable email confirmations and require passwords of at least 8 characters. Local `config.toml` includes these settings; hosted projects must be configured separately.
-- Configure SMTP for reliable production delivery.
+- Configure custom SMTP before opening sign-up to readers. Supabase's default mail service sends only to project-team addresses and is intended for development. Custom SMTP was still disabled during the 2026-10-05 verification; confirmation and recovery email delivery to other readers therefore remains a setup requirement. See [Supabase SMTP configuration](https://supabase.com/docs/guides/auth/auth-smtp).
 
 Default Supabase email links use the PKCE callback at `/auth/callback`. Open these links in the browser where the email was requested. For links that work across browsers, use token-hash email templates:
 
@@ -45,6 +45,8 @@ Run `npm test`. The RLS suite executes the actual schema migration in an in-memo
 Checks cover both readers' access to every private table, hidden cross-reader rows, blocked updates/deletes/inserts, ownership reassignment, foreign-reader recommendation sessions/feedback/signals, and anonymous denial. Shared `books` metadata is intentionally readable by authenticated readers.
 
 This verifies the checked-in migration, not the hosted project's deployed configuration. To verify the live database, run `tests/rls_boundary_manual.sql` in Supabase SQL Editor after replacing its two UUIDs with temporary Auth users from that project. All test rows must pass. Its fixture changes run inside a transaction and roll back.
+
+On 2026-10-05, the restored hosted project passed its 17 boundary checks and the overall `ALL TESTS PASSED` assertion. Two temporary Auth fixtures were created inside the same rolled-back transaction. A read-only audit confirmed RLS on all eight tables, owner restrictions on all seven private tables, authenticated read grants, and no anonymous read grants. Live anonymous API requests were denied for every table. This verification does not test delivery to a reader's email inbox.
 
 ## End-to-end acceptance
 

@@ -7,6 +7,9 @@ export function authErrorMessage(error) {
   const messages = {
     invalid_credentials: "Email or password is incorrect. Please try again.",
     email_not_confirmed: "Confirm your email using the link in your inbox, then log in.",
+    email_address_not_authorized: "Account emails are unavailable. Please try again later. Your input is still here.",
+    email_provider_disabled: "Email sign-in is temporarily unavailable. Please try again later.",
+    signup_disabled: "New accounts are temporarily unavailable. Please try again later.",
     over_email_send_rate_limit: "Too many attempts. Wait a moment, then try again.",
     over_request_rate_limit: "Too many attempts. Wait a moment, then try again.",
     session_expired: "Your reset link has expired. Request a new link to continue.",

@@ -77,6 +77,13 @@ test("invalid credentials are not treated as connection failures", () => {
   assert.match(authErrorMessage({ code: "over_request_rate_limit" }), /Wait a moment/);
 });
 
+test("email service configuration failures give recoverable account messages", () => {
+  assert.match(authErrorMessage({ code: "email_address_not_authorized", message: "Email address not authorized" }), /Account emails are unavailable/);
+  assert.match(authErrorMessage({ code: "email_address_not_authorized" }), /input is still here/);
+  assert.match(authErrorMessage({ code: "email_provider_disabled" }), /temporarily unavailable/);
+  assert.match(authErrorMessage({ code: "signup_disabled" }), /New accounts are temporarily unavailable/);
+});
+
 test("temporary email verification failures remain retryable at the original link", async () => {
   const response = authUnavailableResponse();
   assert.equal(response.status, 503);

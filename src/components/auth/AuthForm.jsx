@@ -39,7 +39,13 @@ export default function AuthForm({ mode, next, initialError = "" }) {
   function change(setter, field, value) {
     setter(value);
     setError("");
-    setFieldErrors((current) => ({ ...current, [field]: undefined }));
+    setFieldErrors((current) => ({
+      ...current,
+      [field]: undefined,
+      // Credential errors concern the pair; either edit can correct them.
+      ...(mode === "login" ? { email: undefined, password: undefined } : {}),
+      ...(mode === "reset" && field === "password" ? { confirmation: undefined } : {}),
+    }));
   }
 
   async function submit(event) {
@@ -50,6 +56,7 @@ export default function AuthForm({ mode, next, initialError = "" }) {
     setFieldErrors(errors);
     if (Object.keys(errors).length) {
       setError(errors.email ? `${errors.email}${password ? " Your password has been preserved." : ""}` : "Check the highlighted fields. Your entries are preserved.");
+      event?.currentTarget?.elements?.namedItem(Object.keys(errors)[0])?.focus();
       return;
     }
     inFlight.current = true;
@@ -121,7 +128,7 @@ export default function AuthForm({ mode, next, initialError = "" }) {
     : <>Choose a new <span className={styles.highlight}>password.</span></>;
 
   return <AuthScreen tone={mode === "login" && (error || fieldErrors.password) ? "muted" : config.tone} folio={config.folio}>
-    <AuthNavigation label={config.chapter} href={mode === "forgot" || mode === "reset" ? "/login" : "/welcome"}
+    <AuthNavigation label={config.chapter} href={mode === "forgot" ? `/login?next=${encodeURIComponent(destination)}` : mode === "reset" ? "/login" : "/welcome"}
       backLabel={mode === "forgot" || mode === "reset" ? "Back to log in" : "Back to welcome"} />
     <AuthHeading kicker={config.kicker} description={config.description}>{heading}</AuthHeading>
     <form className={styles.flow} method="post" noValidate onSubmit={submit} aria-busy={pending}>
@@ -142,7 +149,7 @@ export default function AuthForm({ mode, next, initialError = "" }) {
       {error && <InlineAlert type="error" className={styles.response}>{error}</InlineAlert>}
       <div className={styles.actions}>
         <Button type="submit" loading={pending} disabled={!hasInput} className={styles.button}>{pending ? config.loading : config.label}</Button>
-        {mode === "login" && <Button href="/forgot-password" variant="tertiary" className={`${styles.button} ${styles.textButton}`}>Forgot password?</Button>}
+        {mode === "login" && <Button href={`/forgot-password?next=${encodeURIComponent(destination)}`} variant="tertiary" className={`${styles.button} ${styles.textButton}`}>Forgot password?</Button>}
         {mode === "signup" && <Button href={`/login?next=${encodeURIComponent(destination)}`} variant="tertiary" className={`${styles.button} ${styles.textButton}`}>Already have an account? Log in</Button>}
         {mode === "forgot" && <Button href={`/login?next=${encodeURIComponent(destination)}`} variant="tertiary" className={`${styles.button} ${styles.textButton}`}>Return to log in</Button>}
       </div>

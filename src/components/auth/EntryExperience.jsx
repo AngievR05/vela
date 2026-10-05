@@ -7,12 +7,14 @@ import { isTransientAuthError } from "@/lib/auth/requests";
 import AuthScreen, { BrandLogo } from "./AuthScreen";
 import AuthStatus from "./AuthStatus";
 import Button from "@/components/ui/Button";
+import SessionSync from "./SessionSync";
 import styles from "./Auth.module.css";
 
 export default function EntryExperience() {
   const router = useRouter();
   const [state, setState] = useState("splash");
   const [name, setName] = useState("");
+  const [userId, setUserId] = useState("");
   const [attempt, setAttempt] = useState(0);
   const generation = useRef(0);
 
@@ -31,6 +33,8 @@ export default function EntryExperience() {
         if (!active || current !== generation.current) return;
         if (isTransientAuthError(error)) { setState("unavailable"); return; }
         if (!user || error) { router.replace("/welcome"); return; }
+        setUserId(user.id);
+        setName("");
         setState("returning");
         // This read uses the verified reader's client and is restricted by RLS.
         try {
@@ -49,6 +53,7 @@ export default function EntryExperience() {
 
   if (state === "returning") return <AuthStatus tone="green" folio="A.03"
     title={name ? `Welcome back, ${name}.` : "Welcome back."} description="Your reading space is ready where you left it.">
+    <SessionSync userId={userId} />
     <Button onClick={() => window.location.replace("/home")} className={styles.button}>Continue to Home</Button>
   </AuthStatus>;
 
