@@ -33,8 +33,12 @@ export default function EntryExperience() {
         if (!user || error) { router.replace("/welcome"); return; }
         setState("returning");
         // This read uses the verified reader's client and is restricted by RLS.
-        const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle();
-        if (active && current === generation.current && profile?.display_name !== "Reader") setName(profile?.display_name || "");
+        try {
+          const { data: profile } = await supabase.from("profiles").select("display_name").eq("id", user.id).maybeSingle();
+          if (active && current === generation.current && profile?.display_name !== "Reader") setName(profile?.display_name || "");
+        } catch {
+          // A missing optional greeting must not block a verified reader.
+        }
       } catch {
         if (active && current === generation.current) setState(navigator.onLine ? "unavailable" : "offline");
       }
