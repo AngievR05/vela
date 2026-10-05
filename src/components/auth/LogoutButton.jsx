@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Button from "@/components/ui/Button";
 
-export default function LogoutButton() {
+export default function LogoutButton({ label = "Log out", className = "", variant = "secondary" }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   async function logout() {
@@ -19,5 +19,5 @@ export default function LogoutButton() {
       setPending(false);
     }
   }
-  return <><Button onClick={logout} loading={pending} variant="secondary">Log out</Button>{error && <p role="alert">{error}</p>}</>;
+  return <><Button onClick={logout} loading={pending} variant={variant} className={className}>{label}</Button>{error && <p role="alert">{error}</p>}</>;
 }
