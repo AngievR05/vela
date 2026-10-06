@@ -25,6 +25,13 @@ const permissionCopy = [
 ];
 const reviewLabels = ["Genres", "Story elements", "Pacing", "Reading mood"];
 
+function SetupActions({ primary, onPrimary, secondary, onSecondary, disabled, pending, primaryDisabled = false }) {
+  return <div className={styles.actions}>
+    <Button className={styles.button} onClick={onPrimary} loading={pending} disabled={disabled || primaryDisabled}>{pending ? "Saving your setup…" : primary}</Button>
+    {secondary && <Button className={`${styles.button} ${styles.tertiary}`} variant="tertiary" onClick={onSecondary} disabled={disabled}>{secondary}</Button>}
+  </div>;
+}
+
 export default function ReadingSetup({ userId, initial }) {
   const [draft, setDraft] = useState({ preferences: initial.preferences, permissions: initial.permissions, enabled: initial.enabled });
   const [stage, setStage] = useState(initial.completed ? "review" : "intro");
@@ -116,10 +123,6 @@ export default function ReadingSetup({ userId, initial }) {
   const disabled = pending || !ready;
   const title = (text) => <h1 className={styles.heading} ref={heading} tabIndex={-1}>{text}</h1>;
   const description = (text) => <p className={styles.description}>{text}</p>;
-  const actions = (primary, onClick, secondary, secondaryClick, primaryDisabled = false) => <div className={styles.actions}>
-    <Button className={styles.button} onClick={onClick} loading={pending} disabled={disabled || primaryDisabled}>{pending ? "Saving your setup…" : primary}</Button>
-    {secondary && <Button className={`${styles.button} ${styles.tertiary}`} variant="tertiary" onClick={secondaryClick} disabled={disabled}>{secondary}</Button>}
-  </div>;
 
   return <AuthScreen tone={tone} folio={folio} artDirectory="setup" decoration="spark" className={`${styles.screen} ${styles[tone]}`}>
     {stage !== "intro" && <nav className={styles.navigation} aria-label="Reading setup navigation">
@@ -137,7 +140,7 @@ export default function ReadingSetup({ userId, initial }) {
       <div className={styles.benefits}>{[["GENRES", "Start broad"], ["STORY", "Choose signals"], ["MOOD", "Tune the moment"]].map(([label, copy], index) =>
         <div className={styles.benefit} key={label}><span>{`0${index + 1}`}</span><strong>{label}</strong><p>{copy}</p></div>)}</div>
       <InlineAlert className={styles.response}>Nothing here is permanent. You can change these choices later.</InlineAlert>
-      {actions("Choose genres", () => move(0), "Set up later", () => move("skip"))}
+      <SetupActions primary="Choose genres" onPrimary={() => move(0)} secondary="Set up later" onSecondary={() => move("skip")} disabled={disabled} pending={pending} />
     </>}
     {step && <>
       {title(step.title)}
@@ -149,7 +152,7 @@ export default function ReadingSetup({ userId, initial }) {
       </div>
       {count ? <InlineAlert type="success" className={`${styles.response} ${styles.success}`}>{count} {stage === 0 ? "genres" : count === 1 ? "choice" : "choices"} selected. Tap again to remove.</InlineAlert>
         : <Card className={`${styles.note} ${styles.softGreen}`}><strong>{step.noteTitle}</strong><p>{step.note}</p></Card>}
-      {actions(step.save, () => advance(stage), "Skip for now", () => advance(stage, true), !count)}
+      <SetupActions primary={step.save} onPrimary={() => advance(stage)} secondary="Skip for now" onSecondary={() => advance(stage, true)} primaryDisabled={!count} disabled={disabled} pending={pending} />
     </>}
     {stage === "ai" && <>
       {title("How Vela personalises recommendations")}
@@ -172,7 +175,7 @@ export default function ReadingSetup({ userId, initial }) {
         label={`${label} — ${draft.permissions[name] ? "On" : "Off"}`} description={copy} checked={draft.permissions[name]} disabled={disabled}
         onChange={(event) => update({ ...draft, permissions: { ...draft.permissions, [name]: event.target.checked }, enabled: true })} />)}</div>
       <InlineAlert className={styles.response}>{Object.values(draft.permissions).some(Boolean) ? "Only the signals you selected will be used." : "No optional personalisation is selected."}</InlineAlert>
-      {actions("Review my choices", () => { setEditing(false); move("review"); })}
+      <SetupActions primary="Review my choices" onPrimary={() => { setEditing(false); move("review"); }} disabled={disabled} pending={pending} />
     </>}
     {stage === "review" && <>
       {title("Review your reading starting point.")}
@@ -182,7 +185,7 @@ export default function ReadingSetup({ userId, initial }) {
         <Button variant="tertiary" className={styles.edit} aria-label={`Edit ${reviewLabels[index].toLowerCase()}`} onClick={() => edit(index)} disabled={disabled}>Edit</Button>
       </Card>)}</div>
       <div className={styles.permissionReview}><p>Optional signals: {permissionCopy.filter(([name]) => draft.permissions[name]).map(([, label]) => label.replace("Use my ", "")).join(", ") || "all off"}</p><Button variant="tertiary" className={styles.edit} aria-label="Edit data permissions" onClick={() => { setEditing(true); move("permissions"); }} disabled={disabled}>Edit</Button></div>
-      {actions("Create my Reading DNA", () => save({ ...draft, enabled: true }))}
+      <SetupActions primary="Create my Reading DNA" onPrimary={() => save({ ...draft, enabled: true })} disabled={disabled} pending={pending} />
       {initial.completed && <Button variant="tertiary" className={styles.pause} disabled={disabled} onClick={() => move("skip")}>Pause personalisation</Button>}
     </>}
     {stage === "created" && <>
@@ -194,20 +197,20 @@ export default function ReadingSetup({ userId, initial }) {
         draft.preferences.pacing ? `Preferred pace: ${draft.preferences.pacing.toLowerCase()}.` : "",
       ].filter(Boolean).join(" ") || (draft.preferences.genres.length ? `Your starting genres: ${draft.preferences.genres.join(", ")}.` : "You skipped the taste choices. Add them any time from Settings.")}</p></Card>
       <Card className={`${styles.detailCard} ${styles.softPurple}`}><h2>You stay in control.</h2><p>Edit or pause personalisation at any time. Nothing here is permanent.</p></Card>
-      {actions("Go to Home", () => window.location.replace("/home"))}
+      <SetupActions primary="Go to Home" onPrimary={() => window.location.replace("/home")} disabled={disabled} pending={pending} />
     </>}
     {stage === "skip" && <>
       {title("Continue without personalisation?")}
       {description("Your Library and reading tracker will still work normally.")}
       <Card className={`${styles.detailCard} ${styles.softGreen}`}><h2>What changes</h2><p>Discover will not create personalised recommendations, and Reading DNA stays off until you enable it.</p></Card>
       <Card className={`${styles.detailCard} ${styles.softPurple}`}><h2>You can change this later.</h2><p>Turn personalisation on from Settings whenever you are ready.</p></Card>
-      {actions("Keep personalisation off", () => save({ ...draft, permissions: emptyPermissions, enabled: false }), "Go back to setup", () => move(initial.completed ? "review" : "intro"))}
+      <SetupActions primary="Keep personalisation off" onPrimary={() => save({ ...draft, permissions: emptyPermissions, enabled: false })} secondary="Go back to setup" onSecondary={() => move(initial.completed ? "review" : "intro")} disabled={disabled} pending={pending} />
     </>}
     {stage === "error" && <>
       {title("We couldn’t save your setup.")}
       {description("Your choices are still here. Check your connection and try again.")}
       <Card className={`${styles.detailCard} ${styles.error}`} role="alert"><h2>Nothing was lost</h2><p>{error}</p></Card>
-      {actions("Try again", () => save(retryPayload.current ?? draft), "Review my choices", () => move("review"))}
+      <SetupActions primary="Try again" onPrimary={() => save(retryPayload.current ?? draft)} secondary="Review my choices" onSecondary={() => move("review")} disabled={disabled} pending={pending} />
     </>}
   </AuthScreen>;
 }
