@@ -103,8 +103,8 @@ This starter deliberately sets up the project architecture without pretending un
 - Google Books search and canonical metadata lookup power book discovery and saving to the reader's Library.
 - Supabase authentication and protected routes are implemented; hosted email configuration is required.
 - Reading setup, editable taste choices and independent data permissions are saved through a reader-protected Supabase operation.
-- The recommendation request and response schemas are prepared.
-- The Gemini recommendation route is scaffolded but intentionally returns `501` until the Week 5 AI implementation.
+- Discover creates three validated Gemini recommendations using canonical Google Books metadata and the reader’s permitted preferences.
+- Recommendation sessions, feedback and explicit Reading DNA corrections persist in Supabase.
 - The five main product areas are represented: Home, Library, Discover, DNA and Settings.
 - Vela's colour tokens and mobile-first visual foundation are included.
 
@@ -112,7 +112,7 @@ See `docs/PROJECT_SCOPE.md` and `docs/FOLDER_STRUCTURE.md` before adding feature
 
 ## Reading Home
 
-`/home` follows Figma’s **C · Home** populated, no-current-book, new-reader, loading, offline and retry states. Greeting, current book, progress, annual finished count, rating average and permitted DNA evidence come from the authenticated reader’s Supabase data. Book search, adding to the Library, starting reading and saving progress use protected APIs; reaching 100% marks the book finished. Library and Discover show saved books and live catalogue search. Personalised Gemini recommendations remain a separate unfinished feature.
+`/home` follows Figma’s **C · Home** populated, no-current-book, new-reader, loading, offline and retry states. Greeting, current book, progress, annual finished count, rating average and permitted DNA evidence come from the authenticated reader’s Supabase data. Book search, adding to the Library, starting reading and saving progress use protected APIs; reaching 100% marks the book finished. Library shows saved books; Discover provides recommendations and protected catalogue details.
 
 While an already-loaded Home is offline, reader-scoped local snapshots and a durable progress queue keep saved books usable. Updates sync after reconnection; conflicts remain visible for retry or explicit removal. Signing out or changing readers clears the old reader’s cached data. This is offline support for an open Home tab, not a service-worker-backed offline app launch.
 
@@ -130,4 +130,14 @@ Live account and email checks require a reachable Supabase project, the schema m
 
 `/setup` follows Figma’s **B · Reading Setup and Permissions** reference states: intro, genres, story elements, pacing, mood, AI explanation, separate data permissions, editable review, completion, skip confirmation and save error/retry. All taste steps are optional. The supplied logo and Figma SVG artwork are local assets. Form choices remain available after recoverable failures, and completed settings reload from Supabase. Settings and Reading DNA reopen the setup for changes or pausing personalisation.
 
-Apply both migrations listed in [Supabase setup and verification](supabase/README.md). `npm test` checks validation, atomic saves, new-reader opt-out defaults and reader isolation using PostgreSQL. The existing recommendation engine remains scaffolded; this flow stores the preferences and permissions that it will consume.
+Apply the migrations listed in [Supabase setup and verification](supabase/README.md). `npm test` checks validation, atomic saves, new-reader opt-out defaults and reader isolation using PostgreSQL. The recommendation engine consumes only currently permitted signals.
+
+## Discover and recommendations
+
+`/discover` implements Figma’s **J · Discover** and **K · Recommendations & Correction** states using Vela’s existing styling. Request and filter drafts survive recoverable errors and reloads. Source, genre, mood and length guide candidate selection; unavailable services, insufficient context and fewer than three eligible matches have explicit recovery states. Book covers open protected details with Google Books facts and Library save actions.
+
+Apply `supabase/migrations/202610060003_recommendations.sql` after the earlier migrations. Sessions save three distinct validated recommendations atomically. Helpful and ordinary rejection feedback do not change Reading DNA. Show less records a separate future preference with Undo; Keep, Reduce and Remove change only the explicitly selected, permitted signal. Reader-scoped snapshots support browsing already-loaded results offline and clear on logout.
+
+The server uses `GEMINI_API_KEY` with `gemini-3.5-flash-lite` by default; optional server-only `GEMINI_MODEL` overrides it. Google Books supplies canonical candidates, facts and covers. Client-provided candidates, reader IDs and evidence are rejected. Generated book and signal IDs must belong to the server’s allowed lists.
+
+The PostgreSQL tests cover atomic saves, idempotent retry, feedback, correction and anonymous/cross-reader denial. Live hosted generation, session persistence, Google Books covers and Helpful feedback were verified after the migration was applied. Temporary browser fixtures verified preference Undo, explicit corrections and retained input after feedback/save failures; fixtures are removed from the app.

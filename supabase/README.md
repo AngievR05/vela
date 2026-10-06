@@ -20,6 +20,12 @@ Book Detail saves progress, ratings, favourites, private notes, DNF reasons and 
 
 The PostgreSQL tests execute all three migrations and verify reader isolation, manual metadata privacy, duplicate retries, page bounds, DNF restore, notes and Undo. Isolated browser checks cover the new flows, error retention, offline syncing and responsive layouts with a real Google Books cover; their save responses are simulated. Authenticated hosted write/reload remains a manual acceptance check.
 
+## Discover and Recommendations
+
+Apply `migrations/202610060003_recommendations.sql` after the Library migration. The user confirmed success on 2026-10-06. It adds reader-protected atomic recommendation saves and feedback operations. Both functions run with the signed-in reader’s permissions, validate ownership and consent, and deny anonymous execution.
+
+The app derives candidates and permitted signals on the server. Recommendation output must contain three distinct supplied books and only permitted signal IDs. Ordinary feedback leaves DNA unchanged; future-pattern feedback supports Undo. Explicit signal corrections preserve evidence and consent, and retries do not repeatedly reduce importance. Local PostgreSQL tests execute all four migrations and verify rollback, idempotency and cross-reader denial. Live generation, persisted sessions and Helpful feedback were verified against the hosted project. Preference changes and recovery states were checked with temporary browser fixtures.
+
 ## Authentication configuration
 
 Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local`. The application uses the public key with the signed-in reader's session; no service-role key is used.
