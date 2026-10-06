@@ -32,7 +32,7 @@ export default function AuthForm({ mode, next, initialError = "" }) {
   const [completed, setCompleted] = useState("");
   const inFlight = useRef(false);
   const config = copy[mode];
-  const destination = safeNext(next);
+  const destination = safeNext(next || (mode === "signup" ? "/setup" : "/home"));
   const hasInput = mode === "reset" ? Boolean(password && confirmation)
     : Boolean(email.trim() && (mode === "forgot" || password));
 
@@ -113,7 +113,7 @@ export default function AuthForm({ mode, next, initialError = "" }) {
   if (completed === "signup") return <AuthStatus tone="green" folio="A.11"
     title="Your reading space is ready." description="Next, choose a few things you already know you enjoy."
     message="Account created. Your choices remain editable.">
-    <Button onClick={() => window.location.replace(next ? destination : "/dna")} className={styles.button}>{next ? "Continue to Vela" : "Set up Reading DNA"}</Button>
+    <Button onClick={() => window.location.replace(destination)} className={styles.button}>{next ? "Continue to Vela" : "Set up Reading DNA"}</Button>
   </AuthStatus>;
 
   if (completed === "reset") return <AuthStatus tone="green" folio="A.25"

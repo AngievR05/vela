@@ -44,6 +44,7 @@
 .spine { position: absolute; inset: 0 auto 0 0; width: 7px; background: var(--auth-accent); }
 .bookmark { position: absolute; right: 0; top: 196px; width: 13px; height: 88px; border-radius: 7px; background: var(--auth-brass); }
 .fold { position: absolute; right: 0; top: 0; }
+.spark { position: absolute; left: calc(50% + 133px); top: 58px; }
 .folio { position: absolute; right: 16px; top: 126px; width: 150px; font: 600 90px/90px var(--font-display); text-align: right; color: var(--auth-accent); opacity: .08; white-space: nowrap; }
 .content { position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 100svh; padding: 72px 16px max(42px, env(safe-area-inset-bottom)); }
 .navigation { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }

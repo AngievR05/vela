@@ -9,6 +9,6 @@ export default async function SignupPage({ searchParams }) {
   const params = await searchParams;
   const supabase = await createClient();
   const { data: { user }, error } = await supabase.auth.getUser();
-  if (user && !error) redirect(safeNext(params.next));
+  if (user && !error) redirect(safeNext(params.next || "/setup"));
   return <AuthForm mode="signup" next={params.next} />;
 }

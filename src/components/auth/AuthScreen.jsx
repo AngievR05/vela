@@ -11,15 +11,16 @@ export function BrandLogo({ size = 108, className = "" }) {
   </span>;
 }
 
-export default function AuthScreen({ children, tone = "brass", folio = "A.05", className = "" }) {
-  return <main className={`${styles.screen} ${styles[tone]} ${authBody.variable} ${authDisplay.variable} ${className}`}>
+export default function AuthScreen({ children, tone = "brass", folio = "A.05", className = "", artDirectory = "auth", decoration = "fold" }) {
+  return <main className={`${styles.screen} ${styles[tone] || ""} ${authBody.variable} ${authDisplay.variable} ${className}`}>
     <div className={styles.art} aria-hidden="true">
-      <Image className={styles.colourField} src={`/auth/field-${tone}.svg`} alt="" width={250} height={250} unoptimized />
+      <Image className={styles.colourField} src={`/${artDirectory}/field-${tone}.svg`} alt="" width={250} height={250} unoptimized />
       <span className={styles.folio}>{folio}</span>
-      <Image className={styles.arch} src={`/auth/arch-${tone}.svg`} alt="" width={344} height={470} unoptimized />
+      <Image className={styles.arch} src={`/${artDirectory}/arch-${tone}.svg`} alt="" width={344} height={470} unoptimized />
       <span className={styles.spine} />
       <span className={styles.bookmark} />
-      <Image className={styles.fold} src="/auth/fold.svg" alt="" width={36} height={36} unoptimized />
+      {decoration === "spark" ? <Image className={styles.spark} src={`/${artDirectory}/spark.svg`} alt="" width={28} height={28} unoptimized />
+        : <Image className={styles.fold} src="/auth/fold.svg" alt="" width={36} height={36} unoptimized />}
     </div>
     <div className={styles.content}>{children}</div>
   </main>;
