@@ -5,6 +5,13 @@ function Block({ className="", style }) {
 }
 
 export default function SkeletonLoader({ variant="book-list", label="Loading", className="" }) {
+  if (variant === "library") return <div className={[styles.stack,className].filter(Boolean).join(" ")} role="status" aria-label={label}>
+    {[0,1,2].map(key => <div key={key} className={styles.skeletonBookRow}>
+      <Block style={{width:52,height:72,borderRadius:8}} /><div className={[styles.stack,styles.fill].join(" ")}>
+        <Block className={styles.skeletonLine} style={{width:"75%"}} /><Block className={styles.skeletonLine} style={{width:"50%"}} />
+      </div>
+    </div>)}
+  </div>;
   if (variant === "home") return <div className={className} role="status" aria-label={label}>
     <Block /><Block /><div><Block /><Block /><Block /></div><Block /><Block />
   </div>;

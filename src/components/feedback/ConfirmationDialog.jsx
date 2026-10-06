@@ -11,7 +11,15 @@ export default function ConfirmationDialog({
     if(!open)return;
     const previous=document.activeElement;
     ref.current?.querySelector('[data-safe-action="true"]')?.focus?.();
-    function key(e){if(e.key==="Escape")onCancel?.()}
+    function key(e){
+      if(e.key==="Escape")onCancel?.();
+      if(e.key!=="Tab")return;
+      const items=Array.from(ref.current?.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),[tabindex="0"]')||[]);
+      if(!items.length){e.preventDefault();return;}
+      const first=items[0],last=items[items.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+    }
     document.addEventListener("keydown",key);
     return()=>{document.removeEventListener("keydown",key);previous?.focus?.()}
   },[open,onCancel]);

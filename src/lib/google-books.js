@@ -35,8 +35,9 @@ function mapGoogleBook(item) {
     categories: info.categories ?? [],
     publishedDate: info.publishedDate ?? null,
     thumbnailUrl: normaliseImageUrl(
-      info.imageLinks?.thumbnail ?? info.imageLinks?.smallThumbnail ?? null
+      info.imageLinks?.large ?? info.imageLinks?.medium ?? info.imageLinks?.thumbnail ?? info.imageLinks?.smallThumbnail ?? null
     ),
+    isbns: (info.industryIdentifiers || []).filter(identifier => ["ISBN_10", "ISBN_13"].includes(identifier.type)).map(identifier => identifier.identifier),
   };
 }
 

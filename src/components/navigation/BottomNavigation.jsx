@@ -10,7 +10,7 @@ function routeIsActive(pathname, href) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export default function BottomNavigation({ className = "", variant = "default", onNavigate, activePath }) {
+export default function BottomNavigation({ className = "", variant = "default", onNavigate, activePath, assetDirectory = "reading-home" }) {
   const pathname = usePathname();
 
   return (
@@ -24,7 +24,7 @@ export default function BottomNavigation({ className = "", variant = "default", 
             key={item.href}
             {...item}
             active={routeIsActive(activePath || pathname, item.href)}
-            iconSrc={variant === "home" ? `/reading-home/nav-${item.label.toLowerCase()}.svg` : undefined}
+            iconSrc={variant === "home" ? `/${assetDirectory}/nav-${item.label.toLowerCase()}.svg` : undefined}
             onClick={(event) => onNavigate?.(event, item.href)}
           />
         ))}

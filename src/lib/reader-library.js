@@ -20,14 +20,21 @@ export function mapLibraryBook(row) {
     pageCount: book.page_count > 0 ? book.page_count : null, coverSrc: book.thumbnail_url || null,
     status: row.status, progressPercent: row.progress_percent, rating: row.rating,
     dnfUse: row.dnf_use_for_learning, startedAt: row.started_at, finishedAt: row.finished_at, updatedAt: row.updated_at,
+    description: book.description || null, categories: book.categories || [], publishedDate: book.published_date || null, isbn: book.isbn || null,
+    favourite: row.is_favourite || false, notes: row.notes || "", currentPage: row.current_page ?? null, isRemoved: row.is_removed || false, dnfReason: row.dnf_reason || null,
   };
 }
-const libraryColumns = "id,book_id,status,progress_percent,rating,dnf_use_for_learning,started_at,finished_at,updated_at,books!inner(google_books_id,title,authors,page_count,thumbnail_url)";
+const libraryColumns = "id,book_id,status,progress_percent,current_page,rating,notes,is_favourite,is_removed,dnf_reason,dnf_use_for_learning,started_at,finished_at,updated_at,books!inner(google_books_id,title,authors,page_count,thumbnail_url,description,categories,published_date,isbn)";
+export async function loadReaderBook(supabase, userId, id) {
+  const { data, error } = await supabase.from("user_books").select(libraryColumns).eq("id", id).eq("user_id", userId).maybeSingle();
+  if (error) throw new Error("We couldn’t load this book. Please try again.");
+  return data ? mapLibraryBook(data) : null;
+}
 export async function loadHome(supabase, userId) {
   const [profile, settings, library, rawSignals] = await Promise.all([
     supabase.from("profiles").select("display_name").eq("id", userId).single(),
     supabase.from("ai_settings").select("personalisation_enabled,use_recent_ratings,use_dnf_reasons,use_recent_history").eq("user_id", userId).single(),
-    allReaderRows(supabase, "user_books", libraryColumns, userId),
+    allReaderRows(supabase, "user_books", libraryColumns, userId, { is_removed: false }),
     allReaderRows(supabase, "reading_dna_signals", "id,category,label,source_type,evidence,updated_at", userId, { active: true }),
   ]);
   if (profile.error || settings.error) throw new Error("Reader preferences unavailable");
@@ -55,26 +62,45 @@ export async function loadHome(supabase, userId) {
 }
 
 export async function mutateReaderBook(supabase, userId, mutation) {
-  const { data: row, error: readError } = await supabase.from("user_books").select("id,status,started_at,progress_percent")
+  const { data: row, error: readError } = await supabase.from("user_books").select(libraryColumns)
     .eq("id", mutation.id).eq("user_id", userId).maybeSingle();
   if (readError) return { status: 503, error: "We couldn’t load this book. Please try again." };
   if (!row) return { status: 404, error: "This book is no longer in your Library." };
+  if (row.is_removed && mutation.kind !== "restore" && mutation.kind !== "remove") return { status: 409, error: "This book has been removed. Restore it before editing." };
+  if (["status", "review", "remove", "restore"].includes(mutation.kind)) {
+    const date = new Date().toISOString().slice(0, 10);
+    const changes = mutation.kind === "remove" ? { is_removed: true } : mutation.kind === "restore" ? { is_removed: false }
+      : mutation.kind === "review" ? { rating: mutation.rating, notes: mutation.notes, is_favourite: mutation.favourite }
+        : { status: mutation.status, finished_at: mutation.status === "finished" ? date : null,
+          progress_percent: mutation.status === "finished" ? 100 : row.progress_percent === 100 ? 0 : row.progress_percent,
+          current_page: null, dnf_reason: mutation.status === "dnf" ? mutation.reason : null,
+          dnf_use_for_learning: mutation.status === "dnf" && mutation.useForLearning,
+          started_at: ["reading", "finished"].includes(mutation.status) ? row.started_at || date : row.started_at };
+    const result = await supabase.from("user_books").update(changes).eq("id", mutation.id).eq("user_id", userId)
+      .eq("updated_at", row.updated_at).select(libraryColumns).maybeSingle();
+    if (result.error) return { status: 503, error: "Your changes weren’t saved. Your input is still here; please try again." };
+    if (!result.data) return { status: 409, error: "This book changed while saving. Refresh and try again." };
+    return { book: mapLibraryBook(result.data) };
+  }
   const eligible = mutation.kind === "start" ? ["want_to_read", "reading"] : ["reading", "finished"];
   if (!eligible.includes(row.status)) return { status: 409, error: "This book’s reading status changed. Refresh your Library before updating it." };
   if (mutation.kind === "progress" && row.status === "finished" && mutation.percent < 100)
     return { status: 409, error: "This book has already been marked finished. Refresh before changing its status." };
   const date = new Date().toISOString().slice(0, 10);
+  const pagePercent = mutation.page === row.books.page_count ? 100 : Math.min(99, Math.round(mutation.page * 100 / row.books.page_count));
+  if (mutation.page != null && (!row.books.page_count || mutation.page > row.books.page_count || pagePercent !== mutation.percent))
+    return { status: 400, error: "Check the current page and total pages." };
   const changes = mutation.kind === "start" ? { status: "reading", started_at: row.started_at || date }
-    : { progress_percent: mutation.percent, status: mutation.percent === 100 ? "finished" : "reading",
+    : { progress_percent: mutation.percent, current_page: mutation.page ?? null, status: mutation.percent === 100 ? "finished" : "reading",
       started_at: row.started_at || date, finished_at: mutation.percent === 100 ? date : null };
   const { data, error } = await supabase.from("user_books").update(changes).eq("id", mutation.id).eq("user_id", userId)
-    .eq("status", row.status).select(libraryColumns).maybeSingle();
+    .eq("status", row.status).eq("updated_at", row.updated_at).select(libraryColumns).maybeSingle();
   if (error) return { status: 503, error: "Your progress wasn’t saved. Your input is still here; please try again." };
   if (!data) return { status: 409, error: "This book changed while saving. Refresh and try again." };
   return { book: mapLibraryBook(data) };
 }
 
-export async function saveLibraryBook(supabase, userId, googleBooksId, lookup) {
+export async function saveLibraryBook(supabase, userId, googleBooksId, lookup, status = "want_to_read") {
   let { data: book, error } = await supabase.from("books").select("id").eq("google_books_id", googleBooksId).maybeSingle();
   if (error) throw new Error("Cache unavailable");
   if (!book) {
@@ -83,7 +109,7 @@ export async function saveLibraryBook(supabase, userId, googleBooksId, lookup) {
     const inserted = await supabase.from("books").upsert({
       google_books_id: metadata.googleBooksId, title: metadata.title, authors: metadata.authors,
       description: metadata.description, page_count: metadata.pageCount, categories: metadata.categories,
-      published_date: metadata.publishedDate, thumbnail_url: metadata.thumbnailUrl,
+      published_date: metadata.publishedDate, thumbnail_url: metadata.thumbnailUrl, isbn: metadata.isbns?.[0] || null,
     }, { onConflict: "google_books_id", ignoreDuplicates: true });
     if (inserted.error) throw new Error("Book cache insert failed");
     const cached = await supabase.from("books").select("id").eq("google_books_id", googleBooksId).single();
@@ -91,9 +117,22 @@ export async function saveLibraryBook(supabase, userId, googleBooksId, lookup) {
     book = cached.data;
   }
   // Duplicate adds must never reset an existing book's status or progress.
-  const added = await supabase.from("user_books").upsert({ user_id: userId, book_id: book.id, status: "want_to_read" },
+  const existing = await supabase.from("user_books").select(libraryColumns).eq("user_id", userId).eq("book_id", book.id).maybeSingle();
+  if (existing.error) throw new Error("Library read failed");
+  if (existing.data) {
+    if (existing.data.is_removed) {
+      const restored = await mutateReaderBook(supabase, userId, { kind: "restore", id: existing.data.id });
+      if (restored.error) throw new Error("Library restore failed");
+      return { added: true, restored: true, book: restored.book };
+    }
+    return { added: false, duplicate: true, book: mapLibraryBook(existing.data) };
+  }
+  const added = await supabase.from("user_books").upsert({ user_id: userId, book_id: book.id, status,
+    ...(status === "reading" ? { started_at: new Date().toISOString().slice(0, 10) } : {}) },
     { onConflict: "user_id,book_id", ignoreDuplicates: true });
   if (added.error) throw new Error("Library insert failed");
-  return { added: true };
+  const saved = await supabase.from("user_books").select(libraryColumns).eq("user_id", userId).eq("book_id", book.id).single();
+  if (saved.error) throw new Error("Library read failed");
+  return { added: true, book: mapLibraryBook(saved.data) };
 }
 

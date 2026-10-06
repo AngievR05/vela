@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { authBody, authDisplay } from "@/components/auth/fonts";
 import { BrandLogo } from "@/components/auth/AuthScreen";
@@ -27,6 +28,7 @@ const sourceCopy = { onboarding: "Chosen during reading setup", manual: "Chosen 
 const statusCopy = { reading: "Currently reading", want_to_read: "Saved for later", finished: "Finished", dnf: "Stopped reading" };
 
 export default function HomeScreen({ userId, initialAction }) {
+  const router = useRouter();
   const home = useHome(userId);
   const [salutation, setSalutation] = useState("Hello");
   const [modal, setModal] = useState(null);
@@ -67,7 +69,7 @@ export default function HomeScreen({ userId, initialAction }) {
   const title = `${state === "new" ? "Welcome" : salutation}${name ? `, ${name}` : ""}`;
   const selectedBook = home.snapshot?.books.find((book) => book.id === selectedId);
 
-  function openAdd() { setFormError(""); setModal("add"); }
+  function openAdd() { router.push("/library/add"); }
   function openProgress(book) {
     setSelectedId(book.id); setProgress(String(book.progressPercent)); setFormError(""); setModal("progress");
   }
@@ -137,7 +139,7 @@ export default function HomeScreen({ userId, initialAction }) {
   const readingCard = summary?.current && <CurrentlyReadingCard variant="home" className={styles.current}
     title={summary.current.title} author={summary.current.author} coverSrc={summary.current.coverSrc}
     progress={summary.current.progressPercent}
-    progressText={summary.current.pageCount ? `${Math.round(summary.current.pageCount * summary.current.progressPercent / 100)} of ${summary.current.pageCount} pages` : `${summary.current.progressPercent}% complete`}
+    progressText={summary.current.pageCount ? `${summary.current.currentPage ?? Math.round(summary.current.pageCount * summary.current.progressPercent / 100)} of ${summary.current.pageCount} pages` : `${summary.current.progressPercent}% complete`}
     onUpdate={() => openProgress(summary.current)} />;
   const insightCard = insight && <Card className={styles.insight}>
     <p>{insight.label}</p><h2>{insight.text}</h2>

@@ -1,7 +1,22 @@
 import { getReader } from "@/lib/auth/server";
 import { readerDeniedResponse } from "@/lib/auth/http";
 import { bookMutationSchema } from "@/lib/home-data";
-import { mutateReaderBook } from "@/lib/home-server";
+import { loadReaderBook, mutateReaderBook } from "@/lib/home-server";
+import { z } from "zod";
+
+export async function GET(request, { params }) {
+  const reader = await getReader();
+  const denied = readerDeniedResponse(reader);
+  if (denied) return denied;
+  const { id } = await params;
+  if (!z.uuid().safeParse(id).success) return Response.json({ error: "Book not found." }, { status: 404 });
+  try {
+    const book = await loadReaderBook(reader.supabase, reader.user.id, id);
+    return Response.json(book ? { book } : { error: "Book not found." }, { status: book ? 200 : 404, headers: { "Cache-Control": "private, no-store" } });
+  } catch {
+    return Response.json({ error: "We couldn’t load this book. Please try again." }, { status: 503 });
+  }
+}
 
 export async function PATCH(request, { params }) {
   const reader = await getReader();

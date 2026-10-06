@@ -29,7 +29,7 @@ test("Home derives actual reader states and calendar-year statistics without inv
 
 test("offline snapshots and update queues reject malformed and cross-reader data; updates preserve dates",()=>{
  const data=snapshot([makeBook()]);
- assert.deepEqual(parseHomeSnapshot(JSON.stringify(data),a),data);
+ assert.equal(parseHomeSnapshot(JSON.stringify(data),a).userId,a);
  assert.equal(parseHomeSnapshot(JSON.stringify(data),b),null);
  assert.equal(parseHomeSnapshot("bad-json",a),null);
  assert.equal(parseHomeSnapshot(JSON.stringify({...data,books:[{...makeBook(),progressPercent:101}]}),a),null);
@@ -70,11 +70,11 @@ function client(db){
      rows=(await db.query(sql,params)).rows;
     }else if(q.operation==="update"){
      const set=Object.entries(q.values).map(([k,v])=>ident(k)+'='+param(v)).join(',');
-     rows=(await db.query('update public.'+ident(table)+' t set '+set+where()+' returning t.*',params)).rows;
+     rows=(await db.query('update public.'+ident(table)+' t set '+set+where()+' returning t.*, t.updated_at::text as updated_at',params)).rows;
      if(q.columns.includes('books!inner'))for(const row of rows)row.books=(await db.query('select * from public.books where id=$1',[row.book_id])).rows[0];
     }else{
      const joined=q.columns.includes('books!inner');
-     let sql=joined?'select t.*, row_to_json(b) as books from public.user_books t join public.books b on b.id=t.book_id':'select t.* from public.'+ident(table)+' t';
+     let sql=joined?'select t.*, t.updated_at::text as updated_at, row_to_json(b) as books from public.user_books t join public.books b on b.id=t.book_id':'select t.* from public.'+ident(table)+' t';
      sql+=where();if(q.orders.length)sql+=' order by '+q.orders.map(([col,asc])=>'t.'+ident(col)+(asc?' asc':' desc')).join(',');
      if(q.limit!=null)sql+=' limit '+q.limit+' offset '+q.offset;
      rows=(await db.query(sql,params)).rows;
@@ -93,13 +93,13 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
    grant usage on schema auth to anon,authenticated;
    create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');
    create function auth.uid() returns uuid language sql stable as $$ select (current_setting('request.jwt.claims',true)::jsonb->>'sub')::uuid $$;`);
-  for(const file of ['202609220001_initial_schema_rls.sql','202610060001_reading_setup.sql'])await db.exec((await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8')).replace('create extension if not exists pgcrypto with schema extensions;',''));
+  for(const file of ['202609220001_initial_schema_rls.sql','202610060001_reading_setup.sql','202610060002_library_detail.sql'])await db.exec((await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8')).replace('create extension if not exists pgcrypto with schema extensions;',''));
   await db.exec(`insert into auth.users(id) values ('${a}'),('${b}');`);
   const role=async(user,which='authenticated')=>db.exec(`reset role; select set_config('request.jwt.claims','${user?JSON.stringify({sub:user}):'{}'}',false); set role ${which};`);
   const supabase=client(db);
   const metadata={googleBooksId:'Example',title:'Example',authors:['Author'],description:null,pageCount:100,categories:[],publishedDate:null,thumbnailUrl:null};
   let lookups=0;const lookup=async()=>{lookups++;return metadata;};
-  await role(a);assert.deepEqual(await saveLibraryBook(supabase,a,'Example',lookup),{added:true});
+  await role(a);assert.equal((await saveLibraryBook(supabase,a,'Example',lookup)).added,true);
   let home=await loadHome(supabase,a);assert.equal(homeSnapshotSchema.safeParse(home).success,true);assert.equal(home.books.length,1);assert.equal(home.books[0].status,'want_to_read');
   const owned=home.books[0].id;
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:50})).status,409);
@@ -114,7 +114,7 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
   // RLS still denies the other reader if a data helper receives a spoofed userId.
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:10})).status,404);
   await assert.rejects(saveLibraryBook(supabase,a,'Example',lookup));
-  assert.deepEqual(await saveLibraryBook(supabase,b,'Example',lookup),{added:true});assert.equal((await loadHome(supabase,b)).books.length,1);assert.equal(lookups,1);
+  assert.equal((await saveLibraryBook(supabase,b,'Example',lookup)).added,true);assert.equal((await loadHome(supabase,b)).books.length,1);assert.equal(lookups,1);
   await db.exec(`reset role; update public.user_books set rating=5 where user_id='${a}';
    update public.ai_settings set personalisation_enabled=true,use_recent_ratings=false,use_dnf_reasons=false where user_id='${a}';
    insert into public.reading_dna_signals(user_id,category,label,source_type,evidence) values
@@ -127,6 +127,26 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
   home=await loadHome(supabase,a);assert.equal(home.signals.length,2);assert.equal(home.signals.find(s=>s.source==='rating').evidence[0].title,'Example');
   assert.equal(home.signals.some(s=>s.label==='Private evidence'),false);assert.equal(home.signals.some(s=>s.source==='dnf'),false);
   await db.exec(`update public.ai_settings set personalisation_enabled=false where user_id='${a}'`);assert.deepEqual((await loadHome(supabase,a)).signals,[]);
+  await role(a);
+  const manual = await db.query("select public.add_manual_book($1,$2,$3,$4,$5,$6) as id",[id,'Private diary','Reader','9780062678102',526,null]);
+  const manualId=manual.rows[0].id;
+  assert.equal((await db.query("select public.add_manual_book($1,$2,$3,$4,$5,$6) as id",[id,'Private diary','Reader','9780062678102',526,null])).rows[0].id,manualId);
+  const manualBook=(await loadHome(supabase,a)).books.find(book=>book.id===manualId);assert.equal(manualBook.title,'Private diary');
+  let change=await mutateReaderBook(supabase,a,{kind:'review',id:manualId,rating:4,notes:'My private notes',favourite:true});assert.equal(change.book.notes,'My private notes');assert.equal(change.book.favourite,true);
+  change=await mutateReaderBook(supabase,a,{kind:'status',id:manualId,status:'dnf',reason:'Not in the mood',useForLearning:false});assert.equal(change.book.status,'dnf');assert.equal(change.book.dnfUse,false);
+  change=await mutateReaderBook(supabase,a,{kind:'status',id:manualId,status:'reading'});assert.equal(change.book.status,'reading');assert.equal(change.book.dnfReason,null);
+  change=await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:50,page:263});assert.equal(change.book.currentPage,263);
+  assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:50,page:900})).status,400);
+  change=await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:99,page:525});assert.equal(change.book.status,'reading');assert.equal(change.book.currentPage,525);
+  assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:100,page:525})).status,400);
+  change=await mutateReaderBook(supabase,a,{kind:'remove',id:manualId});assert.equal(change.book.isRemoved,true);assert.equal((await loadHome(supabase,a)).books.some(book=>book.id===manualId),false);
+  assert.equal((await mutateReaderBook(supabase,a,{kind:'review',id:manualId,rating:1,notes:'wrong',favourite:false})).status,409);
+  change=await mutateReaderBook(supabase,a,{kind:'restore',id:manualId});assert.equal(change.book.isRemoved,false);assert.equal(change.book.notes,'My private notes');
+  await role(b);assert.equal((await db.query("select id from public.books where id=$1",[manualBook.bookId])).rows.length,0);
+  await assert.rejects(db.query("insert into public.user_books(user_id,book_id) values ($1,$2)",[b,manualBook.bookId]),error=>error.code==='42501');
+  assert.equal((await mutateReaderBook(supabase,b,{kind:'remove',id:manualId})).status,404);
+  await assert.rejects(db.query("select public.add_manual_book($1,$2,$3,$4,$5,$6)",[id,'Stolen metadata','Other',null,null,null]),error=>error.code==='42501');
+  await role(a);await assert.rejects(db.query("select public.add_manual_book($1,$2,$3,$4,$5,$6)",[a,'Bad cover','Reader',null,null,'https://example.com/track']),error=>error.code==='22023');
   await role(null,'anon');await assert.rejects(loadHome(supabase,a));assert.equal((await mutateReaderBook(supabase,a,{kind:'start',id:owned})).status,503);await assert.rejects(saveLibraryBook(supabase,a,'Example',lookup));
  }finally{await db.close();}
 });

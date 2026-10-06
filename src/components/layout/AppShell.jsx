@@ -10,7 +10,8 @@ export default function AppShell({
   showBottomNavigation = true,
   className = "",
 }) {
-  const home = usePathname() === "/home";
+  const pathname = usePathname();
+  const home = pathname === "/home" || pathname === "/library" || pathname.startsWith("/library/");
   return (
     <div
       className={[

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { detailMutationSchema } from "./library-data.js";
 
 export const libraryBookSchema = z.object({
   id: z.uuid(), bookId: z.uuid(), googleBooksId: z.string(), title: z.string().min(1), author: z.string(),
@@ -6,6 +7,8 @@ export const libraryBookSchema = z.object({
   status: z.enum(["want_to_read", "reading", "finished", "dnf"]),
   progressPercent: z.number().int().min(0).max(100), rating: z.number().int().min(1).max(5).nullable(),
   dnfUse: z.boolean(), startedAt: z.string().nullable(), finishedAt: z.string().nullable(), updatedAt: z.string(),
+  description: z.string().nullable().default(null), categories: z.array(z.string()).default([]), publishedDate: z.string().nullable().default(null), isbn: z.string().nullable().default(null),
+  favourite: z.boolean().default(false), notes: z.string().default(""), currentPage: z.number().int().nonnegative().nullable().default(null), isRemoved: z.boolean().default(false), dnfReason: z.string().nullable().default(null),
 });
 export const homeSnapshotSchema = z.object({
   version: z.literal(1), userId: z.uuid(), displayName: z.string(), fetchedAt: z.number(),
@@ -17,10 +20,11 @@ export const homeSnapshotSchema = z.object({
   })),
 });
 export const bookMutationSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("progress"), id: z.uuid(), percent: z.number().int().min(0).max(100) }).strict(),
+  z.object({ kind: z.literal("progress"), id: z.uuid(), percent: z.number().int().min(0).max(100), page: z.number().int().nonnegative().optional() }).strict(),
   z.object({ kind: z.literal("start"), id: z.uuid() }).strict(),
+  ...detailMutationSchema.options,
 ]);
-export const addBookSchema = z.object({ googleBooksId: z.string().regex(/^[A-Za-z0-9_-]{1,100}$/) }).strict();
+export const addBookSchema = z.object({ googleBooksId: z.string().regex(/^[A-Za-z0-9_-]{1,100}$/), status: z.enum(["want_to_read", "reading"]).default("want_to_read") }).strict();
 export function homeCacheKey(userId) { return `vela:home:v1:${userId}`; }
 export function homeQueueKey(userId) { return `vela:home-progress:v1:${userId}`; }
 export function parseHomeSnapshot(raw, userId) {
@@ -48,16 +52,26 @@ export function localDate(date = new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 export function applyBookMutation(snapshot, mutation, date = localDate()) {
+  if (["remove", "restore", "review", "status"].includes(mutation.kind)) return { ...snapshot, books: snapshot.books.map(book => book.id !== mutation.id ? book : {
+    ...book, ...(mutation.kind === "remove" ? { isRemoved: true } : mutation.kind === "restore" ? { isRemoved: false }
+      : mutation.kind === "review" ? { rating: mutation.rating, notes: mutation.notes, favourite: mutation.favourite }
+        : { status: mutation.status, finishedAt: mutation.status === "finished" ? date : null,
+          progressPercent: mutation.status === "finished" ? 100 : book.progressPercent === 100 ? 0 : book.progressPercent,
+          currentPage: null, dnfReason: mutation.status === "dnf" ? mutation.reason : null,
+          dnfUse: mutation.status === "dnf" && mutation.useForLearning, startedAt: mutation.status === "reading" || mutation.status === "finished" ? book.startedAt || date : book.startedAt }),
+    updatedAt: new Date().toISOString(),
+  }) };
   return { ...snapshot, books: snapshot.books.map((book) => book.id !== mutation.id ? book : {
     ...book, status: mutation.kind === "start" ? "reading" : mutation.percent === 100 ? "finished" : "reading",
     progressPercent: mutation.kind === "progress" ? mutation.percent : book.progressPercent,
+    currentPage: mutation.kind === "progress" ? mutation.page ?? null : book.currentPage ?? null,
     startedAt: book.startedAt || date,
     finishedAt: mutation.kind === "progress" && mutation.percent === 100 ? date : null,
     updatedAt: new Date().toISOString(),
   }) };
 }
 export function deriveHome(snapshot, date = new Date()) {
-  const books = [...snapshot.books].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || b.id.localeCompare(a.id));
+  const books = snapshot.books.filter(book => !book.isRemoved).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || b.id.localeCompare(a.id));
   const reading = books.filter((book) => book.status === "reading");
   const rated = books.filter((book) => book.rating != null);
   const today = localDate(date);

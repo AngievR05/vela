@@ -10,6 +10,16 @@ Unsubmitted choices are retained in reader-scoped session storage when available
 
 On 2026-10-06, the user confirmed applying the reading setup migration successfully. Live public-key checks confirmed the RPC exists and denies anonymous execution, and that the new profile fields deny anonymous reads. The new PostgreSQL tests verify defaults, direct-RPC validation, atomic rollback, repeat saves, opt-out, preserved learned signals and two-reader isolation. Local isolated browser tests covered all 14 reference states, editing/back navigation, keyboard switches, skipped choices, reload recovery, failed-save retry, small/mobile/desktop layouts, asset loading and real unauthenticated route/API denial. Browser save responses were simulated; authenticated hosted save/reload was not tested through a signed-in Vela session.
 
+## Library and Book Detail
+
+Apply `migrations/202610060002_library_detail.sql` after the setup migration. The user confirmed it succeeded on 2026-10-06. It adds favourites, private notes, exact page progress and removal with Undo. Manual book metadata belongs to its creator; other readers cannot read it or reference it from their Library. Shared Google Books metadata remains available to authenticated readers. The `add_manual_book` function runs with the reader's permissions and uses an entry UUID to make retries safe.
+
+Sections D, E and F use the existing Vela styling and read-only Figma references. `/library` includes Reading, TBR, DNF and Finished shelves, search, filters, sorting and grid view. Covers open reader-protected detail pages. Add Book searches Google Books, previews metadata, saves to TBR or Reading, and handles duplicate books without resetting progress. Manual entries use a matching Google Books cover when available, with an honest placeholder otherwise.
+
+Book Detail saves progress, ratings, favourites, private notes, DNF reasons and the separate learning choice. Removed books leave Home and Library but retain their information for Undo; removal is not permanent deletion. Offline start/progress updates use the existing reader-scoped queue and sync on reconnection. Recoverable search/save failures retain the query, selection or form input.
+
+The PostgreSQL tests execute all three migrations and verify reader isolation, manual metadata privacy, duplicate retries, page bounds, DNF restore, notes and Undo. Isolated browser checks cover the new flows, error retention, offline syncing and responsive layouts with a real Google Books cover; their save responses are simulated. Authenticated hosted write/reload remains a manual acceptance check.
+
 ## Authentication configuration
 
 Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local`. The application uses the public key with the signed-in reader's session; no service-role key is used.

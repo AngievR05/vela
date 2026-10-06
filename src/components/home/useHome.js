@@ -150,9 +150,9 @@ export default function useHome(userId) {
       const result = await send(parsed.data);
       state.current.revision += 1;
       const value = state.current.snapshot;
-      if (value) publish({ ...value, books: value.books.map((book) => book.id === result.book.id ? result.book : book) });
+      if (value) publish({ ...value, books: [...value.books.filter(book => book.id !== result.book.id), result.book] });
       setPhase("ready");
-      return { queued: false };
+      return { queued: false, book: result.book };
     } catch (error) {
       if (!navigator.onLine) return enqueue(parsed.data);
       throw error;
