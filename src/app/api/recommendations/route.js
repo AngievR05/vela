@@ -1,11 +1,24 @@
-import {
-  recommendationRequestSchema,
-} from "@/lib/validation/recommendation";
+import { recommendationRequestSchema } from "@/lib/validation/recommendation";
 import { getReader } from "@/lib/auth/server";
 import { readerDeniedResponse } from "@/lib/auth/http";
+import { createRecommendations, loadRecommendationSession } from "@/lib/recommendation-data";
+import { searchGoogleBooks } from "@/lib/google-books";
+import { generateStructured } from "@/lib/gemini";
+import { z } from "zod";
+const headers = { "Cache-Control": "private, no-store" };
+export const maxDuration = 90;
+
+export async function GET(request) {
+  const reader = await getReader(), denied = readerDeniedResponse(reader);
+  if (denied) return denied;
+  const id = new URL(request.url).searchParams.get("session");
+  if (id && !z.uuid().safeParse(id).success) return Response.json({ error: "Session not found." }, { status: 404, headers });
+  try { return Response.json({ session: await loadRecommendationSession(reader.supabase, reader.user.id, id) }, { headers }); }
+  catch { return Response.json({ error: "Saved recommendations could not refresh. Please try again." }, { status: 503, headers }); }
+}
 
 export async function POST(request) {
-  const denied = readerDeniedResponse(await getReader());
+  const reader = await getReader(), denied = readerDeniedResponse(reader);
   if (denied) return denied;
   const body = await request.json().catch(() => null);
   const parsed = recommendationRequestSchema.safeParse(body);
@@ -20,19 +33,10 @@ export async function POST(request) {
     );
   }
 
-  // Week 5 implementation:
-  // 1. Load only reader-permitted Reading DNA signals.
-  // 2. Build a limited Google Books candidate set.
-  // 3. Send candidates + permitted signals + current request to Gemini.
-  // 4. Validate strict JSON with recommendationResponseSchema.
-  // 5. Reject any book ID that is not in the supplied candidate set.
-  // 6. Store results and expose explanation + feedback.
-
-  return Response.json(
-    {
-      error: "Recommendation AI is scaffolded but not implemented yet.",
-      nextStep: "Implement the protected Gemini server pipeline during the AI sprint.",
-    },
-    { status: 501 }
-  );
+  try {
+    return Response.json(await createRecommendations(reader.supabase, reader.user.id, parsed.data, { search: searchGoogleBooks, generate: generateStructured }), { headers });
+  } catch (error) {
+    console.warn("Recommendation request failed:", error.name === "ZodError" ? "Generated output validation failed" : error.message);
+    return Response.json({ error: "Recommendations are temporarily unavailable. Your request is still here; please try again." }, { status: 503, headers });
+  }
 }

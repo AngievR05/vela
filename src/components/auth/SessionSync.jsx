@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { isTransientAuthError, sessionNeedsLogin } from "@/lib/auth/requests";
 import { homeCacheKey, homeQueueKey } from "@/lib/home-data";
 import { draftKey } from "@/lib/reading-setup";
+import { discoveryCacheKey, discoveryDraftKey } from "@/lib/validation/recommendation";
 
 export default function SessionSync({ userId }) {
   useEffect(() => {
@@ -13,7 +14,7 @@ export default function SessionSync({ userId }) {
     let checking = false;
     function leave() {
       try {
-        for (const key of [homeCacheKey(userId), homeQueueKey(userId), draftKey(userId)]) localStorage.removeItem(key);
+        for (const key of [homeCacheKey(userId), homeQueueKey(userId), draftKey(userId), discoveryCacheKey(userId), discoveryDraftKey(userId)]) localStorage.removeItem(key);
       } catch { /* Storage may be restricted. */ }
       window.location.replace("/login");
     }
