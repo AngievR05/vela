@@ -1,0 +1,60 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFile} from "node:fs/promises";
+import {PGlite} from "@electric-sql/pglite";
+import {previewLibraryImport,importBatchSchema,importLibraryRows} from "../src/lib/library-import.js";
+import {readerPreferencesSchema,defaultReaderPreferences,settingsMutationSchema} from "../src/lib/reader-settings.js";
+const a="abd563cb-fdcc-4208-9e62-e1457a9df95e",b="dce88169-75db-43ef-8682-21949d0ab369";
+test("CSV handles Goodreads formula ISBNs, quoted multiline notes, StoryGraph status and explicit skipped rows",()=>{
+ const goodreads='\uFEFFTitle,Author,ISBN13,Exclusive Shelf,My Rating,Number of Pages,Date Read,Private Notes\r\n"A Book, A World",Writer,"=""9781635575637""",read,5,272,2026/10/05,"First line\nSecond ""quoted"" line"\r\nOther,Writer,,currently-reading,0,200,,\r\nBad,Writer,,unknown,1,100,,\r\n"A Book, A World",Writer,"=""9781635575637""",read,1,272,,\r\n';
+ const result=previewLibraryImport(goodreads);assert.equal(result.rows.length,2);assert.equal(result.rows[0].isbn,"9781635575637");assert.equal(result.rows[0].status,"finished");assert.equal(result.rows[0].finishedAt,"2026-10-05");assert.equal(result.rows[0].notes,'First line\nSecond "quoted" line');assert.equal(result.rows[1].rating,null);assert.equal(result.issues.length,2);
+ const story=previewLibraryImport('Title,Authors,ISBN/UID,Read Status,Star Rating,Last Date Read\nPiranesi,Susanna Clarke,9781635575637,read,4.5,2026-10-05\nNo finish,Writer,,did-not-finish,,\n');assert.equal(story.rows[0].rating,5);assert.equal(story.warnings.length,1);assert.equal(story.rows[1].status,"dnf");
+ assert.throws(()=>previewLibraryImport('Title,Author\n"Unclosed,Writer'),/closed/);assert.throws(()=>previewLibraryImport('Title,Title,Author\nOne,Two,Writer'),/unique/);
+ assert.equal(previewLibraryImport('Title,Author,Date Read,Status\nBad Date,Writer,2026-02-30,read').issues.length,1);
+ assert.equal(importBatchSchema.safeParse({rows:[{...result.rows[0],userId:b}]}).success,false);
+ assert.equal(settingsMutationSchema.safeParse({kind:"permissions",enabled:false,ratings:true,history:false,dnf:false}).success,false);
+ const uid=previewLibraryImport('Title,Authors,ISBN/UID,Read Status\nNo ISBN,Writer,storygraph-uid,to-read');assert.equal(uid.rows.length,1);assert.equal(uid.rows[0].isbn,"");assert.match(uid.warnings[0].message,/UID/);
+ assert.equal(readerPreferencesSchema.safeParse(defaultReaderPreferences).success,true);
+});
+test("CSV metadata lookup accepts only an exact match and keeps rows retryable",async()=>{
+ const row=previewLibraryImport('Title,Author,ISBN13\nPiranesi,Susanna Clarke,9781635575637').rows[0];let received;
+ const result=await importLibraryRows({rpc:async(name,args)=>{assert.equal(name,"import_library_row");received=args;return {data:{state:"added",id:a},error:null};}},[row],async()=>[{googleBooksId:"wrong",title:"Wrong",authors:["Else"],isbns:["9780000000002"]}]);
+ assert.equal(received.metadata,null);assert.equal(result[0].state,"added");
+ const retry=await importLibraryRows({rpc:async()=>({error:{code:"503"}})},[row],async()=>{throw new Error("offline");});assert.equal(retry[0].state,"failed");
+});
+test("Settings, import and verified self-deletion preserve RLS and duplicate data under PostgreSQL",async()=>{
+ const db=new PGlite();try{
+  await db.exec(`create schema auth; create schema extensions; create role anon; create role authenticated; grant usage on schema auth to anon,authenticated;
+   create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');create function auth.uid() returns uuid language sql stable as $$select(current_setting('request.jwt.claims',true)::jsonb->>'sub')::uuid$$;
+   create function auth.jwt() returns jsonb language sql stable as $$select current_setting('request.jwt.claims',true)::jsonb$$;`);
+  for(const file of ['202609220001_initial_schema_rls.sql','202610060001_reading_setup.sql','202610060002_library_detail.sql','202610060003_recommendations.sql','202610060004_settings_import.sql'])await db.exec((await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8')).replace('create extension if not exists pgcrypto with schema extensions;',''));
+  await db.exec(`insert into auth.users(id) values('${a}'),('${b}');`);
+  const role=async(user,amr=[],kind='authenticated')=>db.exec(`reset role;select set_config('request.jwt.claims','${JSON.stringify(user?{sub:user,amr}:{})}',false);set role ${kind};`);
+  await role(a);
+  const save=change=>db.query('select public.save_reader_settings($1)',[JSON.stringify(change)]);
+  await save({kind:"profile",name:"Maya"});await save({kind:"preferences",preferences:{...defaultReaderPreferences,theme:"dark"}});
+  assert.equal((await db.query('select display_name,reader_preferences from public.profiles')).rows[0].display_name,"Maya");
+  assert.equal((await db.query('select reader_preferences from public.profiles')).rows[0].reader_preferences.theme,"dark");
+  await assert.rejects(save({kind:"preferences",preferences:{...defaultReaderPreferences,theme:"injected"}}),error=>error.code==='22023');
+  const row={row:2,title:"Piranesi",author:"Susanna Clarke",isbn:"9781635575637",status:"finished",rating:5,pageCount:272,notes:"Private notes",startedAt:"2026-10-01",finishedAt:"2026-10-05",favourite:true};
+  const add=(entry=row,metadata=null)=>db.query('select public.import_library_row($1,$2) as result',[JSON.stringify(entry),metadata?JSON.stringify(metadata):null]);
+  const first=(await add()).rows[0].result;assert.equal(first.state,"added");assert.equal((await add({...row,rating:1,notes:"Overwrite attempt",status:"want_to_read"})).rows[0].result.state,"duplicate");
+  const book=(await db.query('select * from public.user_books')).rows[0];assert.equal(book.rating,5);assert.equal(book.notes,"Private notes");assert.equal(book.progress_percent,100);assert.equal(book.dnf_use_for_learning,false);
+  await add({...row,title:"Another",isbn:"",status:"dnf",finishedAt:null});
+  await assert.rejects(add({...row,title:"Rollback",isbn:"",rating:9}),error=>error.code==='22023');assert.equal((await db.query('select id from public.user_books')).rows.length,2);
+  await db.query("insert into public.reading_dna_signals(user_id,category,label) values($1,'genre','Fantasy')",[a]);
+  await save({kind:"reset",confirmation:"RESET"});assert.equal((await db.query('select active from public.reading_dna_signals')).rows[0].active,false);assert.equal((await db.query('select id from public.user_books')).rows.length,2);
+  await role(b);assert.equal((await db.query('select id from public.user_books')).rows.length,0);assert.equal((await db.query('select id from public.books')).rows.length,0);assert.equal((await db.query('select display_name from public.profiles')).rows[0].display_name,"Reader");
+  const foreignSession=(await db.query("insert into public.recommendation_sessions(user_id,request_text) values($1,'Fantasy') returning id",[b])).rows[0].id;
+  await assert.rejects(db.query("insert into public.recommendations(user_id,session_id,book_id,rank,reason,confidence_label) values($1,$2,$3,1,'A suggestion','good_match')",[b,foreignSession,book.book_id]),error=>error.code==='42501');
+  await assert.rejects(db.query('update public.profiles set id=$1 where id=$2',[a,b]),error=>error.code==='42501');
+  await role(a);
+  const publicResult=(await add({...row,title:"Public Book",author:"Writer",isbn:"",status:"want_to_read",finishedAt:null},{googleBooksId:"public-test",title:"Public Book",authors:["Writer"],pageCount:120,categories:["Fantasy"],thumbnailUrl:"https://books.google.com/books/content?id=public-test"})).rows[0].result;
+  assert.equal(publicResult.coverMatched,true);assert.equal((await db.query("select thumbnail_url from public.books where google_books_id='public-test'")).rows[0].thumbnail_url,"https://books.google.com/books/content?id=public-test");
+  await assert.rejects(db.query("select public.delete_reader_account('DELETE')"),error=>error.code==='42501');
+  await role(a,[{method:"password",timestamp:Math.floor(Date.now()/1000)-1000}]);await assert.rejects(db.query("select public.delete_reader_account('DELETE')"),error=>error.code==='42501');
+  await role(a,[{method:"password",timestamp:Math.floor(Date.now()/1000)}]);await assert.rejects(db.query("select public.delete_reader_account('NO')"),error=>error.code==='42501');await db.query("select public.delete_reader_account('DELETE')");
+  await db.exec('reset role');assert.equal((await db.query('select id from auth.users')).rows[0].id,b);assert.equal((await db.query('select id from public.user_books')).rows.length,0);assert.equal((await db.query('select id from public.books')).rows.length,1);assert.equal((await db.query('select user_id from public.recommendation_sessions')).rows[0].user_id,b);
+  await role(null,[],'anon');await assert.rejects(add(),error=>error.code==='42501');await assert.rejects(save({kind:"profile",name:"Anon"}),error=>error.code==='42501');await assert.rejects(db.query("select public.delete_reader_account('DELETE')"),error=>error.code==='42501');
+ }finally{await db.close();}
+});

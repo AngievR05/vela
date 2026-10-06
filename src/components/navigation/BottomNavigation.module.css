@@ -96,13 +96,14 @@
   opacity: 1;
 }
 
-.floating { width: min(calc(100% - 48px), 432px); left: 50%; right: auto; bottom: max(34px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); border: 0; border-radius: 32px; padding: 8px 11px; background: #fbf8f2; box-shadow: 0 6px 18px rgb(34 32 30 / .12); --font-body: var(--auth-font-body), Arial, sans-serif; }
+.floating { width: min(calc(100% - 48px), 432px); left: 50%; right: auto; bottom: max(34px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); border: 0; border-radius: 32px; padding: 8px 11px; background: var(--vela-surface-base,#fbf8f2); box-shadow: 0 6px 18px rgb(34 32 30 / .12); --font-body: var(--auth-font-body), Arial, sans-serif; }
 .floating .navigation { height: 48px; gap: 5px; }
 .floating .item { height: 48px; min-width: 0; gap: 1px; padding: 3px 0; border-radius: 18px; }
-.floating .label { font-size: 9.5px; font-weight: 500; line-height: 12px; color: #68625d; }
-.floating .itemActive .label { color: #183b34; }
+.floating .label { font-size: 9.5px; font-weight: 500; line-height: 12px; color: var(--vela-subtle-text,#68625d); }
+.floating .itemActive .label { color: var(--colour-evergreen); }
 .floating .activeIndicator { top: auto; bottom: 1px; height: 2px; border-radius: 1px; background: #827aa6; }
 .floating .safeArea { display: none; }
+:global(html[data-vela-theme="dark"]) .floating img { filter:brightness(0) invert(1); }
 
 @media (prefers-reduced-motion: reduce) {
   .item {

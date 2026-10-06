@@ -28,6 +28,16 @@ The app derives candidates and permitted signals on the server. Recommendation o
 
 ## Authentication configuration
 
+### Settings and CSV imports
+
+Apply `migrations/202610060004_settings_import.sql` next; the user confirmed success on 2026-10-06. `save_reader_settings` and `import_library_row` execute with reader permissions and derive ownership from `auth.uid()`. Imports preserve duplicate Library records and private manual metadata. Recommendation inserts also check visibility of the referenced book.
+
+`delete_reader_account` is the single privileged operation: it accepts no target reader ID, requires explicit confirmation and a password-authenticated JWT less than five minutes old, and deletes only that JWT’s reader. The app verifies the password through an isolated Auth client, checks that it belongs to the signed-in reader and keeps the resulting short-lived token in an HTTP-only, SameSite Strict cookie. No service-role key is required or exposed. Local PostgreSQL tests verify stale/anonymous denial, private-data cleanup and preservation of the other reader and shared catalogue metadata.
+
+Hosted Settings reads, profile saves, duplicate CSV import and account export passed after deployment. Anonymous requests were denied for all three new functions and the protected settings/account/import/export APIs. Live deletion and email-address changes were not performed on the user’s account.
+
+Optional cross-browser email-change templates can link to `/auth/confirm?token_hash={{ .TokenHash }}&type=email_change&next=/settings`. The default flow uses the cookie-backed PKCE client and `/auth/callback?next=/settings`. Email changes remain pending until Supabase’s confirmation requirements are satisfied.
+
 Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local`. The application uses the public key with the signed-in reader's session; no service-role key is used.
 
 In Supabase Authentication URL Configuration:

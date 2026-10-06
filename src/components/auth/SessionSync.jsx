@@ -6,17 +6,21 @@ import { isTransientAuthError, sessionNeedsLogin } from "@/lib/auth/requests";
 import { homeCacheKey, homeQueueKey } from "@/lib/home-data";
 import { draftKey } from "@/lib/reading-setup";
 import { discoveryCacheKey, discoveryDraftKey } from "@/lib/validation/recommendation";
+import {settingsCacheKey} from "@/lib/reader-settings";
 
 export default function SessionSync({ userId }) {
   useEffect(() => {
     const supabase = createClient();
     let active = true;
     let checking = false;
+    let destination="/login";
+    function ending(event){if(["/login","/signed-out","/account-deleted"].includes(event.detail?.destination))destination=event.detail.destination;}
     function leave() {
       try {
-        for (const key of [homeCacheKey(userId), homeQueueKey(userId), draftKey(userId), discoveryCacheKey(userId), discoveryDraftKey(userId)]) localStorage.removeItem(key);
+        for (const key of [homeCacheKey(userId), homeQueueKey(userId), draftKey(userId), discoveryCacheKey(userId), discoveryDraftKey(userId),settingsCacheKey(userId),`vela:notifications:v1:${userId}`]) localStorage.removeItem(key);
+        sessionStorage.removeItem(draftKey(userId));
       } catch { /* Storage may be restricted. */ }
-      window.location.replace("/login");
+      window.location.replace(destination);
     }
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (active && sessionNeedsLogin(userId, event, session)) {
@@ -38,11 +42,13 @@ export default function SessionSync({ userId }) {
       }
     }
     document.addEventListener("visibilitychange", check);
+    window.addEventListener("vela:session-ending",ending);
     window.addEventListener("pageshow", check);
     return () => {
       active = false;
       subscription.unsubscribe();
       document.removeEventListener("visibilitychange", check);
+      window.removeEventListener("vela:session-ending",ending);
       window.removeEventListener("pageshow", check);
     };
   }, [userId]);
