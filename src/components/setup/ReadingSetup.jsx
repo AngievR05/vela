@@ -116,7 +116,7 @@ export default function ReadingSetup({ userId, initial }) {
   const step = typeof stage === "number" ? steps[stage] : null;
   const selected = step ? draft.preferences[step.key] : [];
   const count = typeof selected === "string" ? Number(Boolean(selected)) : selected.length;
-  const tone = step?.tone ?? (stage === "error" || stage === "created" || stage === "skip" ? "green" : "purple");
+  const tone = step?.tone ?? (stage === "intro" ? "brass" : ["error", "created", "skip", "review"].includes(stage) ? "green" : "purple");
   const folio = step ? count && step.selectedFolio ? step.selectedFolio : step.folio
     : { intro: "B.01", ai: "B.08", permissions: Object.values(draft.permissions).some(Boolean) ? "B.10" : "B.09", review: "B.11", created: "B.12", skip: "B.13", error: "B.14" }[stage];
   const chapter = step ? "READING DNA" : { ai: "PERSONALISATION", permissions: "YOUR DATA CHOICES", review: "REVIEW YOUR SETUP", created: "READING DNA CREATED", skip: "PERSONALISATION CHOICE", error: "SETUP NOT SAVED" }[stage];
@@ -124,10 +124,10 @@ export default function ReadingSetup({ userId, initial }) {
   const title = (text) => <h1 className={styles.heading} ref={heading} tabIndex={-1}>{text}</h1>;
   const description = (text) => <p className={styles.description}>{text}</p>;
 
-  return <AuthScreen tone={tone} folio={folio} artDirectory="setup" decoration="spark" className={`${styles.screen} ${styles[tone]}`}>
+  return <AuthScreen tone={tone} folio={folio} artDirectory="reading-setup" decoration="spark" className={`${styles.screen} ${styles[tone]}`}>
     {stage !== "intro" && <nav className={styles.navigation} aria-label="Reading setup navigation">
       {stage !== "created" ? <button type="button" className={styles.back} aria-label="Back" onClick={back} disabled={disabled}>
-        <Image src="/setup/back.svg" width={24} height={24} alt="" unoptimized />
+        <Image src="/reading-setup/back.svg" width={24} height={24} alt="" unoptimized />
       </button> : <span />}
       <p>{chapter}</p>
     </nav>}

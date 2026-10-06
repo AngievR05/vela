@@ -8,9 +8,10 @@ test("return destinations stay inside protected app routes", () => {
   }
   assert.equal(safeNext("/library?status=reading#books"), "/library?status=reading#books");
   assert.equal(safeNext("/dna/signals"), "/dna/signals");
+  assert.equal(safeNext("/setup"), "/setup");
 });
 
 test("route protection includes descendants without catching unrelated pages", () => {
-  for (const route of ["/home", "/library/book", "/settings/privacy", "/discover", "/dna"]) assert.equal(isProtectedPath(route), true);
+  for (const route of ["/home", "/library/book", "/settings/privacy", "/discover", "/dna", "/setup"]) assert.equal(isProtectedPath(route), true);
   for (const route of ["/", "/login", "/signup", "/library-other", "/auth/callback"]) assert.equal(isProtectedPath(route), false);
 });

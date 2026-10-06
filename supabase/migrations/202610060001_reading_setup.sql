@@ -14,7 +14,7 @@ declare
   reader uuid := auth.uid();
   pair record;
   selected jsonb;
-  label text;
+  selected_label text;
   allowed text[];
   category_name text;
 begin
@@ -63,9 +63,9 @@ begin
   for pair in select key, value from jsonb_each(choices) loop
     category_name := case pair.key when 'genres' then 'genre' when 'storyElements' then 'story_element' when 'pacing' then 'pacing' else 'mood' end;
     selected := case when pair.key = 'pacing' then case when pair.value #>> '{}' = '' then '[]'::jsonb else jsonb_build_array(pair.value) end else pair.value end;
-    for label in select jsonb_array_elements_text(selected) loop
+    for selected_label in select jsonb_array_elements_text(selected) loop
       insert into public.reading_dna_signals(user_id, category, label, source_type)
-        values (reader, category_name, label, 'onboarding')
+        values (reader, category_name, selected_label, 'onboarding')
         on conflict (user_id, category, label) do update set active = true
         where reading_dna_signals.source_type = 'onboarding';
     end loop;

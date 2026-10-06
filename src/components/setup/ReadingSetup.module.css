@@ -12,37 +12,38 @@
 .description { font: 400 15px/22px var(--font-body); color: #68625d; }
 .logo { align-self: center; }
 .kicker { font: 600 11px/16px var(--font-body); color: #75465a; text-align: center; margin-top: 0; }
-.screen:has(.logo > img):not(:has(.navigation)) .heading { text-align: center; font-size: 32px; line-height: 38px; margin-top: 0; }
+.screen:has(.logo > img):not(:has(.navigation)) .heading { text-align: center; font-size: 34px; line-height: 38px; margin-top: 0; }
 .screen:not(:has(.navigation)) .heading::before { display: none; }
 .screen:not(:has(.navigation)) .description { text-align: center; max-width: 340px; align-self: center; }
-.benefits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.benefits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .benefit { display: flex; flex-direction: column; gap: 7px; min-height: 134px; padding: 10px; border-radius: 22px; background: #dce9e5; }
 .benefit:nth-child(2) { background: #e8e3f2; }
 .benefit:nth-child(3) { background: #ece3d2; }
 .benefit > span { font: 600 12px/16px var(--font-body); color: #183b34; }
 .benefit > strong { font: 600 11px/15px var(--font-body); color: #75465a; }
-.benefit p { font: 600 18px/22px var(--font-display); }
+.benefit p { font: 600 16px/19px var(--font-display); }
 .progress { display: grid; grid-template-columns: 1fr auto; gap: 7px; min-height: 28px; padding: 0; background: transparent; border: 0; }
 .progress > span { font: 400 12px/16px var(--font-body); color: #68625d; }
 .progress > span:nth-child(2) { font-size: 11px; color: #75465a; }
 .progress > div { grid-column: 1 / -1; height: 5px; border-radius: 3px; background: #e3ded5; overflow: hidden; }
 .progress > div > div { height: 5px; background: #183b34; }
-.choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 0; }
+.choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 0; max-width: 344px; }
 .screen .chip { justify-content: stretch; padding: 0; min-height: 44px; width: 100%; border-radius: 22px; }
 .screen .chip > span { display: flex; width: 100%; min-height: 44px; justify-content: center; padding: 7px 9px; gap: 7px; border: 1px solid #b9b0a5; border-radius: 22px; background: #fbf8f2; font: 500 13px/18px var(--font-body); color: #22201e; }
 .screen .chip[aria-pressed="true"] > span { background: #183b34; border-color: #183b34; color: #fbf8f2; }
 .chip svg { width: 18px; height: 18px; flex-shrink: 0; }
-.screen .note { padding: 15px; border-radius: 18px; border: 1px solid #b9b0a5; box-shadow: none; }
+.screen .note { padding: 15px; border-radius: 18px; border: 1px solid rgb(185 176 165 / .55); box-shadow: none; }
 .note strong { display: block; font: 600 14px/19px var(--font-body); margin-bottom: 5px; }
 .note p { font: 400 13px/18px var(--font-body); color: #68625d; }
 .screen .response { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; border: 1px solid #827aa6; background: #e8e3f2; color: #22201e; }
 .screen .response > svg { width: 26px; height: 26px; padding: 4px; border-radius: 50%; flex: 0 0 26px; background: #75465a; color: #fbf8f2; }
+.response > svg > circle { display: none; }
 .screen .response > div, .screen .response > div > div { font: 400 14px/20px var(--font-body); }
 .screen .success { background: #dce9e5; border-color: #8ca7a0; }
 .screen .success > svg { background: #183b34; }
 .actions { display: flex; flex-direction: column; gap: 10px; margin-top: auto; padding-top: 10px; }
 .screen .button { width: 100%; min-height: 52px; border-radius: 16px; font: 600 15px/20px var(--font-body); }
-.screen .button:disabled { background: #e3ded5; color: #4d4945; }
+.screen .button:disabled { background: #d9ded7; color: #4d4945; }
 .screen .button[aria-busy="true"] { background: #183b34; color: #fbf8f2; }
 .screen .tertiary { background: transparent; color: #183b34; }
 .screen .aiCard { display: flex; flex-direction: column; gap: 10px; padding: 15px 16px; border: 1px solid rgb(185 176 165 / .55); border-radius: 22px; background: #fbf8f2; box-shadow: none; }
@@ -55,15 +56,15 @@
 .principle:nth-last-child(2) > span, .principle:nth-last-child(2) > i { background: #75465a; }
 .principle:last-child > i { width: 36px; }
 .permissions { display: flex; flex-direction: column; gap: 10px; margin-top: 0; }
-.screen .permission { padding: 14px 15px; min-height: 72px; gap: 8px; border: 1px solid #b9b0a5; border-radius: 18px; background: #fbf8f2; }
+.screen .permission { padding: 13px 15px; min-height: 72px; gap: 8px; border: 1px solid rgb(185 176 165 / .55); border-radius: 18px; background: #fbf8f2; }
 .permission > label > span:first-child { font: 600 14px/19px var(--font-body); }
 .permission > label > span:nth-child(2) { font: 400 12px/17px var(--font-body); color: #68625d; }
 .permission > span > label { height: 44px; }
-.permission > span > label > span { top: 10px; left: 4px; }
+.permission > span > label > span { top: 10px; left: 4px; background: #fbf8f2; }
 .permission > span > input:checked + label > span { transform: translateX(20px); }
 .review { display: flex; flex-direction: column; gap: 10px; }
-.screen .reviewCard { display: flex; align-items: center; justify-content: space-between; min-height: 66px; gap: 8px; padding: 10px 11px 10px 15px; background: #fbf8f2; border: 1px solid #b9b0a5; border-radius: 18px; box-shadow: none; }
-.reviewCard > div { flex: 1; min-width: 0; }
+.screen .reviewCard { display: flex; align-items: center; justify-content: space-between; min-height: 66px; gap: 8px; padding: 10px 11px 10px 15px; background: #fbf8f2; border: 1px solid rgb(185 176 165 / .55); border-radius: 16px; box-shadow: none; }
+.reviewCard > div { flex: 1; min-width: 0; background: white; }
 .reviewCard strong { font: 600 14px/19px var(--font-body); }
 .reviewCard p { font: 400 12px/17px var(--font-body); color: #68625d; overflow-wrap: anywhere; }
 .screen .edit { min-width: 56px; min-height: 44px; padding: 0 8px; font: 600 13px/18px var(--font-body); color: #183b34; }
@@ -74,4 +75,6 @@
 .screen .error { background: #f9e9e6; border-color: #a4473f; }
 .error h2 { color: #a4473f; }
 .screen .pause { font: 600 13px/18px var(--font-body); color: #75465a; }
+.screen:has(.permissions) .heading::before { top: 59px; }
+.screen:has(.review) .heading::before { top: 37px; right: 3px; }
 @media (max-width: 350px) { .screen .chip > span { font-size: 12px; padding: 7px 5px; } .permission { flex-wrap: wrap; } }

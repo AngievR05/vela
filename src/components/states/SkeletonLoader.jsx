@@ -4,7 +4,10 @@ function Block({ className="", style }) {
   return <span aria-hidden="true" className={[styles.skeleton,className].filter(Boolean).join(" ")} style={style}/>;
 }
 
-export default function SkeletonLoader({ variant="book-list", label="Loading" }) {
+export default function SkeletonLoader({ variant="book-list", label="Loading", className="" }) {
+  if (variant === "home") return <div className={className} role="status" aria-label={label}>
+    <Block /><Block /><div><Block /><Block /><Block /></div><Block /><Block />
+  </div>;
   if (variant==="recommendation") return (
     <div className={styles.skeletonRecommendation} role="status" aria-label={label}>
       <Block style={{width:96,aspectRatio:"2 / 3",borderRadius:8}}/>

@@ -13,6 +13,7 @@ export async function searchGoogleBooks(query, maxResults = 10) {
   const response = await fetch(url, {
     headers: { Accept: "application/json" },
     next: { revalidate: 60 * 60 },
+    signal: AbortSignal.timeout(15000),
   });
 
   if (!response.ok) {
@@ -37,6 +38,15 @@ function mapGoogleBook(item) {
       info.imageLinks?.thumbnail ?? info.imageLinks?.smallThumbnail ?? null
     ),
   };
+}
+
+export async function getGoogleBook(id) {
+  const url = new URL(`${GOOGLE_BOOKS_URL}/${encodeURIComponent(id)}`);
+  url.searchParams.set("key", serverEnv.GOOGLE_BOOKS_API_KEY);
+  const response = await fetch(url, { headers: { Accept: "application/json" }, next: { revalidate: 3600 }, signal: AbortSignal.timeout(15000) });
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`Google Books responded with ${response.status}.`);
+  return mapGoogleBook(await response.json());
 }
 
 function normaliseImageUrl(url) {

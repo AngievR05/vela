@@ -3,7 +3,19 @@ import LinearProgress from "@/components/ui/LinearProgress";
 import Button from "@/components/ui/Button";
 import styles from "@/components/design-system/DesignSystem.module.css";
 
-export default function CurrentlyReadingCard({ title, author, coverSrc, progress=0, progressText, updateHref, detailHref }) {
+export default function CurrentlyReadingCard({ title, author, coverSrc, progress=0, progressText, updateHref, detailHref, onUpdate, className="", variant="default" }) {
+  if (variant === "home") return <section className={className} aria-labelledby="currently-reading-title">
+    <div data-part="summary">
+      <BookCover size="current" title={title} author={author} src={coverSrc} decorative placeholderType="book" />
+      <div data-part="info"><p data-part="label">CURRENTLY READING</p>
+        <h2 id="currently-reading-title">{title}</h2>{author && <p data-part="author">{author}</p>}
+        <Button onClick={onUpdate} href={updateHref} data-part="update">Update progress</Button>
+      </div>
+    </div>
+    <div data-part="progress"><div><span>{progressText ?? `${progress}% complete`}</span><strong>{progress}%</strong></div>
+      <LinearProgress value={progress} label={`Reading progress, ${progress}%`} />
+    </div>
+  </section>;
   return (
     <section className={styles.currentReading} aria-labelledby="currently-reading-title">
       <div className={[styles.row,styles.rowStart].join(" ")}>

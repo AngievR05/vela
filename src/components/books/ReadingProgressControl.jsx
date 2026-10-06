@@ -2,13 +2,13 @@
 import styles from "@/components/design-system/DesignSystem.module.css";
 
 export default function ReadingProgressControl({
-  mode="percent", onModeChange, value, onValueChange, maxPages, error, disabled=false
+  mode="percent", onModeChange, value, onValueChange, maxPages, error, disabled=false, allowPages=true
 }) {
   const percentMode = mode === "percent";
   const summary = percentMode ? `${value || 0}% complete` : `Page ${value || 0}${maxPages ? ` of ${maxPages}` : ""}`;
   return (
     <div className={styles.stack}>
-      <div className={styles.actions} role="tablist" aria-label="Progress format">
+      {allowPages && <div className={styles.actions} role="tablist" aria-label="Progress format">
         <button type="button" role="tab" aria-selected={percentMode} className={styles.statusButton}
           onClick={() => onModeChange?.("percent")} disabled={disabled}>
           <span className={[styles.statusPill,percentMode?styles.statusReading:styles.statusWant].join(" ")}>Percentage</span>
@@ -17,7 +17,7 @@ export default function ReadingProgressControl({
           onClick={() => onModeChange?.("page")} disabled={disabled}>
           <span className={[styles.statusPill,!percentMode?styles.statusReading:styles.statusWant].join(" ")}>Page</span>
         </button>
-      </div>
+      </div>}
       <label className={styles.stack}>
         <span className={styles.label}>{percentMode ? "Progress percentage" : "Current page"}</span>
         <input type="number" min={0} max={percentMode?100:maxPages} value={value}

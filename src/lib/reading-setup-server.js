@@ -9,7 +9,7 @@ export async function loadReadingSetup(supabase, userId) {
   if (profile.error || settings.error) throw new Error("We couldn’t load your reading choices. Please try again.");
   const completed = Boolean(profile.data.reading_setup_completed_at);
   const parsed = preferencesSchema.safeParse(profile.data.reading_setup_preferences);
-  const enabled = completed && settings.data.personalisation_enabled;
+  const enabled = settings.data.personalisation_enabled;
   return {
     preferences: parsed.success ? parsed.data : emptyPreferences,
     permissions: enabled ? {

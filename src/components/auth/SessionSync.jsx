@@ -3,15 +3,23 @@
 import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { isTransientAuthError, sessionNeedsLogin } from "@/lib/auth/requests";
+import { homeCacheKey, homeQueueKey } from "@/lib/home-data";
+import { draftKey } from "@/lib/reading-setup";
 
 export default function SessionSync({ userId }) {
   useEffect(() => {
     const supabase = createClient();
     let active = true;
     let checking = false;
+    function leave() {
+      try {
+        for (const key of [homeCacheKey(userId), homeQueueKey(userId), draftKey(userId)]) localStorage.removeItem(key);
+      } catch { /* Storage may be restricted. */ }
+      window.location.replace("/login");
+    }
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (active && sessionNeedsLogin(userId, event, session)) {
-        window.location.replace("/login");
+        leave();
       }
     });
     // Cookies are shared across tabs; revalidate when a tab becomes active.
@@ -21,7 +29,7 @@ export default function SessionSync({ userId }) {
       try {
         const { data, error } = await supabase.auth.getUser();
         if (isTransientAuthError(error)) return;
-        if (active && (!data?.user || data.user.id !== userId)) window.location.replace("/login");
+        if (active && (!data?.user || data.user.id !== userId)) leave();
       } catch {
         // A temporary transport failure should not discard the current page.
       } finally {

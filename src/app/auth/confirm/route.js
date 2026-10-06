@@ -15,7 +15,7 @@ export async function GET(request) {
       const { error } = await supabase.auth.verifyOtp({ type, token_hash });
       if (isTransientAuthError(error)) return authUnavailableResponse();
       if (!error) {
-        const response = NextResponse.redirect(new URL(type === "recovery" ? "/reset-password" : safeNext(url.searchParams.get("next")), url.origin));
+        const response = NextResponse.redirect(new URL(type === "recovery" ? "/reset-password" : safeNext(url.searchParams.get("next") || (type === "signup" ? "/setup" : "/home")), url.origin));
         response.headers.set("Cache-Control", "private, no-store");
         response.headers.set("Expires", "0");
         response.headers.set("Pragma", "no-cache");

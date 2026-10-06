@@ -4,7 +4,7 @@ import { getReader } from "@/lib/auth/server";
 import { readerDeniedResponse } from "@/lib/auth/http";
 
 const searchSchema = z.object({
-  q: z.string().trim().min(2, "Search must contain at least two characters."),
+  q: z.string().trim().min(2, "Search must contain at least two characters.").max(200),
   maxResults: z.coerce.number().int().min(1).max(20).default(10),
 });
 

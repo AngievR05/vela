@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import styles from "@/components/design-system/DesignSystem.module.css";
 
 const SIZE_CLASS = {
@@ -35,10 +38,11 @@ function initials(title = "") {
 
 function normaliseImageUrl(src) {
   if (!src) return null;
-
-  // Google Books sometimes returns HTTP cover URLs.
-  // Next/Image should receive HTTPS in production.
-  return src.replace(/^http:\/\//i, "https://");
+  if (src.startsWith("/") && !src.startsWith("//")) return src;
+  try {
+    const url = new URL(src.replace(/^http:\/\//i, "https://"));
+    return url.protocol === "https:" && ["books.google.com", "books.googleusercontent.com"].includes(url.hostname) ? url.href : null;
+  } catch { return null; }
 }
 
 export default function BookCover({
@@ -48,7 +52,9 @@ export default function BookCover({
   size = "card",
   decorative = false,
   className = "",
+  placeholderType = "initials",
 }) {
+  const [failedSrc, setFailedSrc] = useState(null);
   const alt = decorative
     ? ""
     : `${title || "Book"}${author ? ` by ${author}` : ""}`;
@@ -65,12 +71,14 @@ export default function BookCover({
         .filter(Boolean)
         .join(" ")}
     >
-      {imageUrl ? (
+      {imageUrl && imageUrl !== failedSrc ? (
         <Image
           src={imageUrl}
           alt={alt}
           fill
           sizes={IMAGE_SIZES[size] ?? "96px"}
+          unoptimized
+          onError={() => setFailedSrc(imageUrl)}
           style={{ objectFit: "cover" }}
         />
       ) : (
@@ -79,7 +87,7 @@ export default function BookCover({
           aria-label={decorative ? undefined : alt}
           aria-hidden={decorative || undefined}
         >
-          {initials(title)}
+          {placeholderType === "book" ? <><strong>{title}</strong><small>{author}</small></> : initials(title)}
         </span>
       )}
     </div>

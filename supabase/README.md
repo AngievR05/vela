@@ -2,6 +2,14 @@
 
 Apply `migrations/202609220001_initial_schema_rls.sql` to the Supabase project before using accounts. The Auth trigger creates each reader's profile (default name: Reader) and AI settings. Personalisation choices are not required during sign-up.
 
+Apply `migrations/202610060001_reading_setup.sql` next. It adds saved setup choices and completion time to profiles, changes new-reader AI defaults to off, and adds `save_reading_setup`. This function runs with the reader’s permissions, derives ownership from `auth.uid()`, validates the same allowed choices as the frontend, and saves preferences, data permissions and onboarding DNA signals atomically. It deactivates removed onboarding signals while preserving learned/manual evidence and existing references. Existing readers’ AI settings are not silently overwritten.
+
+The protected `/setup` flow implements Figma section **B · Reading Setup and Permissions**. New signup callbacks default to it; explicit protected return destinations still take precedence. DNA and Settings link back to editable setup. Each taste step can be skipped. Optional ratings, DNF and history switches start off for new readers; existing saved settings are reflected accurately. Review creates the starting profile without enabling any unselected optional signal; “Set up later” explicitly turns personalisation and all optional signals off. Library access is independent of these settings.
+
+Unsubmitted choices are retained in reader-scoped session storage when available, with an in-memory fallback. They survive a reload in that tab, are validated before restoration, and are removed after a successful save. Failed saves retain the complete payload for retry. No credentials are stored in the setup draft.
+
+On 2026-10-06, the user confirmed applying the reading setup migration successfully. Live public-key checks confirmed the RPC exists and denies anonymous execution, and that the new profile fields deny anonymous reads. The new PostgreSQL tests verify defaults, direct-RPC validation, atomic rollback, repeat saves, opt-out, preserved learned signals and two-reader isolation. Local isolated browser tests covered all 14 reference states, editing/back navigation, keyboard switches, skipped choices, reload recovery, failed-save retry, small/mobile/desktop layouts, asset loading and real unauthenticated route/API denial. Browser save responses were simulated; authenticated hosted save/reload was not tested through a signed-in Vela session.
+
 ## Authentication configuration
 
 Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local`. The application uses the public key with the signed-in reader's session; no service-role key is used.

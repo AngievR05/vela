@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import styles from "./AppShell.module.css";
 
@@ -7,12 +10,14 @@ export default function AppShell({
   showBottomNavigation = true,
   className = "",
 }) {
+  const home = usePathname() === "/home";
   return (
     <div
       className={[
         styles.shell,
         showBottomNavigation ? styles.withBottomNavigation : "",
         className,
+        home ? styles.homeShell : "",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -23,7 +28,7 @@ export default function AppShell({
         {children}
       </main>
 
-      {showBottomNavigation ? <BottomNavigation /> : null}
+      {showBottomNavigation && !home ? <BottomNavigation /> : null}
     </div>
   );
 }

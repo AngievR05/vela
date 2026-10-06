@@ -2,16 +2,14 @@ import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import { getReader } from "@/lib/auth/server";
 import { loadReadingSetup } from "@/lib/reading-setup-server";
+import { loadHome } from "@/lib/home-server";
 
 export const metadata = { title: "Reading DNA" };
 
 export default async function DnaPage() {
   const { user, supabase } = await getReader();
   const setup = await loadReadingSetup(supabase, user.id);
-  const { data: signals, error } = setup.enabled
-    ? await supabase.from("reading_dna_signals").select("id, label, category, source_type").eq("user_id", user.id).eq("active", true).order("category")
-    : { data: [], error: null };
-  if (error) throw new Error("We couldn’t load your Reading DNA. Please try again.");
+  const { signals } = await loadHome(supabase, user.id);
   return (
     <section className="page">
       <p className="eyebrow">Reading DNA</p>
@@ -26,7 +24,8 @@ export default async function DnaPage() {
           <Card key={signal.id}>
             <p className="eyebrow">{signal.category.replaceAll("_", " ")}</p>
             <h2 className="subheading">{signal.label}</h2>
-            <p className="muted">{signal.source_type === "onboarding" ? "Chosen by you during reading setup" : "Saved reading signal"}</p>
+            <p className="muted">{signal.source === "onboarding" ? "Chosen by you during reading setup" : "Saved reading signal"}</p>
+            {signal.evidence.map((book) => <p key={book.id} className="muted">{book.title}</p>)}
           </Card>
         ))}
       </div>

@@ -13,10 +13,16 @@ export default function AppHeader({
   onBack,
   actions = [],
   className = "",
+  logo,
+  subtitle,
 }) {
   const router = useRouter();
   const isRoot = type === "root";
   const visibleActions = actions.slice(0, 2);
+
+  if (logo) return <header className={className}>
+    {logo}<div><h1>{title}</h1>{subtitle && <p>{subtitle}</p>}</div>
+  </header>;
 
   function handleBack() {
     if (onBack) {

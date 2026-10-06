@@ -100,14 +100,23 @@ Never commit `.env.local`.
 
 This starter deliberately sets up the project architecture without pretending unfinished features are complete.
 
-- Google Books has a basic server search route.
+- Google Books search and canonical metadata lookup power book discovery and saving to the reader's Library.
 - Supabase authentication and protected routes are implemented; hosted email configuration is required.
+- Reading setup, editable taste choices and independent data permissions are saved through a reader-protected Supabase operation.
 - The recommendation request and response schemas are prepared.
 - The Gemini recommendation route is scaffolded but intentionally returns `501` until the Week 5 AI implementation.
 - The five main product areas are represented: Home, Library, Discover, DNA and Settings.
 - Vela's colour tokens and mobile-first visual foundation are included.
 
 See `docs/PROJECT_SCOPE.md` and `docs/FOLDER_STRUCTURE.md` before adding features.
+
+## Reading Home
+
+`/home` follows Figma’s **C · Home** populated, no-current-book, new-reader, loading, offline and retry states. Greeting, current book, progress, annual finished count, rating average and permitted DNA evidence come from the authenticated reader’s Supabase data. Book search, adding to the Library, starting reading and saving progress use protected APIs; reaching 100% marks the book finished. Library and Discover show saved books and live catalogue search. Personalised Gemini recommendations remain a separate unfinished feature.
+
+While an already-loaded Home is offline, reader-scoped local snapshots and a durable progress queue keep saved books usable. Updates sync after reconnection; conflicts remain visible for retry or explicit removal. Signing out or changing readers clears the old reader’s cached data. This is offline support for an open Home tab, not a service-worker-backed offline app launch.
+
+No additional migration is needed beyond the two existing migrations. `npm test` exercises actual Home data operations against PostgreSQL with those migrations and reader/anonymous roles, including consent filtering, cross-reader denial, duplicate saves and reading transitions. Live account saves still need an authenticated hosted session to verify deployment-specific behavior.
 
 ## Authentication
 
@@ -116,3 +125,9 @@ Email/password sign-up, login, logout, password recovery, persistent cookie sess
 The entry and authentication UI follows Figma’s **A · Entry and Authentication** section. `/` verifies the saved session, `/welcome` presents the entry choices, and the forms display focused, validation, pending, connection-error and success states. The supplied logo and decorative SVGs are local assets; Cormorant Garamond and Geist are bundled under their OFL licenses. Device status bars and home indicators belong to the device rather than the web page.
 
 Live account and email checks require a reachable Supabase project, the schema migration, and allowed callback URLs for the port or deployed origin in use. The PostgreSQL test suite verifies the checked-in policies; it does not assert that a hosted project has applied them.
+
+## Reading setup
+
+`/setup` follows Figma’s **B · Reading Setup and Permissions** reference states: intro, genres, story elements, pacing, mood, AI explanation, separate data permissions, editable review, completion, skip confirmation and save error/retry. All taste steps are optional. The supplied logo and Figma SVG artwork are local assets. Form choices remain available after recoverable failures, and completed settings reload from Supabase. Settings and Reading DNA reopen the setup for changes or pausing personalisation.
+
+Apply both migrations listed in [Supabase setup and verification](supabase/README.md). `npm test` checks validation, atomic saves, new-reader opt-out defaults and reader isolation using PostgreSQL. The existing recommendation engine remains scaffolded; this flow stores the preferences and permissions that it will consume.

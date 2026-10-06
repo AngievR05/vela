@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import styles from "./BottomNavigation.module.css";
 
 export default function BottomNavItem({
@@ -8,6 +9,8 @@ export default function BottomNavItem({
   label,
   icon: Icon,
   active = false,
+  iconSrc,
+  onClick,
 }) {
   return (
     <Link
@@ -19,9 +22,10 @@ export default function BottomNavItem({
         .filter(Boolean)
         .join(" ")}
       aria-current={active ? "page" : undefined}
+      onClick={onClick}
     >
       <span className={styles.activeIndicator} aria-hidden="true" />
-      <Icon className={styles.icon} aria-hidden="true" />
+      {iconSrc ? <Image src={iconSrc} width={20} height={20} alt="" unoptimized /> : <Icon className={styles.icon} aria-hidden="true" />}
       <span className={styles.label}>{label}</span>
     </Link>
   );
