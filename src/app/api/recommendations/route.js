@@ -2,11 +2,11 @@ import { recommendationRequestSchema } from "@/lib/validation/recommendation";
 import { getReader } from "@/lib/auth/server";
 import { readerDeniedResponse } from "@/lib/auth/http";
 import { createRecommendations, loadRecommendationSession } from "@/lib/recommendation-data";
-import { searchGoogleBooks } from "@/lib/google-books";
+import { searchGoogleBooks, getGoogleBook } from "@/lib/google-books";
 import { generateStructured } from "@/lib/gemini";
 import { z } from "zod";
 const headers = { "Cache-Control": "private, no-store" };
-export const maxDuration = 90;
+export const maxDuration = 180;
 
 export async function GET(request) {
   const reader = await getReader(), denied = readerDeniedResponse(reader);
@@ -34,7 +34,7 @@ export async function POST(request) {
   }
 
   try {
-    return Response.json(await createRecommendations(reader.supabase, reader.user.id, parsed.data, { search: searchGoogleBooks, generate: generateStructured }), { headers });
+    return Response.json(await createRecommendations(reader.supabase, reader.user.id, parsed.data, { search: searchGoogleBooks, lookup: getGoogleBook, generate: generateStructured }), { headers });
   } catch (error) {
     console.warn("Recommendation request failed:", error.name === "ZodError" ? "Generated output validation failed" : error.message);
     return Response.json({ error: "Recommendations are temporarily unavailable. Your request is still here; please try again." }, { status: 503, headers });

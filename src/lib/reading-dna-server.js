@@ -1,6 +1,8 @@
 import { allReaderRows, loadHome } from "./reader-library.js";
 import { describeDNASignals } from "./reading-dna.js";
 export async function loadReadingDNA(supabase,userId){
+  const refreshed=await supabase.rpc("refresh_reading_activity");
+  if(refreshed.error && !["PGRST202","42883"].includes(refreshed.error.code))throw new Error("Reading activity could not refresh");
   const [home,profile,settings,signals]=await Promise.all([
     loadHome(supabase,userId),
     supabase.from("profiles").select("reading_setup_completed_at,reading_dna_reset_at").eq("id",userId).single(),

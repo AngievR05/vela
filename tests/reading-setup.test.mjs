@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { PGlite } from "@electric-sql/pglite";
-import { readingSetupSchema, emptyPreferences, emptyPermissions, parseDraft, draftKey } from "../src/lib/reading-setup.js";
+import { readingSetupSchema, emptyPreferences, emptyPermissions, parseDraft, draftKey, setupChoices, parseDraftFlow } from "../src/lib/reading-setup.js";
 
 const choices = { genres: ["Fantasy", "Mystery"], storyElements: ["Found family"], pacing: "Steady", moods: ["Hopeful"] };
 const payload = { preferences: choices, permissions: { ratings: true, dnf: false, history: true }, enabled: true };
@@ -18,6 +18,10 @@ test("setup validation rejects unknown, duplicate and inconsistent choices; draf
     { ...payload, enabled: false },
   ]) assert.equal(readingSetupSchema.safeParse(bad).success, false);
   assert.deepEqual(parseDraft(JSON.stringify(payload)), payload);
+  const flow = JSON.stringify({version: 2, payload, stage: "review", editing: false});
+  assert.deepEqual(parseDraft(flow), payload);
+  assert.deepEqual(parseDraftFlow(flow), {stage: "review", editing: false});
+  assert.equal(parseDraftFlow(JSON.stringify({version:2,payload,stage:"created",editing:false})),null);
   assert.equal(parseDraft("not-json"), null);
   assert.equal(parseDraft(JSON.stringify({ ...payload, preferences: null })), null);
   assert.notEqual(draftKey("reader-a"), draftKey("reader-b"));
@@ -33,7 +37,7 @@ test("setup saves atomically under RLS, preserves other readers and learned evid
       create table auth.users(id uuid primary key, raw_user_meta_data jsonb default '{}');
       create function auth.uid() returns uuid language sql stable as
       $$ select (current_setting('request.jwt.claims', true)::jsonb ->> 'sub')::uuid $$;`);
-    for (const file of ["202609220001_initial_schema_rls.sql", "202610060001_reading_setup.sql"]) {
+    for (const file of ["202609220001_initial_schema_rls.sql", "202610060001_reading_setup.sql", "202610070003_entry_setup_options.sql"]) {
       const migration = await readFile(new URL(`../supabase/migrations/${file}`, import.meta.url), "utf8");
       await db.exec(migration.replace("create extension if not exists pgcrypto with schema extensions;", ""));
     }
@@ -45,6 +49,7 @@ test("setup saves atomically under RLS, preserves other readers and learned evid
     const rpc = (preferences, permissions = payload.permissions, enabled = true) => db.query(
       "select public.save_reading_setup($1::jsonb, $2::jsonb, $3::boolean)", [JSON.stringify(preferences), JSON.stringify(permissions), enabled]);
     await db.exec(`select set_config('request.jwt.claims', '{"sub":"${a}"}', false); set role authenticated;`);
+    for (const pacing of setupChoices.pacing) await rpc({ genres: setupChoices.genres, storyElements: setupChoices.storyElements, pacing, moods: setupChoices.moods }, emptyPermissions, true);
     await rpc(choices);
     const saved = (await db.query("select reading_setup_preferences, reading_setup_completed_at from public.profiles")).rows;
     assert.equal(saved.length, 1);
@@ -67,8 +72,8 @@ test("setup saves atomically under RLS, preserves other readers and learned evid
     assert.equal(signals.find((row) => row.label === "Mystery").active, false);
     assert.equal(signals.find((row) => row.label === "Romance").active, true);
     await rpc(choices);
-    assert.equal((await db.query("select count(*)::integer as count from public.reading_dna_signals where label = 'Mystery'")).rows[0].count, 1);
-    assert.equal((await db.query("select active from public.reading_dna_signals where label = 'Mystery'")).rows[0].active, true);
+    assert.equal((await db.query("select count(*)::integer as count from public.reading_dna_signals where label = 'Mystery' and category = 'genre'")).rows[0].count, 1);
+    assert.equal((await db.query("select active from public.reading_dna_signals where label = 'Mystery' and category = 'genre'")).rows[0].active, true);
     await rpc(choices, emptyPermissions, false);
     assert.equal((await db.query("select personalisation_enabled from public.ai_settings")).rows[0].personalisation_enabled, false);
     // B sees only B and cannot alter A, including newly added profile fields.

@@ -7,12 +7,14 @@ import { isTransientAuthError } from "@/lib/auth/requests";
 import AuthScreen, { BrandLogo } from "./AuthScreen";
 import AuthStatus from "./AuthStatus";
 import Button from "@/components/ui/Button";
+import LogoutButton from "./LogoutButton";
 import SessionSync from "./SessionSync";
 import styles from "./Auth.module.css";
 
 export default function EntryExperience() {
   const router = useRouter();
   const [state, setState] = useState("splash");
+  const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [userId, setUserId] = useState("");
   const [attempt, setAttempt] = useState(0);
@@ -34,6 +36,7 @@ export default function EntryExperience() {
         if (isTransientAuthError(error)) { setState("unavailable"); return; }
         if (!user || error) { router.replace("/welcome"); return; }
         setUserId(user.id);
+        setEmail(user.email || "");
         setName("");
         setState("returning");
         // This read uses the verified reader's client and is restricted by RLS.
@@ -51,10 +54,11 @@ export default function EntryExperience() {
     return () => { active = false; };
   }, [attempt, router]);
 
-  if (state === "returning") return <AuthStatus tone="green" folio="A.03"
-    title={name ? `Welcome back, ${name}.` : "Welcome back."} description="Your reading space is ready where you left it.">
+  if (state === "returning") return <AuthStatus tone="green" folio="A.03" anchored
+    title={name ? `Welcome back, ${name}.` : "Welcome back."} description={email || "Your reading space is ready where you left it."}>
     <SessionSync userId={userId} />
     <Button onClick={() => window.location.replace("/home")} className={styles.button}>Continue to Home</Button>
+    <LogoutButton label="Use a different account" className={`${styles.button} ${styles.secondary}`} />
   </AuthStatus>;
 
   if (state === "offline" || state === "unavailable") return <AuthStatus tone="muted" folio="A.04" logoSize={108}
@@ -67,11 +71,10 @@ export default function EntryExperience() {
 
   return <AuthScreen tone="brass" folio={state === "splash" ? "A.01" : "A.02"}>
     <div className={styles.statusBody}>
-      <BrandLogo size={state === "splash" ? 128 : 112} />
+      <BrandLogo variant="green" size={state === "splash" ? 128 : 112} />
       <h1 className={state === "splash" ? styles.brandName : styles.statusHeading}>{state === "splash" ? "VELA" : "Opening Vela…"}</h1>
       <p className={state === "splash" ? styles.splashCopy : styles.statusCopy}>{state === "splash" ? "Your reading life, intelligently organised." : "Checking your saved session and reading space."}</p>
     </div>
-    {state === "splash" ? <p className={styles.splashFolio}>A READING COMPANION · EST. 2026</p>
-      : <div className={styles.loadingTrack} role="status" aria-label="Checking your saved session" />}
+    {state !== "splash" && <div className={styles.loadingTrack} role="status" aria-label="Checking your saved session" />}
   </AuthScreen>;
 }

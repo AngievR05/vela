@@ -8,7 +8,9 @@ export const recommendationRequestSchema = z.object({
   entryId: z.uuid(), request: z.string().trim().min(2).max(240),
   filters: discoveryFiltersSchema.default({ source: "anywhere", genre: "", mood: "", length: "any" }),
 }).strict();
-export const searchPlanSchema = z.object({ needsContext: z.boolean(), queries: z.array(z.string().trim().min(2).max(120)).min(1).max(3) }).strict();
+export const searchPlanSchema = z.object({ needsContext: z.boolean(), queries: z.array(z.string().trim().min(2).max(120)).min(1).max(3),
+  seedBooks: z.array(z.object({title:z.string().trim().min(1).max(160),author:z.string().trim().min(1).max(100)}).strict()).max(3).default([]),
+}).strict();
 export const recommendationResponseSchema = z.object({
   recommendations: z.array(z.object({ bookId: z.string().min(1).max(100), reason: z.string().trim().min(1).max(350),
     matchedSignals: z.array(z.uuid()).max(8), confidence: z.enum(["Strong match", "Good match", "Experimental"]),
@@ -54,7 +56,7 @@ export function validRecommendations(value, candidates, signals, requireEvidence
     const book=candidates.find(book=>book.googleBooksId===rec.bookId);
     const facts=[book.title,...(book.authors||[]),...(book.categories||[]),book.description].filter(Boolean).map(normalise);
     if(requireEvidence&&!rec.bookEvidence?.length)throw new Error("Book evidence missing");
-    if(rec.bookEvidence?.some(quote=>!facts.some(fact=>fact.includes(normalise(quote)))))throw new Error("Unsupported book evidence");
+    if(rec.bookEvidence?.some(quote=>normalise(quote).length<3||!facts.some(fact=>fact.includes(normalise(quote)))))throw new Error("Unsupported book evidence");
     rec.matchedSignals=[...new Set(rec.matchedSignals)];
     if(rec.confidence==="Strong match"&&(!book.description||!book.authors?.length||new Set(rec.bookEvidence?.map(normalise)).size<2))rec.confidence="Good match";
   }
@@ -64,5 +66,5 @@ export function eligibleCandidates(books, filters, excluded = [], excludedWorks 
   return [...new Map(books.filter(book => book.googleBooksId && book.title && !excluded.includes(book.googleBooksId) && !excludedWorks.includes(bookWorkKey(book))
     && (filters.length === "any" || (book.pageCount > 0 && book.pageCount < Number(filters.length)))
     && (!filters.genre || (book.categories||[]).some(category => filters.genre === "Literary" ? /literary/i.test(category) : category.toLowerCase().includes(filters.genre.toLowerCase())) || (filters.genre==="Literary"&&/literary/i.test(book.description||""))))
-    .map(book => [bookWorkKey(book), book])).values()].slice(0, 60);
+    .map(book => [bookWorkKey(book), book])).values()].slice(0, 30);
 }

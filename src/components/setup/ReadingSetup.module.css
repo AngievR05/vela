@@ -78,3 +78,36 @@
 .screen:has(.permissions) .heading::before { top: 59px; }
 .screen:has(.review) .heading::before { top: 37px; right: 3px; }
 @media (max-width: 350px) { .screen .chip > span { font-size: 12px; padding: 7px 5px; } .permission { flex-wrap: wrap; } }
+
+/* Completed Reading Setup surfaces; extra options remain scrollable. */
+.screen > div:last-child { padding-top:72px; padding-bottom:max(42px,env(safe-area-inset-bottom)); gap:10px; }
+.heading::before { display:none; }
+.kicker { font-size:12px; }
+.navigation p { font-size:12px; }
+.benefit { min-height:103px; border-radius:20px; background:#183b34; color:#fcfaf6; }
+.benefit:nth-child(2) { background:#5d3648; }
+.benefit:nth-child(3) { background:#665f84; }
+.benefit > span, .benefit > strong { color:inherit; font-size:12px; }
+.benefit p { font-size:15px; }
+.description,.note p,.aiCard > p,.detailCard p,.reviewCard p { color:#5e5852; }
+.progress > div { background:#d9ded7; }
+.screen .chip > span { border-color:#d6c6a3; background:#fcfaf6; }
+.screen .chip[aria-pressed="true"] > span { background:#183b34; color:#fcfaf6; }
+.screen .note,.screen .aiCard,.screen .permission,.screen .reviewCard,.screen .detailCard { border-color:#d6c6a3; box-shadow:0 2px 4px #22201e0f,0 8px 20px #22201e14; }
+.screen .aiCard,.screen .permission,.screen .reviewCard,.screen .detailCard { background:#fcfaf6; }
+.screen .softGreen { background:#dce8e4; }
+.screen .softPurple,.screen .response { background:#e7e4ef; }
+.screen .success { background:#dce8e4; }
+.screen .response { border-radius:16px; box-shadow:0 2px 4px #22201e0f,0 8px 20px #22201e14; }
+.screen .button { border-radius:18px; }
+.screen .button:not(:disabled):not(.tertiary) { box-shadow:0 3px 6px #22201e1f,0 10px 22px #22201e1a; }
+.reviewCard > div { background:transparent; }
+.principle:last-child > i { width:62px; }
+.moreChoices { font:500 13px/18px var(--font-body); color:#183b34; }
+.moreChoices summary { cursor:pointer; min-height:44px; padding:12px 2px; }
+.moreChoices summary:focus-visible { outline:2px solid #75465a; outline-offset:3px; }
+.moreChoices[open] .choices { padding-bottom:8px; }
+.permission > span > label { width:52px; background:transparent; border:0; }
+.permission > span > label::before { content:""; position:absolute; inset:6px 0; border:1.5px solid #766f68; border-radius:18px; background:#d9ded7; }
+.permission > span > input:checked + label::before { background:#183b34; border-color:#183b34; }
+.permission > span > label > span { width:24px; height:24px; border:1px solid #5e5852; }

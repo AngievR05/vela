@@ -36,6 +36,7 @@ export default function Toggle({
           name={name}
           type="checkbox"
           role="switch"
+          aria-label={label}
           className={styles.toggleInput}
           checked={checked}
           onChange={onChange}

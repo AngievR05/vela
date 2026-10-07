@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Visibility icon / Eye">
+<path id="Eye outline" d="M1.5 10C4.2 5.5 7 4 10 4C13 4 15.8 5.5 18.5 10C15.8 14.5 13 16 10 16C7 16 4.2 14.5 1.5 10Z" stroke="#22201E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<circle id="Pupil" cx="10" cy="10" r="2.5" fill="#22201E"/>
+</g>
+</svg>

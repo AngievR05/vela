@@ -3,6 +3,7 @@ import {useCallback,useEffect,useRef,useState} from "react";
 import {dnaCacheKey,dnaSnapshotSchema,parseDNASnapshot} from "@/lib/reading-dna";
 import {homeCacheKey} from "@/lib/home-data";
 import {discoveryCacheKey} from "@/lib/validation/recommendation";
+import {activityEventKey,notifyReadingActivity} from "@/lib/reading-activity-events";
 export default function useReadingDNA(userId){
   const [snapshot,setSnapshot]=useState(null),[phase,setPhase]=useState("loading");
   const active=useRef(false),revision=useRef(0),loading=useRef(false),generation=useRef(0),queued=useRef(false);
@@ -21,9 +22,11 @@ export default function useReadingDNA(userId){
     let live=true;active.current=true;generation.current+=1;loading.current=false;
     function init(){if(!live)return;try{const saved=parseDNASnapshot(localStorage.getItem(dnaCacheKey(userId)),userId);if(saved)setSnapshot(saved);}catch{/* Optional storage. */}refresh();}
     function offline(){setPhase("offline");}function resume(){if(document.visibilityState==="visible")refresh();}
+    function changed(event){if(event.key===activityEventKey(userId))resume();}
     Promise.resolve().then(init);window.addEventListener("offline",offline);window.addEventListener("online",resume);window.addEventListener("vela:dna-changed",resume);document.addEventListener("visibilitychange",resume);
-    return()=>{live=false;active.current=false;generation.current+=1;window.removeEventListener("offline",offline);window.removeEventListener("online",resume);window.removeEventListener("vela:dna-changed",resume);document.removeEventListener("visibilitychange",resume);};
+    window.addEventListener("storage",changed);
+    return()=>{live=false;active.current=false;generation.current+=1;window.removeEventListener("offline",offline);window.removeEventListener("online",resume);window.removeEventListener("vela:dna-changed",resume);window.removeEventListener("storage",changed);document.removeEventListener("visibilitychange",resume);};
   },[userId,refresh]);
-  function saved(value){if(!active.current)return;revision.current+=1;try{localStorage.removeItem(homeCacheKey(userId));localStorage.removeItem(discoveryCacheKey(userId));}catch{/* Optional caches. */}if(value){publish(value);setPhase("ready");}else refresh();window.dispatchEvent(new Event("vela:dna-changed"));}
+  function saved(value){if(!active.current)return;revision.current+=1;try{localStorage.removeItem(homeCacheKey(userId));localStorage.removeItem(discoveryCacheKey(userId));}catch{/* Optional caches. */}if(value){publish(value);setPhase("ready");}else refresh();notifyReadingActivity(userId);}
   return {snapshot,phase,refresh,saved};
 }

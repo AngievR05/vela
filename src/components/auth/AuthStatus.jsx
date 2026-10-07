@@ -2,10 +2,10 @@ import AuthScreen, { BrandLogo } from "./AuthScreen";
 import InlineAlert from "@/components/ui/InlineAlert";
 import styles from "./Auth.module.css";
 
-export default function AuthStatus({ title, description, children, message, warning = false, tone = "green", folio = "A.11", logoSize = 112 }) {
-  return <AuthScreen tone={tone} folio={folio}>
+export default function AuthStatus({ title, description, children, message, warning = false, tone = "green", folio = "A.11", logoSize = 112, logoVariant = "green", anchored = false }) {
+  return <AuthScreen tone={tone} folio={folio} className={anchored ? "" : styles.centeredStatus}>
     <div className={styles.statusBody}>
-      <BrandLogo size={logoSize} />
+      <BrandLogo size={logoSize} variant={logoVariant} />
       <h1 className={styles.statusHeading}>{title}</h1>
       <p className={styles.statusCopy}>{description}</p>
     </div>

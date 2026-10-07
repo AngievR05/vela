@@ -12,6 +12,8 @@ test("book interpretations require real description quotes and reject invented o
   assert.deepEqual(actual.tropes.map(item=>item.label),["Found family"]);
   assert.deepEqual(bookGenres(book),["Fantasy","Epic"]);
   assert.deepEqual(verifiedBookClues(claims,{description:null}),{pace:null,moods:[],tropes:[]});
+  const expanded = verifiedBookClues({pace:{label:"Short chapters",evidence:"Short chapters"},moods:[{label:"Atmospheric",evidence:"An atmospheric mystery"}],tropes:[{label:"Plot twists",evidence:"many plot twists"}]},{description:"Short chapters tell An atmospheric mystery with many plot twists."});
+  assert.deepEqual(bookFit({categories:[]},{personalisationEnabled:true,signals:[{source:"onboarding",label:"Short chapters"},{source:"onboarding",label:"Atmospheric"},{source:"onboarding",label:"Plot twists"}]},expanded).matches,["Short chapters","Atmospheric","Plot twists"]);
 });
 test("book fit honours disabled personalisation and never interprets DNF/rating signals as liked characteristics",()=>{
   const book={categories:["Fiction / Fantasy"],description:"Your private notes must never inform fit."};

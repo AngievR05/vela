@@ -1,0 +1,68 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { PGlite } from "@electric-sql/pglite";
+import { describeDNASignals } from "../src/lib/reading-dna.js";
+const a="11111111-1111-4111-8111-111111111111", b="22222222-2222-4222-8222-222222222222", book="33333333-3333-4333-8333-333333333333";
+test("finishes and ratings immediately rebuild consent-scoped DNA without losing corrections or resurrecting reset evidence",async()=>{
+ const db=new PGlite();try{
+  await db.exec(`create schema auth;create schema extensions;create role anon;create role authenticated;grant usage on schema auth to anon,authenticated;create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');create function auth.uid()returns uuid language sql stable as $$select(current_setting('request.jwt.claims',true)::jsonb->>'sub')::uuid$$;`);
+  for(const file of ["202609220001_initial_schema_rls.sql","202610060001_reading_setup.sql","202610060002_library_detail.sql","202610060003_recommendations.sql","202610060004_settings_import.sql","202610070001_reading_stats.sql","202610070002_reading_dna.sql","202610070003_entry_setup_options.sql","202610070004_live_reading_activity.sql"]) await db.exec((await readFile(new URL("../supabase/migrations/"+file,import.meta.url),"utf8")).replace("create extension if not exists pgcrypto with schema extensions;",""));
+  await db.exec(`insert into auth.users(id)values('${a}'),('${b}');insert into public.books(id,google_books_id,title,categories)values('${book}','real-book','A real book',array['Fiction / Fantasy']);`);
+  const role=async(id,kind="authenticated")=>db.exec(`reset role;select set_config('request.jwt.claims','${JSON.stringify(id?{sub:id}:{})}',false);set role ${kind};`);
+  await role(a);await db.exec(`insert into public.user_books(user_id,book_id,status,notes)values('${a}','${book}','reading','SECRET NOTES');`);
+  const row=(await db.query("select id from public.user_books")).rows[0].id;
+  await db.query("update public.user_books set status='finished',rating=5 where id=$1",[row]);
+  assert.equal((await db.query("select * from public.reading_dna_signals")).rows.length,0);
+  await db.exec("update public.ai_settings set personalisation_enabled=true,use_recent_ratings=true,use_recent_history=true");
+  let signals=(await db.query("select * from public.reading_dna_signals order by category")).rows;
+  assert.deepEqual(signals.map(s=>s.category),["history_genre","rating_genre"]);
+  assert.equal(signals.every(s=>s.evidence.length===1),true);assert.equal(JSON.stringify(signals).includes("SECRET"),false);
+  const historySignal=signals.find(s=>s.category==="history_genre");
+  const recs=[1,2,3].map((n)=>({rank:n,book:{googleBooksId:`verified-${n}`,title:`Different work ${n}`,authors:['Writer'],categories:['Fantasy'],description:'Public catalogue description',pageCount:200,thumbnailUrl:null},reason:'Based on verified metadata',confidence:'good_match',matchedSignals:[historySignal.id]}));
+  const save=(key)=>db.query("select public.save_recommendation_session($1,$2,$3,$4,$5,$6)",[key,'Atmospheric fantasy',JSON.stringify({source:'anywhere',genre:'',mood:'',length:'any'}),JSON.stringify([{id:historySignal.id}]),Array.from({length:30},(_,i)=>`verified-${i+1}`),JSON.stringify(recs)]);
+  await save('55555555-5555-4555-8555-555555555555');
+  await db.exec("update public.ai_settings set use_recent_history=false");
+  await assert.rejects(save('66666666-6666-4666-8666-666666666666'),e=>e.code==='42501');
+  await db.exec("update public.ai_settings set use_recent_history=true");
+  await db.query("update public.reading_dna_signals set influence_state='reduced',internal_weight=0.2 where id=$1",[historySignal.id]);
+  await db.query("update public.user_books set status='reading' where id=$1",[row]);
+  await db.query("update public.user_books set status='finished' where id=$1",[row]);
+  const reduced=(await db.query("select influence_state,internal_weight from public.reading_dna_signals where id=$1",[historySignal.id])).rows[0];
+  assert.equal(reduced.influence_state,'reduced');assert.equal(Number(reduced.internal_weight),0.2);
+  const ratingSignal=signals.find(s=>s.category==="rating_genre");
+  await db.query("update public.reading_dna_signals set active=false,influence_state='stopped' where id=$1",[ratingSignal.id]);
+  await db.query("update public.user_books set rating=4 where id=$1",[row]);
+  assert.equal((await db.query("select active from public.reading_dna_signals where id=$1",[ratingSignal.id])).rows[0].active,false);
+  await db.query("update public.user_books set rating=1 where id=$1",[row]);
+  signals=(await db.query("select * from public.reading_dna_signals")).rows;
+  assert.equal(signals.find(s=>s.label==="Higher ratings · Fantasy").evidence.length,0);
+  assert.equal(signals.find(s=>s.label==="Lower ratings · Fantasy").evidence[0].rating,1);
+  await db.exec("update public.ai_settings set use_recent_ratings=false");
+  assert.equal((await db.query("select * from public.reading_dna_signals where category='rating_genre' and evidence<>'[]'::jsonb")).rows.length,0);
+  const stamps=(await db.query("select rating_recorded_at,reading_completed_at from public.user_books")).rows[0];
+  await db.query("select public.reset_reading_dna($1)",["44444444-4444-4444-8444-444444444444"]);
+  await db.exec("update public.ai_settings set use_recent_ratings=true");
+  await db.query("update public.user_books set notes='New private note',rating_recorded_at=now(),reading_completed_at=now() where id=$1",[row]);
+  assert.deepEqual((await db.query("select rating_recorded_at,reading_completed_at from public.user_books")).rows[0],stamps);
+  await db.query("select public.refresh_reading_activity()");
+  assert.equal((await db.query("select * from public.reading_dna_signals")).rows.length,0);
+  await db.query("update public.user_books set rating=5 where id=$1",[row]);
+  assert.equal((await db.query("select * from public.reading_dna_signals")).rows.length,1);
+  await db.query("update public.user_books set is_removed=true where id=$1",[row]);
+  assert.equal((await db.query("select evidence from public.reading_dna_signals")).rows[0].evidence.length,0);
+  await role(b);assert.equal((await db.query("select * from public.reading_dna_signals")).rows.length,0);
+  assert.equal((await db.query("update public.user_books set rating=4 where id=$1 returning id",[row])).rows.length,0);
+  await db.query("select public.refresh_reading_activity()");assert.equal((await db.query("select * from public.reading_dna_signals")).rows.length,0);
+  await role(null,"anon");await assert.rejects(db.query("select public.refresh_reading_activity()"),e=>e.code==="42501");
+  await role(a);await db.exec(`reset role;delete from auth.users where id='${a}'`); // Guarded account deletion cascades as its function owner.
+ }finally{await db.close();}
+});
+test("completed history is usable only with explicit history permission and never implies a positive rating",()=>{
+ const row={id:a,source_type:"history",category:"history_genre",label:"Finished · Fantasy",evidence:[{user_book_id:book}],active:true,internal_weight:.4,created_at:"2026-10-07T12:00:00Z",updated_at:"2026-10-07T12:00:00Z"};
+ const books=[{id:book,status:"finished",title:"A real book",rating:1}];
+ assert.equal(describeDNASignals([row],books,{personalisation_enabled:true,use_recent_history:false})[0].active,false);
+ const signal=describeDNASignals([row],books,{personalisation_enabled:true,use_recent_history:true})[0];
+ assert.equal(signal.active,true);assert.match(signal.description,/does not prove/);
+ assert.equal(describeDNASignals([row],[{...books[0],status:"reading"}],{personalisation_enabled:true,use_recent_history:true})[0].active,false);
+});

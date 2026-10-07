@@ -22,7 +22,7 @@ test("the server broadens empty catalogue searches and never sends opted-out sig
   calls++;if(calls===1)return {needsContext:false,queries:["atmospheric fantasy"]};assert.deepEqual(data.signals,[]);
   return {recommendations:candidates.map(book=>({bookId:book.googleBooksId,reason:"Fits the supplied fantasy metadata.",matchedSignals:[],confidence:"Good match",bookEvidence:["Fantasy"]}))};
  }});
- assert.equal(calls,2);assert.equal(searches,2);assert.equal(output.session.recommendations.length,3);assert.equal(output.session.userId,a);
+ assert.equal(calls,2);assert.equal(searches,3);assert.equal(output.session.recommendations.length,3);assert.equal(output.session.userId,a);
 });
 test("recommendation requests cannot supply reader identity, candidates or permitted evidence",()=>{
  const request={entryId:session,request:"Atmospheric fantasy",filters};
@@ -34,6 +34,7 @@ test("recommendation requests cannot supply reader identity, candidates or permi
  assert.throws(()=>validRecommendations({...output,recommendations:output.recommendations.map(rec=>({...rec,matchedSignals:[b]}))},candidates,[]));
  assert.throws(()=>validRecommendations({...output,recommendations:[output.recommendations[0],output.recommendations[0],output.recommendations[2]]},candidates,[]));
  assert.equal(eligibleCandidates([...candidates,{...candidates[0],googleBooksId:"unknown",pageCount:null}],{...filters,length:"300"},["rec-2"]).length,2);
+ assert.equal(eligibleCandidates(Array.from({length:90},(_,i)=>({...candidates[0],googleBooksId:`volume${i}`,title:`Different work ${i}`})),filters).length,30);
 });
 test("recommendation sessions save atomically under RLS; feedback, explicit corrections and Undo preserve reader boundaries",async()=>{
  const db=new PGlite();

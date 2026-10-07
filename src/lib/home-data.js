@@ -91,7 +91,7 @@ export function deriveHome(snapshot, date = new Date()) {
 
 export function homeInsight(snapshot) {
   if (!snapshot.personalisationEnabled) return { label: "YOU STAY IN CONTROL", text: "Personalisation is off. Your Library and reading tracker still work normally.", action: "Edit my choices →", signals: [] };
-  const learned = snapshot.signals.filter((signal) => ["rating", "dnf"].includes(signal.source) && signal.evidence.length);
+  const learned = snapshot.signals.filter((signal) => ["rating", "history", "dnf"].includes(signal.source) && signal.evidence.length);
   const signals = learned.length ? learned : snapshot.signals;
   if (!signals.length) return { label: "YOUR READING DNA IS TAKING SHAPE", text: "Add or finish a few books to build your reading starting point.", action: "View Reading DNA →", signals: [] };
   const labels = signals.slice(0, 3).map((signal) => signal.label).join(", ");

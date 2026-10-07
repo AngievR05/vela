@@ -9,11 +9,11 @@ import Toggle from "@/components/ui/Toggle";
 import Card from "@/components/ui/Card";
 import InlineAlert from "@/components/ui/InlineAlert";
 import OnboardingStepIndicator from "@/components/ui/OnboardingStepIndicator";
-import { draftKey, parseDraft, setupChoices, emptyPermissions } from "@/lib/reading-setup";
+import { draftKey, parseDraft, parseDraftFlow, setupChoices, initialSetupChoices, emptyPermissions } from "@/lib/reading-setup";
 import styles from "./ReadingSetup.module.css";
 
 const steps = [
-  { key: "genres", title: "Which shelves pull you in?", description: "Choose at least one genre, or skip this optional step.", noteTitle: "Why we ask", note: "Genres shape your starting filters, not a permanent profile.", save: "Save genres", tone: "purple", folio: "B.02", selectedFolio: "B.03" },
+  { key: "genres", title: "Which shelves pull you in?", description: "Choose any genres, or skip. You can select more than one.", noteTitle: "Why we ask", note: "Genres shape your starting filters, not a permanent profile.", save: "Save genres", tone: "purple", folio: "B.02", selectedFolio: "B.03" },
   { key: "storyElements", title: "What makes a story stay with you?", description: "Choose the elements you notice first.", noteTitle: "Keep it human", note: "These signals help explain recommendations in plain language.", save: "Save story elements", tone: "brass", folio: "B.04", selectedFolio: "B.05" },
   { key: "pacing", title: "How should a book move?", description: "Pick the pace that feels easiest to return to.", noteTitle: "Your preferred pace", note: "Choose one pace, or skip if it depends on the book.", save: "Save pacing", tone: "green", folio: "B.06" },
   { key: "moods", title: "How do you want reading to feel?", description: "Mood can change. Choose what fits right now.", noteTitle: "For this moment", note: "You can change your reading mood whenever you like.", save: "Save reading mood", tone: "rose", folio: "B.07" },
@@ -51,18 +51,24 @@ export default function ReadingSetup({ userId, initial }) {
     Promise.resolve().then(() => {
       if (cancelled) return;
       try {
-        const saved = parseDraft(sessionStorage.getItem(key));
+        const stored = localStorage.getItem(key) ?? sessionStorage.getItem(key);
+        const saved = parseDraft(stored);
+        const flow = parseDraftFlow(stored);
         if (saved) setDraft(saved);
+        if (flow) { setStage(flow.stage); setEditing(flow.editing); }
       } catch { /* Storage restrictions do not prevent setup. */ }
       setReady(true);
     });
     return () => { cancelled = true; };
   }, [key]);
+  useEffect(() => {
+    if (!ready || stage === "created") return;
+    try { localStorage.setItem(key, JSON.stringify({ version: 2, payload: draft, stage: stage === "error" ? "review" : stage, editing })); } catch { /* Storage restrictions do not prevent setup. */ }
+  }, [draft, stage, editing, ready, key]);
   useEffect(() => { heading.current?.focus({ preventScroll: true }); }, [stage]);
 
   function update(next) {
     setDraft(next);
-    try { sessionStorage.setItem(key, JSON.stringify(next)); } catch { /* Keep the draft in memory. */ }
   }
   function move(next) { setStage(next); window.scrollTo({ top: 0 }); }
   function select(choice, step) {
@@ -101,7 +107,7 @@ export default function ReadingSetup({ userId, initial }) {
       if (!response.ok) throw new Error("save_failed");
       const result = await response.json();
       if (!result.saved) throw new Error("save_failed");
-      try { sessionStorage.removeItem(key); } catch { /* A successful save is already persisted in Supabase. */ }
+      try { sessionStorage.removeItem(key); localStorage.removeItem(key); } catch { /* A successful save is already persisted in Supabase. */ }
       if (payload.enabled) move("created");
       else window.location.replace("/home");
     } catch {
@@ -127,16 +133,16 @@ export default function ReadingSetup({ userId, initial }) {
   return <AuthScreen tone={tone} folio={folio} artDirectory="reading-setup" decoration="spark" className={`${styles.screen} ${styles[tone]}`}>
     {stage !== "intro" && <nav className={styles.navigation} aria-label="Reading setup navigation">
       {stage !== "created" ? <button type="button" className={styles.back} aria-label="Back" onClick={back} disabled={disabled}>
-        <Image src="/reading-setup/back.svg" width={24} height={24} alt="" unoptimized />
+        <Image src="/auth/final-back.svg" width={24} height={24} alt="" unoptimized />
       </button> : <span />}
       <p>{chapter}</p>
     </nav>}
     {(step || stage === "ai") && <OnboardingStepIndicator current={step ? stage + 1 : 5} total={5} trailingLabel="Nothing is permanent" className={styles.progress} />}
     {stage === "intro" && <>
-      <BrandLogo size={88} className={styles.logo} />
+      <BrandLogo variant="green" size={88} className={styles.logo} />
       <p className={styles.kicker}>YOUR READING DNA</p>
       {title("Let’s start with what you already know you enjoy.")}
-      {description("A few quick choices help Vela organise your taste without boxing you in.")}
+      {description("Choose genres, story elements, pacing and a mood, then review your data choices. Every step is optional.")}
       <div className={styles.benefits}>{[["GENRES", "Start broad"], ["STORY", "Choose signals"], ["MOOD", "Tune the moment"]].map(([label, copy], index) =>
         <div className={styles.benefit} key={label}><span>{`0${index + 1}`}</span><strong>{label}</strong><p>{copy}</p></div>)}</div>
       <InlineAlert className={styles.response}>Nothing here is permanent. You can change these choices later.</InlineAlert>
@@ -146,19 +152,25 @@ export default function ReadingSetup({ userId, initial }) {
       {title(step.title)}
       {description(count && stage === 1 ? "A small set creates clearer recommendations." : step.description)}
       <div className={styles.choices} role="group" aria-label={step.title}>
-        {setupChoices[step.key].map((choice) => <PreferenceChip key={choice} className={styles.chip}
+        {initialSetupChoices[step.key].map((choice) => <PreferenceChip key={choice} className={styles.chip}
           selected={typeof selected === "string" ? selected === choice : selected.includes(choice)}
           disabled={disabled} onClick={() => select(choice, step)}>{choice}</PreferenceChip>)}
       </div>
+      <details className={styles.moreChoices} key={step.key}>
+        <summary>More {reviewLabels[stage].toLowerCase()}</summary>
+        <div className={styles.choices} role="group" aria-label={`More ${reviewLabels[stage].toLowerCase()}`}>
+          {setupChoices[step.key].slice(initialSetupChoices[step.key].length).map((choice) => <PreferenceChip key={choice} className={styles.chip} selected={typeof selected === "string" ? selected === choice : selected.includes(choice)} disabled={disabled} onClick={() => select(choice, step)}>{choice}</PreferenceChip>)}
+        </div>
+      </details>
       {count ? <InlineAlert type="success" className={`${styles.response} ${styles.success}`}>{count} {stage === 0 ? "genres" : count === 1 ? "choice" : "choices"} selected. Tap again to remove.</InlineAlert>
         : <Card className={`${styles.note} ${styles.softGreen}`}><strong>{step.noteTitle}</strong><p>{step.note}</p></Card>}
-      <SetupActions primary={step.save} onPrimary={() => advance(stage)} secondary="Skip for now" onSecondary={() => advance(stage, true)} primaryDisabled={!count} disabled={disabled} pending={pending} />
+      <SetupActions primary={editing ? "Save changes" : step.save} onPrimary={() => advance(stage)} secondary={editing ? "Return to review" : "Skip for now"} onSecondary={() => editing ? back() : advance(stage, true)} primaryDisabled={!count && !editing} disabled={disabled} pending={pending} />
     </>}
     {stage === "ai" && <>
       {title("How Vela personalises recommendations")}
       {description("Vela combines only the reading signals you allow, then shows why each suggestion appears.")}
       <Card className={styles.aiCard}>
-        <span className={styles.disclosure}><BrandLogo size={18} /> <span aria-hidden="true">✦</span> VELA AI · EXPLAINABLE</span>
+        <span className={styles.disclosure}><BrandLogo variant="plum" size={18} /> <span aria-hidden="true">✦</span> VELA AI · EXPLAINABLE</span>
         <h2>You choose the signals.</h2><p>Ratings, DNF reasons and reading history are separate choices. Turn any signal off without losing your Library.</p>
         {["You choose", "Vela explains", "You can correct"].map((text, index) => <div className={styles.principle} key={text}><span>{index + 1}</span><i aria-hidden="true" /><p>{text}</p></div>)}
       </Card>
@@ -170,21 +182,21 @@ export default function ReadingSetup({ userId, initial }) {
     </>}
     {stage === "permissions" && <>
       {title("Choose what Vela can learn from.")}
-      {description("Every signal is optional. Your Library still works with everything off.")}
+      {description("Activity learning is optional. Your chosen preferences still guide suggestions; your Library works with everything off.")}
       <div className={styles.permissions}>{permissionCopy.map(([name, label, copy]) => <Toggle key={name} className={styles.permission}
-        label={`${label} — ${draft.permissions[name] ? "On" : "Off"}`} description={copy} checked={draft.permissions[name]} disabled={disabled}
+        label={label} description={copy} checked={draft.permissions[name]} disabled={disabled}
         onChange={(event) => update({ ...draft, permissions: { ...draft.permissions, [name]: event.target.checked }, enabled: true })} />)}</div>
-      <InlineAlert className={styles.response}>{Object.values(draft.permissions).some(Boolean) ? "Only the signals you selected will be used." : "No optional personalisation is selected."}</InlineAlert>
+      <InlineAlert className={styles.response}>{Object.values(draft.permissions).some(Boolean) ? "Only the signals you selected will be used." : "Activity learning is off. Explicit setup preferences remain available."}</InlineAlert>
       <SetupActions primary="Review my choices" onPrimary={() => { setEditing(false); move("review"); }} disabled={disabled} pending={pending} />
     </>}
     {stage === "review" && <>
       {title("Review your reading starting point.")}
-      {description("Check each choice before Vela creates your first Reading DNA.")}
+      {description("Review your preferences and activity permissions before saving to your account.")}
       <div className={styles.review}>{steps.map((item, index) => <Card className={styles.reviewCard} key={item.key}>
-        <div><strong>{reviewLabels[index]}</strong><p>{Array.isArray(draft.preferences[item.key]) ? draft.preferences[item.key].join(", ") || "Skipped" : draft.preferences[item.key] || "Skipped"}</p></div>
+        <div><strong>{reviewLabels[index]}</strong><p>{Array.isArray(draft.preferences[item.key]) ? draft.preferences[item.key].join(", ") || "No preference selected" : draft.preferences[item.key] || "No preference selected"}</p></div>
         <Button variant="tertiary" className={styles.edit} aria-label={`Edit ${reviewLabels[index].toLowerCase()}`} onClick={() => edit(index)} disabled={disabled}>Edit</Button>
       </Card>)}</div>
-      <div className={styles.permissionReview}><p>Optional signals: {permissionCopy.filter(([name]) => draft.permissions[name]).map(([, label]) => label.replace("Use my ", "")).join(", ") || "all off"}</p><Button variant="tertiary" className={styles.edit} aria-label="Edit data permissions" onClick={() => { setEditing(true); move("permissions"); }} disabled={disabled}>Edit</Button></div>
+      <div className={styles.permissionReview}><div><strong>Activity permissions</strong><p>{permissionCopy.map(([name, label]) => `${label.replace("Use my ", "")}: ${draft.permissions[name] ? "On" : "Off"}`).join(" · ")}</p></div><Button variant="tertiary" className={styles.edit} aria-label="Edit data permissions" onClick={() => { setEditing(true); move("permissions"); }} disabled={disabled}>Edit</Button></div>
       <SetupActions primary="Create my Reading DNA" onPrimary={() => save({ ...draft, enabled: true })} disabled={disabled} pending={pending} />
       {initial.completed && <Button variant="tertiary" className={styles.pause} disabled={disabled} onClick={() => move("skip")}>Pause personalisation</Button>}
     </>}

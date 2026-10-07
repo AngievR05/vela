@@ -1,11 +1,12 @@
 import { z } from "zod";
 import { plainDescription } from "./library-data.js";
+import { setupChoices } from "./reading-setup.js";
 
 const clue = labels => z.object({ label:z.enum(labels), evidence:z.string().min(8).max(500) }).strict();
 export const bookCluesSchema = z.object({
-  pace:clue(["Slow and immersive","Steady","Fast start","Relentless"]).nullable(),
-  moods:z.array(clue(["Reflective","Comforting","Adventurous","Dark","Hopeful","Emotional","Humorous"])).max(4),
-  tropes:z.array(clue(["Found family","Slow burn","Enemies to lovers","Friends to lovers","Second chance","Political intrigue","Coming of age","Chosen one","High stakes","Character-led","Quiet reflection"])).max(5),
+  pace:clue(setupChoices.pacing).nullable(),
+  moods:z.array(clue([...setupChoices.moods,"Humorous"])).max(4),
+  tropes:z.array(clue(setupChoices.storyElements)).max(5),
 }).strict();
 const normalise = text => plainDescription(text).normalize("NFKD").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
 // Provider interpretations must cite this book's description, not private notes or model memory.

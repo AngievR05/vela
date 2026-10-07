@@ -15,8 +15,9 @@ import TextArea from "@/components/ui/TextArea";
 import InlineAlert from "@/components/ui/InlineAlert";
 import BottomSheet from "@/components/feedback/BottomSheet";
 import styles from "./Discover.module.css";
+import {notifyReadingActivity} from "@/lib/reading-activity-events";
 const reasons=["Not in the mood","Wrong genre","Pacing is not important","I don’t care about this trope","Other"];
-const sources={onboarding:"Chosen during reading setup",manual:"Chosen by you",correction:"Corrected by you",rating:"From your permitted ratings",dnf:"From DNF reasons you approved"};
+const sources={onboarding:"Chosen during reading setup",manual:"Chosen by you",correction:"Corrected by you",rating:"From your permitted ratings",history:"From your permitted completed reading",dnf:"From DNF reasons you approved"};
 export default function RecommendationDetail({ userId,session,recommendation:rec,online,onSession,onBack }) {
   const [savedBook,setSavedBook]=useState(null);
   const [stage,setStage]=useState("detail");const [expanded,setExpanded]=useState(false);const [signalId,setSignalId]=useState(null);
@@ -38,7 +39,7 @@ export default function RecommendationDetail({ userId,session,recommendation:rec
       if(response.status===401){window.location.replace("/login?next=/discover");return;}
       const body=await response.json();if(!response.ok)throw new Error(body.error||"We couldn’t confirm your feedback. Please try again.");
       const updated=parseRecommendationSession(body.session,userId);if(!updated||updated.id!==session.id)throw new Error("We couldn’t confirm your feedback. Please try again.");
-      onSession(updated);if(value.action==="correct")window.dispatchEvent(new Event("vela:dna-changed"));setModal(false);setNotice("");setRecorded(value.action);setStage(value.action==="undo_less"?"detail":"recorded");
+      onSession(updated);if(["correct","show_less","undo_less"].includes(value.action))notifyReadingActivity(userId);setModal(false);setNotice("");setRecorded(value.action);setStage(value.action==="undo_less"?"detail":"recorded");
       if(value.action==="undo_less")setNotice("Future preference undone. Your Reading DNA is unchanged.");
     }catch(failure){setModal(false);setError(failure.name==="TimeoutError"||failure instanceof TypeError?"We couldn’t connect. Your feedback selection is still here; please try again.":failure.message);}
     finally{busy.current=false;setPending(false);}
@@ -52,7 +53,7 @@ export default function RecommendationDetail({ userId,session,recommendation:rec
       const result=libraryBookSchema.safeParse(body.book);if(!result.success)throw new Error("We couldn’t confirm the saved book. Please try again.");
       onSession({...session,recommendations:session.recommendations.map(item=>item.id===rec.id?{...item,libraryId:result.data.id}:item)});
       if(!body.duplicate){setSavedBook(result.data);setStage("saved");}
-      window.dispatchEvent(new Event("vela:dna-changed"));
+      notifyReadingActivity(userId);
       setNotice(body.duplicate?"Already in your Library. Your reading status and progress were kept.":body.restored?"Restored to your Library. Your reading status and notes were kept.":"Added to TBR. The book is waiting on your shelf.");
     }catch(failure){setError(failure.name==="TimeoutError"||failure instanceof TypeError?"We couldn’t connect. Your selection is still here; please try again.":failure.message);}
     finally{busy.current=false;setPending(false);}
@@ -64,7 +65,7 @@ export default function RecommendationDetail({ userId,session,recommendation:rec
       const body=await response.json();if(!response.ok)throw new Error(body.error||"We couldn’t confirm Undo. Please retry.");
       const parsed=libraryBookSchema.safeParse(body.book);if(!parsed.success||!parsed.data.isRemoved)throw new Error("Undo could not be confirmed.");
       onSession({...session,recommendations:session.recommendations.map(item=>item.id===rec.id?{...item,libraryId:null}:item)});
-      setSavedBook(null);setStage("detail");setNotice("Save undone. The book is no longer on your shelf.");window.dispatchEvent(new Event("vela:dna-changed"));
+      setSavedBook(null);setStage("detail");setNotice("Save undone. The book is no longer on your shelf.");notifyReadingActivity(userId);
     }catch(failure){setError(failure.message);}finally{busy.current=false;setPending(false);}
   }
   const actions=<div className={`${styles.row} ${styles.feedbackActions}`}><Button variant="secondary" className={styles.primary} disabled={!online||pending} onClick={()=>feedback({action:"helpful"})}>Helpful</Button><Button variant="secondary" className={styles.primary} disabled={!online||pending} onClick={()=>{setModal(true);setError("");}}>Not for me</Button></div>;

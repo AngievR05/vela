@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { applyBookMutation, bookMutationSchema, homeCacheKey, homeQueueKey, homeSnapshotSchema, libraryBookSchema, parseHomeQueue, parseHomeSnapshot, queueMutation } from "@/lib/home-data";
+import { notifyReadingActivity, activityEventKey } from "@/lib/reading-activity-events";
 
 export default function useHome(userId, { endpoint = "/api/home", cacheKey = homeCacheKey(userId), returnPath = "/home" } = {}) {
   const [snapshot, setSnapshot] = useState(null);
@@ -50,6 +51,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
     let live = true;
     let syncing = false;
     let loading = false;
+    let reloadPending = false;
     async function sync(force = false) {
       if (!live || !current.active || syncing || !navigator.onLine || (current.blocked && !force)) return;
       syncing = true;
@@ -57,7 +59,8 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
       try {
         while (live && current.active && current.queue.length && navigator.onLine) {
           const mutation = current.queue[0];
-          await send(mutation);
+          const result = await send(mutation);
+          if (["review","status","remove","restore"].includes(mutation.kind) || result.book.status === "finished") notifyReadingActivity(userId);
           if (!live) return;
           // Keep updates added while this request was in flight.
           keepQueue(current.queue.filter((item) => item !== mutation));
@@ -70,7 +73,8 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
       } finally { syncing = false; }
     }
     async function load(showLoading = false) {
-      if (!live || !current.active || loading) return;
+      if (!live || !current.active) return;
+      if (loading) { reloadPending = true; return; }
       if (!navigator.onLine) { setOnline(false); setPhase("offline"); return; }
       loading = true;
       setOnline(true);
@@ -92,7 +96,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
         setPhase(navigator.onLine ? "ready" : "offline");
       } catch {
         if (live && current.active) setPhase(navigator.onLine ? "error" : "offline");
-      } finally { loading = false; }
+      } finally { loading = false; if (reloadPending) { reloadPending = false; load(); } }
     }
     loadRef.current = load;
     async function init() {
@@ -108,9 +112,11 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
     }
     function offline() { setOnline(false); setPhase("offline"); }
     function resume() { if (document.visibilityState === "visible") load(); }
+    function changed(event) { if (event.key === activityEventKey(userId)) resume(); }
     Promise.resolve().then(init);
     window.addEventListener("online", resume);
     window.addEventListener("vela:dna-changed", resume);
+    window.addEventListener("storage", changed);
     window.addEventListener("offline", offline);
     document.addEventListener("visibilitychange", resume);
     const timer = window.setInterval(() => { if (current.queue.length && !current.blocked) load(); }, 15000);
@@ -120,6 +126,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
       window.clearInterval(timer);
       window.removeEventListener("online", resume);
       window.removeEventListener("vela:dna-changed", resume);
+      window.removeEventListener("storage", changed);
       window.removeEventListener("offline", offline);
       document.removeEventListener("visibilitychange", resume);
     };
@@ -154,6 +161,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
       const value = state.current.snapshot;
       if (value) publish({ ...value, books: [...value.books.filter(book => book.id !== result.book.id), result.book] });
       setPhase("ready");
+      if (["review","status","remove","restore"].includes(parsed.data.kind) || result.book.status === "finished") notifyReadingActivity(userId);
       return { queued: false, book: result.book };
     } catch (error) {
       if (!navigator.onLine) return enqueue(parsed.data);
