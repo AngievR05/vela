@@ -110,6 +110,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
     function resume() { if (document.visibilityState === "visible") load(); }
     Promise.resolve().then(init);
     window.addEventListener("online", resume);
+    window.addEventListener("vela:dna-changed", resume);
     window.addEventListener("offline", offline);
     document.addEventListener("visibilitychange", resume);
     const timer = window.setInterval(() => { if (current.queue.length && !current.blocked) load(); }, 15000);
@@ -118,6 +119,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
       current.active = false;
       window.clearInterval(timer);
       window.removeEventListener("online", resume);
+      window.removeEventListener("vela:dna-changed", resume);
       window.removeEventListener("offline", offline);
       document.removeEventListener("visibilitychange", resume);
     };

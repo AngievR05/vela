@@ -1,3 +1,4 @@
+import { describeDNASignals } from "./reading-dna.js";
 // Reader data operations accept an authenticated, RLS-scoped client; no service credentials.
 
 export async function allReaderRows(supabase, table, columns, userId, filter = {}) {
@@ -32,31 +33,18 @@ export async function loadReaderBook(supabase, userId, id) {
 }
 export async function loadHome(supabase, userId) {
   const [profile, settings, library, rawSignals] = await Promise.all([
-    supabase.from("profiles").select("display_name").eq("id", userId).single(),
+    supabase.from("profiles").select("display_name,reading_dna_reset_at").eq("id", userId).single(),
     supabase.from("ai_settings").select("personalisation_enabled,use_recent_ratings,use_dnf_reasons,use_recent_history").eq("user_id", userId).single(),
     allReaderRows(supabase, "user_books", libraryColumns, userId, { is_removed: false }),
-    allReaderRows(supabase, "reading_dna_signals", "id,category,label,source_type,evidence,updated_at", userId, { active: true }),
+    allReaderRows(supabase, "reading_dna_signals", "id,category,label,source_type,evidence,active,internal_weight,influence_state,created_at,updated_at", userId, { active: true }),
   ]);
   if (profile.error || settings.error) throw new Error("Reader preferences unavailable");
   const books = library.map(mapLibraryBook);
-  const signals = [];
-  if (settings.data.personalisation_enabled) for (const signal of rawSignals) {
-    if (signal.source_type === "rating" && !settings.data.use_recent_ratings) continue;
-    if (signal.source_type === "dnf" && !settings.data.use_dnf_reasons) continue;
-    // Mixed evidence has no per-source permission map yet; do not infer consent.
-    if (signal.source_type === "mixed") continue;
-    const entries = Array.isArray(signal.evidence) ? signal.evidence : [signal.evidence];
-    const evidence = [];
-    for (const entry of entries) {
-      const id = typeof entry === "string" ? entry : entry?.user_book_id || entry?.book_id || entry?.bookId || entry?.id;
-      const book = books.find((item) => item.id === id || item.bookId === id);
-      if (!book || (signal.source_type === "rating" && book.rating == null)
-        || (signal.source_type === "dnf" && (book.status !== "dnf" || !book.dnfUse))) continue;
-      if (!evidence.some((item) => item.id === book.id)) evidence.push({ id: book.id, title: book.title });
-    }
-    if (["rating", "dnf"].includes(signal.source_type) && !evidence.length) continue;
-    signals.push({ id: signal.id, category: signal.category, label: signal.label, source: signal.source_type, evidence });
-  }
+  const signals = describeDNASignals(rawSignals, books, settings.data, profile.data.reading_dna_reset_at)
+    .filter(signal => signal.active).map(signal => ({
+      id: signal.id, category: signal.category, label: signal.label, source: signal.source, strength: signal.strength,
+      evidence: signal.evidence.filter(item => item.bookId).map(item => ({ id: item.bookId, title: books.find(book => book.id === item.bookId).title })),
+    }));
   return { version: 1, userId, displayName: profile.data.display_name, fetchedAt: Date.now(), books,
     personalisationEnabled: settings.data.personalisation_enabled, signals };
 }

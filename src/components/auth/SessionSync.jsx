@@ -8,6 +8,7 @@ import { draftKey } from "@/lib/reading-setup";
 import { discoveryCacheKey, discoveryDraftKey } from "@/lib/validation/recommendation";
 import {settingsCacheKey} from "@/lib/reader-settings";
 import {statsCacheKey} from "@/lib/reading-stats";
+import {dnaCacheKey} from "@/lib/reading-dna";
 
 export default function SessionSync({ userId }) {
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function SessionSync({ userId }) {
     function ending(event){if(["/login","/signed-out","/account-deleted"].includes(event.detail?.destination))destination=event.detail.destination;}
     function leave() {
       try {
-        for (const key of [homeCacheKey(userId), statsCacheKey(userId), homeQueueKey(userId), draftKey(userId), discoveryCacheKey(userId), discoveryDraftKey(userId),settingsCacheKey(userId),`vela:notifications:v1:${userId}`]) localStorage.removeItem(key);
+        for (const key of [homeCacheKey(userId), statsCacheKey(userId), dnaCacheKey(userId), homeQueueKey(userId), draftKey(userId), discoveryCacheKey(userId), discoveryDraftKey(userId),settingsCacheKey(userId),`vela:notifications:v1:${userId}`]) localStorage.removeItem(key);
         sessionStorage.removeItem(draftKey(userId));
       } catch { /* Storage may be restricted. */ }
       window.location.replace(destination);

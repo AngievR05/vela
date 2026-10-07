@@ -10,9 +10,10 @@ const STRENGTH = {
 };
 
 export default function ReadingDNASignalCard({
-  trait, strength="emerging", sourceSummary, evidenceCount=0, href, personalisationOff=false
+  trait, strength="emerging", sourceSummary, evidenceCount=0, href, personalisationOff=false, variant, className="", onClick, disabled=false
 }) {
   const config = personalisationOff ? STRENGTH.off : STRENGTH[strength] ?? STRENGTH.emerging;
+  if(variant==="dna")return <button type="button" className={className} onClick={onClick} disabled={disabled}><h3>{trait}</h3><p>{sourceSummary}</p></button>;
   const content = (
     <>
       <div className={styles.actions}>

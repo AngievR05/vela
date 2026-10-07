@@ -20,7 +20,7 @@ export const homeSnapshotSchema = z.object({
   statsRecords: z.array(statsRecordSchema).max(50000).default([]),
   statsSetupRequired: z.boolean().default(false),
   signals: z.array(z.object({
-    id: z.uuid(), category: z.string(), label: z.string(), source: z.string(),
+    id: z.uuid(), category: z.string(), label: z.string(), source: z.string(), strength: z.enum(["strong", "emerging"]).default("emerging"),
     evidence: z.array(z.object({ id: z.uuid(), title: z.string() })),
   })),
 });

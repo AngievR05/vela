@@ -6,6 +6,8 @@ export async function GET(){const reader=await getReader();const denied=readerDe
     const tables=["user_books","reading_dna_signals","recommendation_sessions","recommendations","recommendation_feedback","ai_settings"];
     const statsProbe=await reader.supabase.from("reader_book_stats").select("id").eq("user_id",reader.user.id).limit(1);
     if(!statsProbe.error)tables.push("reader_book_stats");else if(!["42P01","PGRST205"].includes(statsProbe.error.code))throw statsProbe.error;
+    const dnaProbe=await reader.supabase.from("reading_dna_changes").select("id").eq("user_id",reader.user.id).limit(1);
+    if(!dnaProbe.error)tables.push("reading_dna_changes");else if(!["42P01","PGRST205"].includes(dnaProbe.error.code))throw dnaProbe.error;
     const values=await Promise.all(tables.map(table=>rows(reader.supabase,table,reader.user.id)));
     return Response.json({format:"vela-account-export-v1",exportedAt:new Date().toISOString(),account:{id:reader.user.id,email:reader.user.email,createdAt:reader.user.created_at},profile,...Object.fromEntries(tables.map((table,index)=>[table,values[index]]))},{headers:{"Cache-Control":"private, no-store","Content-Disposition":"attachment; filename=vela-account.json"}});
   }catch{return Response.json({error:"Your download could not be prepared. Please try again."},{status:503,headers:{"Cache-Control":"private, no-store"}});}}

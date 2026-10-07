@@ -15,7 +15,7 @@ export async function recommendationContext(supabase, userId) {
   if (error) throw new Error("Reader signals unavailable");
   const signals = home.signals.map(signal => ({ ...signal, weight: Number(rows.find(row => row.id === signal.id)?.internal_weight ?? 0.5) }))
     .filter(signal => signal.weight > 0).sort((a,b) => b.weight - a.weight || a.id.localeCompare(b.id)).slice(0,30)
-    .map(signal => ({ ...signal, strength: signal.weight >= 0.65 ? "Strong" : "Emerging" }));
+    .map(signal => ({ ...signal, strength: signal.strength === "strong" ? "Strong" : "Emerging" }));
   return { ...home, signals };
 }
 export async function loadRecommendationSession(supabase, userId, sessionId = null, context = null) {

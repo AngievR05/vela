@@ -44,6 +44,7 @@ In Supabase Authentication URL Configuration:
 
 - Set Site URL to the application's public origin.
 - Allow `http://localhost:3000/auth/callback**` and `http://127.0.0.1:3000/auth/callback**` for local development. These patterns cover the callback's return-route query parameters. The hosted project also allows the same callback paths on port 3104 for verification.
+- The hosted project also allows `http://192.168.3.7:3000/auth/callback**` for this computer’s LAN preview (added October 7, 2026). Request and open confirmation/recovery links using the same network address and browser, since the PKCE verifier and session belong to that origin. Update this exact host if the computer’s LAN IP changes.
 - Add the deployed application's `/auth/callback` URL for production. Query parameters carry the safe return route or `/reset-password`.
 - Enable email confirmations and require passwords of at least 8 characters. Local `config.toml` includes these settings; hosted projects must be configured separately.
 - Configure custom SMTP before opening sign-up to readers. Supabase's default mail service sends only to project-team addresses and is intended for development. Custom SMTP was still disabled during the 2026-10-05 verification; confirmation and recovery email delivery to other readers therefore remains a setup requirement. See [Supabase SMTP configuration](https://supabase.com/docs/guides/auth/auth-smtp).
@@ -87,3 +88,11 @@ On 2026-10-05, the restored hosted project passed its 17 boundary checks and the
 Reading Stats adds `202610070001_reading_stats.sql`, applied to the hosted project on 2026-10-07. `reader_book_stats` is reader-private through RLS and has no anonymous grants. `save_reading_record` is security invoker, derives the reader from `auth.uid()`, locks the reader's finished book, checks its modification timestamp and saves facts/finish date atomically. Existing library contents are preserved. PostgreSQL tests verify foreign and anonymous denial, stale writes and rollback; hosted anonymous table/RPC/API calls were denied, and an unchanged-value reading record was saved through the UI. Optional missing format/mood/pace information remains explicitly unrecorded.
 
 With Supabase configured, verify account creation and confirmation, login, incorrect credentials with retained inputs, a page reload and a refreshed session, logout, password reset email and password change, expired links, and login's return to a requested private page. Check that a second browser session cannot read the first reader's data.
+
+## Reading DNA controls
+
+`migrations/202610070002_reading_dna.sql` was applied to the hosted project on 2026-10-07 after explicit user approval. It adds `reading_dna_changes` with owner-only RLS and no anonymous grants, influence state and a reset timestamp. `change_reading_dna` and `reset_reading_dna` are security invoker, derive ownership from `auth.uid()` and serialize reader changes. Idempotent requests avoid repeated reductions; Undo rejects newer edits instead of overwriting them.
+
+Reset now preserves explicit setup preferences and privacy permissions as well as the Library, ratings, notes and progress. Both Settings and Reading DNA use this behavior. Historical learned signals are cleared and the cutoff blocks rebuilding from old activity. The migration defines reset; applying it does not execute a reader reset.
+
+PostgreSQL tests exercise anonymous/cross-reader denial, spoofed change ownership, idempotency, concurrent edits, Undo and reset preservation. Hosted Reduce/Undo were verified and restored the original preference. Protected API requests deny unsigned readers. No live reader reset or account deletion was performed.

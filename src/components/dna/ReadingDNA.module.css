@@ -1,0 +1,44 @@
+.screen { --font-body:var(--auth-font-body),Arial,sans-serif; --font-display:var(--auth-font-display),Georgia,serif; display:flow-root; position:relative; isolation:isolate; width:min(100%,480px); min-height:100svh; margin:auto; overflow:clip; color:var(--colour-ink); background:linear-gradient(90deg,#eadfe4,#fcfaf6 48%,#dce8e4); font:400 16px/24px var(--font-body); }
+.screen h1,.screen h2,.screen h3,.screen p { margin:0; }
+.art { position:absolute; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
+.arch { position:absolute; left:166px; top:-96px; }
+.mist { position:absolute; left:-190px; top:485px; }
+.orbit { position:absolute; left:198px; top:-40px; }
+.edge { position:absolute; inset:0 auto 0 0; width:4px; background:#d2bcc6; }
+.rule { position:absolute; left:7px; top:60px; bottom:34px; width:1px; background:#d6c6a3; }
+.viewport { position:relative; margin:62px 16px 0; height:calc(100svh - 286px); min-height:180px; overflow-y:auto; overflow-x:clip; scrollbar-width:thin; }
+.content { display:flex; flex-direction:column; align-items:stretch; gap:12px; padding-bottom:4px; }
+.compact { gap:8px; }
+.header { display:flex; align-items:center; gap:8px; }
+.header h1 { font:600 30px/34px var(--font-display); }
+.back { display:flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; border:0; border-radius:16px; background:transparent; color:#183b34; text-decoration:none; font:500 22px/28px var(--font-body); cursor:pointer; }
+.subtitle,.muted { color:var(--vela-subtle-text,#5e5852); }
+.subtitle,.meta { font:400 14px/21px var(--font-body); }
+.title { font:600 32px/36px var(--font-display); }
+.compact .title { font-size:30px; line-height:34px; }
+.subheading { font:600 24px/27px var(--font-display); }
+.meta { color:var(--colour-evergreen); }
+.signal { display:flex; flex-direction:column; align-items:stretch; gap:8px; padding:14px; border:0; border-radius:18px; text-align:left; color:#fbf8f2; background:#5d3648; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; cursor:pointer; }
+.signal h3,.card h3 { font:600 24px/27px var(--font-display); }
+.signal p,.card p { font:400 14px/21px var(--font-body); }
+.strong { background:#183b34; }
+.off { background:var(--vela-mauve-surface,#e7e4ef); color:var(--colour-ink); }
+.off p { color:var(--vela-subtle-text,#5e5852); }
+.card { display:flex; flex-direction:column; gap:8px; padding:14px; border:0; border-radius:22px; background:var(--vela-surface-base,#fbf8f2); color:var(--colour-ink); text-decoration:none; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
+.card p { color:var(--vela-subtle-text,#5e5852); }
+.evidence p { color:var(--colour-ink); }
+.screen .primary,.screen .secondary,.screen .tertiary { width:100%; border-radius:18px; font:500 14px/21px var(--font-body); }
+.screen .primary { min-height:52px; background:#183b34; color:#fbf8f2; border:0; box-shadow:0 10px 22px #22201e1a,0 3px 6px #22201e1f; }
+.screen .secondary { min-height:44px; border:1px solid #766f68; background:transparent; color:var(--colour-evergreen); box-shadow:none; }
+.screen .tall { min-height:52px; }
+.screen .tertiary { min-height:44px; color:var(--colour-evergreen); background:transparent; border:0; box-shadow:none; }
+.screen .danger { background:#943c34; }
+.screen button:disabled { cursor:default; }
+.screen .primary:disabled { background:#d9e0d6; color:#183b34; box-shadow:none; }
+.actions { position:fixed; z-index:30; bottom:max(110px,calc(env(safe-area-inset-bottom,0px) + 76px)); left:50%; transform:translateX(-50%); width:min(calc(100% - 32px),448px); display:flex; flex-direction:column; gap:8px; }
+.skeleton { min-height:76px; animation:pulse 1.8s ease-in-out infinite; }
+.alert { font-size:14px; line-height:21px; }
+@keyframes pulse {50%{opacity:.55}}
+@media(prefers-reduced-motion:reduce){.skeleton{animation:none}}
+@media(max-height:550px){.viewport{height:auto;min-height:180px;padding-bottom:14px}.actions{position:relative;left:auto;transform:none;bottom:auto;margin:10px 16px 120px;width:auto}}
+:global(html[data-vela-theme="dark"]) .screen { background:linear-gradient(90deg,#30242c,#211f1e 48%,#20332c); }
