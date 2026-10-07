@@ -54,6 +54,8 @@ export async function mutateReaderBook(supabase, userId, mutation) {
     .eq("id", mutation.id).eq("user_id", userId).maybeSingle();
   if (readError) return { status: 503, error: "We couldn’t load this book. Please try again." };
   if (!row) return { status: 404, error: "This book is no longer in your Library." };
+  if (mutation.expectedUpdatedAt && Date.parse(mutation.expectedUpdatedAt) !== Date.parse(row.updated_at))
+    return { status: 409, error: "This book changed after you saved it. Open its details before removing it." };
   if (row.is_removed && mutation.kind !== "restore" && mutation.kind !== "remove") return { status: 409, error: "This book has been removed. Restore it before editing." };
   if (["status", "review", "remove", "restore"].includes(mutation.kind)) {
     const date = new Date().toISOString().slice(0, 10);

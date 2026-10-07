@@ -20,7 +20,7 @@ test("the server broadens empty catalogue searches and never sends opted-out sig
  let calls=0,searches=0;const output=await createRecommendations(supabase,a,{entryId:session,request:"Atmospheric fantasy",filters},{search:async query=>{searches++;return query==="subject:Fantasy"?candidates:[];},generate:async(schema,instruction,data)=>{
   assert.equal(JSON.stringify(data).includes("SECRET"),false);assert.equal(JSON.stringify(data).includes("owned-history"),false);
   calls++;if(calls===1)return {needsContext:false,queries:["atmospheric fantasy"]};assert.deepEqual(data.signals,[]);
-  return {recommendations:candidates.map(book=>({bookId:book.googleBooksId,reason:"Fits the supplied fantasy metadata.",matchedSignals:[],confidence:"Good match"}))};
+  return {recommendations:candidates.map(book=>({bookId:book.googleBooksId,reason:"Fits the supplied fantasy metadata.",matchedSignals:[],confidence:"Good match",bookEvidence:["Fantasy"]}))};
  }});
  assert.equal(calls,2);assert.equal(searches,2);assert.equal(output.session.recommendations.length,3);assert.equal(output.session.userId,a);
 });

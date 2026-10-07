@@ -21,7 +21,7 @@ export const detailMutationSchema = z.discriminatedUnion("kind", [
   z.object({ ...identity, kind: z.literal("status"), status: z.enum(["reading", "want_to_read", "dnf", "finished"]), reason: z.string().trim().max(500).optional(), useForLearning: z.boolean().optional() }).strict()
     .refine(value => value.status !== "dnf" || (Boolean(value.reason) && typeof value.useForLearning === "boolean"), "Choose why you stopped and whether Vela may use it."),
   z.object({ ...identity, kind: z.literal("review"), rating: z.number().int().min(1).max(5).nullable(), notes: z.string().max(2000), favourite: z.boolean() }).strict(),
-  z.object({ ...identity, kind: z.literal("remove") }).strict(),
+  z.object({ ...identity, kind: z.literal("remove"), expectedUpdatedAt: z.iso.datetime({offset:true}).optional() }).strict(),
   z.object({ ...identity, kind: z.literal("restore") }).strict(),
 ]);
 export function filterLibrary(books, { status = "all", query = "", genres = [], short = false, favourites = false, sort = "recent" } = {}) {

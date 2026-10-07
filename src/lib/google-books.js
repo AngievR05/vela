@@ -6,7 +6,7 @@ const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes";
 export async function searchGoogleBooks(query, maxResults = 10) {
   const url = new URL(GOOGLE_BOOKS_URL);
   url.searchParams.set("q", query);
-  url.searchParams.set("maxResults", String(Math.min(maxResults, 20)));
+  url.searchParams.set("maxResults", String(Math.min(maxResults, 40)));
   url.searchParams.set("printType", "books");
   url.searchParams.set("key", serverEnv.GOOGLE_BOOKS_API_KEY);
 

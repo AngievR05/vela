@@ -8,7 +8,7 @@ function focusable(container){
   if(!container)return[];
   return Array.from(container.querySelectorAll('a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'));
 }
-export default function BottomSheet({ open,title,children,actions,onClose,dismissOnBackdrop=true,showHandle=true }) {
+export default function BottomSheet({ open,title,children,actions,onClose,dismissOnBackdrop=true,showHandle=true,className="",backdropClassName="" }) {
   const titleId=useId(); const ref=useRef(null);
   useEffect(()=>{
     if(!open)return;
@@ -27,10 +27,10 @@ export default function BottomSheet({ open,title,children,actions,onClose,dismis
   },[open,onClose]);
   if(!open)return null;
   return (
-    <div className={styles.sheetBackdrop} onMouseDown={e=>{
+    <div className={[styles.sheetBackdrop,backdropClassName].filter(Boolean).join(" ")} onMouseDown={e=>{
       if(dismissOnBackdrop&&e.target===e.currentTarget)onClose?.();
     }}>
-      <section ref={ref} className={styles.sheet} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
+      <section ref={ref} className={[styles.sheet,className].filter(Boolean).join(" ")} role="dialog" aria-modal="true" aria-labelledby={titleId} tabIndex={-1}>
         {showHandle?<div className={styles.sheetHandle} aria-hidden="true"/>:null}
         <div className={styles.sheetHeader}>
           <h2 id={titleId} className={[styles.h2,styles.fill].join(" ")}>{title}</h2>

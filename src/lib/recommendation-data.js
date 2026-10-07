@@ -1,5 +1,5 @@
 import { loadHome } from "./reader-library.js";
-import { eligibleCandidates, searchPlanSchema, recommendationResponseSchema, validRecommendations } from "./validation/recommendation.js";
+import { eligibleCandidates, searchPlanSchema, recommendationResponseSchema, validRecommendations, bookWorkKey } from "./validation/recommendation.js";
 import { plainDescription } from "./library-data.js";
 const confidenceValues = { "Strong match": "strong_match", "Good match": "good_match", Experimental: "experimental" };
 const confidenceLabels = { strong_match: "Strong match", good_match: "Good match", experimental: "Experimental" };
@@ -38,35 +38,39 @@ export async function createRecommendations(supabase, userId, input, { search, g
   const context = await recommendationContext(supabase, userId);
   const existing = await loadRecommendationSession(supabase, userId, input.entryId, context);
   if (existing) return { session: existing };
-  const plan = await generate(searchPlanSchema, "Translate this current reading request into up to three short Google Books catalogue queries (subject: genre or a concise phrase). Return needsContext=true only if it provides no useful mood, genre, story or title and no selected genre/mood. Do not invent book titles.", { request: input.request, filters: input.filters });
+  const plan = await generate(searchPlanSchema, "Translate the current request into up to three complementary Google Books queries: one broad genre subject, one concise story/theme query, and optionally one alternative phrasing. Avoid combining every mood adjective into one restrictive AND query. The explicit request and selected filters take priority over permitted preferences; preferences are only a starting point for a broad request. Never search for an excluded theme. Return needsContext=true only when neither request, selected genre/mood nor permitted preferences provide useful direction. Do not invent titles.", { request: input.request, filters: input.filters, preferences:context.signals.map(({category,label,weight})=>({category,label,weight})) });
   if (plan.needsContext) return { state: "context" };
   const preferenceRows = await supabase.from("recommendation_feedback").select(`recommendations!inner(books!inner(${bookColumns}))`).eq("user_id", userId).eq("preference_effect", "show_less").order("updated_at", { ascending: false }).limit(30);
   if (preferenceRows.error) throw new Error("Recommendation preferences unavailable");
   const avoid = context.personalisationEnabled ? preferenceRows.data.map(row => mapCandidate(row.recommendations.books)) : [];
   const excluded = [...context.books.filter(book => book.status !== "want_to_read").map(book => book.googleBooksId), ...avoid.map(book => book.googleBooksId)];
+  const excludedWorks=[...context.books.filter(book=>book.status!=="want_to_read"),...avoid].map(bookWorkKey);
   let books;
   if (input.filters.source === "tbr") books = context.books.filter(book => book.status === "want_to_read").map(book => ({ googleBooksId: book.googleBooksId, title: book.title, authors: book.author ? [book.author] : [],
     description: book.description, pageCount: book.pageCount, categories: book.categories, publishedDate: book.publishedDate, thumbnailUrl: book.coverSrc, isbn: book.isbn }));
   else {
-    const searches = await Promise.allSettled(plan.queries.map(query => search(query,20)));
+    const searches = await Promise.allSettled([...new Set(plan.queries)].map(query => search(query,40)));
     if (searches.every(result => result.status === "rejected")) throw new Error("Book catalogue unavailable");
-    books = searches.flatMap(result => result.status === "fulfilled" ? result.value : []);
+    const pools=searches.filter(result=>result.status==="fulfilled").map(result=>result.value);
+    // Interleave queries so one query cannot consume the entire candidate budget.
+    books=Array.from({length:40},(_,index)=>pools.map(pool=>pool[index]).filter(Boolean)).flat();
   }
-  let candidates = eligibleCandidates(books, input.filters, excluded);
+  const clean=rows=>rows.filter(book=>/study guide|summary|workbook|journal|notebook|colouring|coloring/i.test(input.request)||!/\b(study guide|summary of|workbook|reading journal|notebook|coloring book|colouring book)\b/i.test(book.title));
+  let candidates = eligibleCandidates(clean(books), input.filters, excluded,excludedWorks);
   if (candidates.length < 3 && input.filters.source === "anywhere") {
     // Catalogue queries combine words strictly; a mood-heavy phrase can miss
     // suitable books. Broaden the catalogue, then let the ranker assess fit.
     const genre = input.filters.genre || (/fantasy/i.test(input.request) ? "Fantasy" : /romance|romantic/i.test(input.request) ? "Romance" : "Fiction");
-    const broader = await search(`subject:${genre === "Literary" ? "Fiction" : genre}`,20);
-    candidates = eligibleCandidates([...books,...broader],input.filters,excluded);
+    const broader = await search(`subject:${genre === "Literary" ? "Literary Fiction" : genre}`,40);
+    candidates = eligibleCandidates(clean([...books,...broader]),input.filters,excluded,excludedWorks);
   }
   if (candidates.length < 3) return { state: "no-match" };
   const selected = await generate(recommendationResponseSchema,
-    "Choose exactly three distinct supplied candidates that fit the request, or an empty recommendations array if there are no three reasonable matches. Respect genre, mood and length. Treat signal weight as importance; only reference supplied signal IDs that actually match the metadata. Explain using provided facts with uncertainty about subjective fit. Do not claim page counts/pace/tropes absent from metadata. Reduce patterns in showLess. Use confidence labels for subjective fit, not probabilities. Never use hidden history or private notes.",
+    "Choose exactly three distinct works from supplied candidates, or an empty array if there are not three reasonable matches. Current request, exclusions and selected filters outrank past preferences. Read descriptions carefully: match requested tone, story elements, audience and pace only when supported; a genre alone is not evidence of a trope or pacing. Avoid guides, summaries, sequels requiring prior books and repeated editions unless requested. Treat signal weights as importance, not certainty; match only supplied signal IDs supported by actual book metadata. For EACH result include bookEvidence: 1-3 exact short quotes from the supplied description, categories or title that justify its fit. Quotes must be copied verbatim. Reasons should be concise, specific and describe a relevant tradeoff or uncertainty, without inventing plot, tropes, ending or reviews. Strong match needs multiple supported aspects and substantive metadata; Good match is a plausible fit with limitations; Experimental must name its deliberate tradeoff and still satisfy explicit requirements. Reduce patterns in showLess. Never use hidden history or private notes.",
     { request: input.request, filters: input.filters, signals: context.signals.map(({id,category,label,weight,source})=>({id,category,label,weight,source})),
       showLess: avoid.map(book => ({ title: book.title, categories: book.categories, description: plainDescription(book.description).slice(0,1200) })),
       candidates: candidates.map(book => ({ id: book.googleBooksId, title: book.title, authors: book.authors, description: plainDescription(book.description).slice(0,2500), categories: book.categories, pageCount: book.pageCount })) });
-  const recs = validRecommendations(selected, candidates, context.signals);
+  const recs = validRecommendations(selected, candidates, context.signals,true);
   if (!recs.length) return { state: "no-match" };
   // Recheck consent after generation, before recording a session based on it.
   const latest = await recommendationContext(supabase, userId);
