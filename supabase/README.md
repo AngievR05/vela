@@ -84,4 +84,6 @@ On 2026-10-05, the restored hosted project passed its 17 boundary checks and the
 
 ## End-to-end acceptance
 
+Reading Stats adds `202610070001_reading_stats.sql`, applied to the hosted project on 2026-10-07. `reader_book_stats` is reader-private through RLS and has no anonymous grants. `save_reading_record` is security invoker, derives the reader from `auth.uid()`, locks the reader's finished book, checks its modification timestamp and saves facts/finish date atomically. Existing library contents are preserved. PostgreSQL tests verify foreign and anonymous denial, stale writes and rollback; hosted anonymous table/RPC/API calls were denied, and an unchanged-value reading record was saved through the UI. Optional missing format/mood/pace information remains explicitly unrecorded.
+
 With Supabase configured, verify account creation and confirmation, login, incorrect credentials with retained inputs, a page reload and a refreshed session, logout, password reset email and password change, expired links, and login's return to a requested private page. Check that a second browser session cannot read the first reader's data.

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { applyBookMutation, bookMutationSchema, homeCacheKey, homeQueueKey, homeSnapshotSchema, libraryBookSchema, parseHomeQueue, parseHomeSnapshot, queueMutation } from "@/lib/home-data";
 
-export default function useHome(userId) {
+export default function useHome(userId, { endpoint = "/api/home", cacheKey = homeCacheKey(userId), returnPath = "/home" } = {}) {
   const [snapshot, setSnapshot] = useState(null);
   const [phase, setPhase] = useState("loading");
   const [online, setOnline] = useState(true);
@@ -16,7 +16,7 @@ export default function useHome(userId) {
     state.current.snapshot = value;
     if (!state.current.active) return;
     setSnapshot(value);
-    try { localStorage.setItem(homeCacheKey(userId), JSON.stringify(value)); } catch { /* Online reading remains available. */ }
+    try { localStorage.setItem(cacheKey, JSON.stringify(value)); } catch { /* Online reading remains available. */ }
   }
   function keepQueue(value, requireStorage = false) {
     try { localStorage.setItem(homeQueueKey(userId), JSON.stringify(value)); }
@@ -25,8 +25,8 @@ export default function useHome(userId) {
     if (state.current.active) setQueue(value);
   }
   function expired() {
-    try { localStorage.removeItem(homeCacheKey(userId)); localStorage.removeItem(homeQueueKey(userId)); } catch { /* The page is about to leave. */ }
-    window.location.replace("/login?next=/home");
+    try { localStorage.removeItem(cacheKey); localStorage.removeItem(homeQueueKey(userId)); } catch { /* The page is about to leave. */ }
+    window.location.replace(`/login?next=${encodeURIComponent(returnPath)}`);
   }
   async function send(mutation) {
     const response = await fetch(`/api/library/${mutation.id}`, {
@@ -79,7 +79,7 @@ export default function useHome(userId) {
         await sync(showLoading);
         if (!live || !current.active) return;
         const revision = current.revision;
-        const response = await fetch("/api/home", { cache: "no-store", signal: AbortSignal.timeout(20000) });
+        const response = await fetch(endpoint, { cache: "no-store", signal: AbortSignal.timeout(20000) });
         if (response.status === 401) { expired(); return; }
         if (!response.ok) throw new Error("Summary unavailable");
         const parsed = homeSnapshotSchema.safeParse(await response.json());
@@ -98,7 +98,7 @@ export default function useHome(userId) {
     async function init() {
       if (!live) return;
       try {
-        const saved = parseHomeSnapshot(localStorage.getItem(homeCacheKey(userId)), userId);
+        const saved = parseHomeSnapshot(localStorage.getItem(cacheKey), userId);
         current.queue = parseHomeQueue(localStorage.getItem(homeQueueKey(userId)));
         if (!live || !current.active) return;
         setQueue(current.queue);
@@ -123,7 +123,7 @@ export default function useHome(userId) {
     };
     // This effect owns the lifecycle of one verified reader's cache and queue.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, [userId, endpoint, cacheKey, returnPath]);
 
   function enqueue(mutation) {
     const value = state.current.snapshot;

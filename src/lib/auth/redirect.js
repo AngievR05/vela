@@ -1,4 +1,4 @@
-const protectedPaths = ["/home", "/library", "/discover", "/dna", "/settings", "/setup"];
+const protectedPaths = ["/home", "/stats", "/library", "/discover", "/dna", "/settings", "/setup"];
 
 export function isProtectedPath(pathname) {
   return protectedPaths.some((path) => pathname === path || pathname.startsWith(`${path}/`));

@@ -1,5 +1,8 @@
 import { z } from "zod";
 import { detailMutationSchema } from "./library-data.js";
+import { statsRecordSchema } from "./reading-stats.js";
+import { localDate } from "./reading-calendar.js";
+export { localDate } from "./reading-calendar.js";
 
 export const libraryBookSchema = z.object({
   id: z.uuid(), bookId: z.uuid(), googleBooksId: z.string(), title: z.string().min(1), author: z.string(),
@@ -14,6 +17,8 @@ export const homeSnapshotSchema = z.object({
   version: z.literal(1), userId: z.uuid(), displayName: z.string(), fetchedAt: z.number(),
   books: z.array(libraryBookSchema).max(50000),
   personalisationEnabled: z.boolean(),
+  statsRecords: z.array(statsRecordSchema).max(50000).default([]),
+  statsSetupRequired: z.boolean().default(false),
   signals: z.array(z.object({
     id: z.uuid(), category: z.string(), label: z.string(), source: z.string(),
     evidence: z.array(z.object({ id: z.uuid(), title: z.string() })),
@@ -47,9 +52,6 @@ export function queueMutation(queue, mutation) {
   if (progressIndex >= 0) next.splice(progressIndex, 0, mutation);
   else next.push(mutation);
   return next;
-}
-export function localDate(date = new Date()) {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 export function applyBookMutation(snapshot, mutation, date = localDate()) {
   if (["remove", "restore", "review", "status"].includes(mutation.kind)) return { ...snapshot, books: snapshot.books.map(book => book.id !== mutation.id ? book : {

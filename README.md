@@ -55,6 +55,8 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+For another device on the same Wi-Fi, use `http://192.168.3.7:3000` and sign in there separately; sessions and offline caches belong to each browser origin. The development server allows that exact network hostname. If your computer’s IP changes, update `allowedDevOrigins` in `next.config.mjs` and the Supabase callback allowlist. Manual books and recommendation IDs use secure random bytes even on LAN HTTP, and book sharing offers selectable text when native sharing/clipboard is unavailable.
+
 ## Git setup
 
 If this folder is not already inside your GitHub repository:
@@ -141,6 +143,16 @@ Apply `supabase/migrations/202610060003_recommendations.sql` after the earlier m
 The server uses `GEMINI_API_KEY` with `gemini-3.5-flash-lite` by default; optional server-only `GEMINI_MODEL` overrides it. Google Books supplies canonical candidates, facts and covers. Client-provided candidates, reader IDs and evidence are rejected. Generated book and signal IDs must belong to the server’s allowed lists.
 
 The PostgreSQL tests cover atomic saves, idempotent retry, feedback, correction and anonymous/cross-reader denial. Live hosted generation, session persistence, Google Books covers and Helpful feedback were verified after the migration was applied. Temporary browser fixtures verified preference Undo, explicit corrections and retained input after feedback/save failures; fixtures are removed from the app.
+
+## Home and reading stats
+
+Home and `/stats` follow the completed **C · Home** and **P · Reading Stats** designs, using the supplied SVG logo, exact local Figma background/nav artwork and dynamic Google Books covers. The stats entry points are the Home summary, monthly chart and Stats quick action.
+
+Stats include only visible finished books with valid finish dates up to today. Year/all-time selection, monthly/yearly counts, primary genres, formats, moods, story pace, edition length and whole-star ratings link to the records behind each count. Missing dates, page counts and descriptive facts are explicitly shown rather than inferred. Unrated finished books are excluded from the rating denominator. Current reading and DNF books are excluded from finish totals.
+
+Migration `202610070001_reading_stats.sql` was applied successfully to the hosted project on 2026-10-07, including explicit anonymous grant revocation. It adds reader-private optional book facts and an atomic save operation for facts and finish dates. Editing a reading record preserves input on failed saves; stale records are rejected using the book's modification timestamp. These facts are included in account exports and cascade with account/library deletion. Stats have a separate reader-scoped offline cache, cleared at logout and reader changes. Offline stats are clearly marked as saved data.
+
+Verification: PostgreSQL tests cover real RLS, cross-reader and anonymous denial, atomic rollback, concurrent edits, date filtering and exact page/rating denominators. Live checks verified matching Home/stats totals, chart-to-book navigation, an unchanged-value record save and unsigned API/route denial. The temporary mobile verification route was removed after checking the requested screens.
 
 ## Settings, account and CSV import
 

@@ -11,7 +11,7 @@ export default function AppShell({
   className = "",
 }) {
   const pathname = usePathname();
-  const home = pathname === "/home" || pathname === "/library" || pathname.startsWith("/library/") || pathname === "/discover" || pathname.startsWith("/discover/") || pathname === "/settings";
+  const home = pathname === "/home" || pathname === "/stats" || pathname === "/library" || pathname.startsWith("/library/") || pathname === "/discover" || pathname.startsWith("/discover/") || pathname === "/settings";
   return (
     <div
       className={[

@@ -67,7 +67,7 @@ export default function BookDetail({ userId, initialBook, onBack }) {
   }
   async function share(){
     const info={title:book.title,text:`${book.title}${book.author?` by ${book.author}`:""}`,...(!book.googleBooksId.startsWith("manual:")?{url:`https://books.google.com/books?id=${encodeURIComponent(book.googleBooksId)}`}:{})};
-    try{if(navigator.share)await navigator.share(info);else{await navigator.clipboard.writeText([info.text,info.url].filter(Boolean).join("\n"));setNotice("Book information copied.");}setModal(null);}catch(failure){if(failure.name!=="AbortError")setError("Sharing isn’t available in this browser. Please try again.");}
+    try{if(navigator.share)await navigator.share(info);else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText([info.text,info.url].filter(Boolean).join("\n"));setNotice("Book information copied.");}else{setModal("share");return;}setModal(null);}catch(failure){if(failure.name!=="AbortError"){setError("");setModal("share");}}
   }
   const days=readingDays(book);
   const percentText=book.pageCount?`${book.currentPage??Math.round(book.pageCount*book.progressPercent/100)} of ${book.pageCount} pages`:`${book.progressPercent}% complete`;
@@ -86,9 +86,13 @@ export default function BookDetail({ userId, initialBook, onBack }) {
       {book.status==="finished"&&<><div className={styles.finishedStats}><div><strong>{book.rating?"★".repeat(book.rating):"—"}</strong><p>{book.rating?`${book.rating} stars`:"Not rated"}</p></div><div><strong>{days?`${days} ${days===1?"day":"days"}`:"—"}</strong><p>Reading time</p></div><div><strong>{book.favourite?"Favourite":"Finished"}</strong><p>{book.favourite?"Saved":"In your Library"}</p></div></div>{book.notes&&<blockquote className={styles.note}>{book.notes}</blockquote>}<Button className={styles.fullButton} variant="secondary" onClick={openReview} disabled={offline}>Edit rating and notes</Button></>}
       {book.status==="dnf"&&<><Card className={styles.dnfCard}><p>WHY IT WASN’T RIGHT</p><h2>{book.dnfReason||"No reason saved"}</h2><p>{book.dnfUse?"You allowed this reason for learning. Your data settings still apply.":"Not used for recommendations"}</p></Card><Button className={styles.fullButton} onClick={()=>change({kind:"status",status:"want_to_read"})} loading={pending} disabled={offline}>Restore to TBR</Button><Button variant="tertiary" onClick={openDnf} disabled={offline}>Edit DNF reason</Button></>}
     </>}
+    {book.status==="finished"&&!book.isRemoved&&<Button className={styles.fullButton} variant="secondary" href={`/stats?view=books&book=${book.id}`}>Edit finish date and reading record</Button>}
     {notice&&<p className={styles.notice} role="status">{notice}</p>}
     {error&&!modal&&<InlineAlert type="error">{error}</InlineAlert>}
     {!offline&&<Button variant="tertiary" onClick={refreshBook} loading={revision}>Refresh book</Button>}
+    <BottomSheet open={modal==="share"} title="Share book" onClose={close}>
+      <div className={styles.form}><p>Select and copy this book information to share it.</p><textarea aria-label="Book information to share" readOnly rows={4} value={`${book.title}${book.author?` by ${book.author}`:""}${!book.googleBooksId.startsWith("manual:")?`\nhttps://books.google.com/books?id=${encodeURIComponent(book.googleBooksId)}`:""}`} onFocus={event=>event.currentTarget.select()}/><Button variant="secondary" onClick={close}>Done</Button></div>
+    </BottomSheet>
     <BottomSheet open={modal==="actions"} title="Book actions" onClose={close}>
       <div className={styles.form}><Button variant="secondary" onClick={share}>Share book</Button><Button variant="secondary" onClick={openReview} disabled={offline}>Edit rating, notes and favourite</Button>
         {book.status!=="want_to_read"&&<Button variant="secondary" onClick={()=>change({kind:"status",status:"want_to_read"})} disabled={offline} loading={pending}>Move to TBR</Button>}

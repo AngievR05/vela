@@ -20,6 +20,9 @@ import SkeletonLoader from "@/components/states/SkeletonLoader";
 import BottomSheet from "@/components/feedback/BottomSheet";
 import ConfirmationDialog from "@/components/feedback/ConfirmationDialog";
 import { deriveHome, homeInsight } from "@/lib/home-data";
+import { deriveReadingStats } from "@/lib/reading-stats";
+import ReadingArtwork from "@/components/stats/ReadingArtwork";
+import { CountBars, StatsMetrics } from "@/components/stats/StatsCharts";
 import useHome from "./useHome";
 import styles from "./Home.module.css";
 
@@ -52,21 +55,17 @@ export default function HomeScreen({ userId, initialAction }) {
   useEffect(() => {
     Promise.resolve().then(() => setSalutation(greeting(new Date().getHours())));
     const timer = setInterval(() => setSalutation(greeting(new Date().getHours())), 60000);
-    // Cache each decorative state before a reader loses their connection.
-    for (const tone of ["brass", "green", "purple", "loading", "offline", "error"]) {
-      for (const asset of ["wash", "arch"]) { const image = new window.Image(); image.src = `/reading-home/${asset}-${tone}.svg`; }
-    }
     return () => clearInterval(timer);
   }, []);
 
   const summary = home.snapshot ? deriveHome(home.snapshot) : null;
   const insight = home.snapshot ? homeInsight(home.snapshot) : null;
+  const yearStats = home.snapshot ? deriveReadingStats(home.snapshot) : null;
   const offline = !home.online || home.phase === "offline";
   const state = home.phase === "loading" ? "loading" : home.phase === "error" ? "error" : offline ? "offline" : summary?.state || "new";
   const tone = { populated: "brass", "no-current": "green", new: "purple", loading: "loading", offline: "offline", error: "error" }[state];
-  const code = { populated: "C01", "no-current": "C02", new: "C03", loading: "C04", offline: "C05", error: "C06" }[state];
   const name = home.snapshot?.displayName?.trim() || "";
-  const title = `${state === "new" ? "Welcome" : salutation}${name ? `, ${name}` : ""}`;
+  const title = state === "populated" ? "A little reading magic" : `${state === "new" ? "Welcome" : salutation}${name ? `, ${name}` : ""}`;
   const selectedBook = home.snapshot?.books.find((book) => book.id === selectedId);
 
   function openAdd() { router.push("/library/add"); }
@@ -139,6 +138,7 @@ export default function HomeScreen({ userId, initialAction }) {
   const readingCard = summary?.current && <CurrentlyReadingCard variant="home" className={styles.current}
     title={summary.current.title} author={summary.current.author} coverSrc={summary.current.coverSrc}
     progress={summary.current.progressPercent}
+    detailHref={`/library/${summary.current.id}`}
     progressText={summary.current.pageCount ? `${summary.current.currentPage ?? Math.round(summary.current.pageCount * summary.current.progressPercent / 100)} of ${summary.current.pageCount} pages` : `${summary.current.progressPercent}% complete`}
     onUpdate={() => openProgress(summary.current)} />;
   const insightCard = insight && <Card className={styles.insight}>
@@ -149,14 +149,9 @@ export default function HomeScreen({ userId, initialAction }) {
   </Card>;
 
   return <section className={`${styles.screen} ${styles[tone]} ${authBody.variable} ${authDisplay.variable}`} aria-label="Reading Home">
-    <div className={styles.art} aria-hidden="true">
-      <Image className={styles.wash} src={`/reading-home/wash-${tone}.svg`} alt="" width={230} height={230} loading="eager" unoptimized />
-      <span className={styles.folio}>{code}</span>
-      <Image className={styles.arch} src={`/reading-home/arch-${tone}.svg`} alt="" width={330} height={420} loading="eager" unoptimized />
-      <span className={styles.spine} />
-    </div>
+    <ReadingArtwork home />
     <div className={styles.content}>
-      <AppHeader className={styles.header} title={title} subtitle="YOUR READING HOME" logo={<BrandLogo size={32} />} />
+      <AppHeader className={styles.header} title={title} subtitle={state === "populated" ? name ? `${name}’s reading home` : "Your reading home" : "YOUR READING HOME"} logo={<BrandLogo size={32} />} />
       {notice && <div className={styles.notice} role="status"><p>{notice}</p><button type="button" onClick={() => setNotice("")} aria-label="Dismiss message">×</button></div>}
       {home.queue.length > 0 && !offline && <InlineAlert type={home.syncError ? "error" : "info"} className={styles.feedback}>
         {home.syncError || `${home.queue.length} saved ${home.queue.length === 1 ? "update is" : "updates are"} waiting to sync.`}
@@ -175,27 +170,30 @@ export default function HomeScreen({ userId, initialAction }) {
       </>}
       {state === "new" && <>
         <Card className={styles.hero}><BrandLogo size={64} /><h2>Your Reading DNA is taking shape.</h2>
-          <p>Add or finish a few books and Vela will have clearer evidence to show you.</p>
+          <p>Your Library works now. Reading DNA learns from books only when you approve the relevant sources.</p>
           <Button className={styles.button} onClick={openAdd}>Add your first book</Button>
         </Card>
         <div className={styles.firstSteps}>{["Add a book", "Track progress", "Rate or DNF"].map((label, index) => <div key={label}><strong>{index + 1}</strong><p>{label}</p></div>)}</div>
         <Card className={styles.support}><h2>Build it at your pace</h2><p>Your Library works now. Vela learns only from the reading signals you choose.</p></Card>
+        <Card className={`${styles.shelf} ${styles.brassSupport}`}><h2>Your shelf, your pace</h2><p>Your stats will appear as you finish books. Ratings and reflection are always optional.</p><Button className={styles.button} href="/library">Explore my Library</Button></Card>
       </>}
       {state === "populated" && <>
         {readingCard}{nextRead()}
-        <div className={styles.stats}>{[[summary.stats.thisYear, "books this year"], [summary.stats.reading, "currently reading"], [summary.stats.average, "average rating"]].map(([number, label]) => <div key={label}><strong>{number}</strong><p>{label}</p></div>)}</div>
+        <StatsMetrics stats={yearStats} home year={new Date().getFullYear()} />
+        <section className={styles.activity}><h2>Your year in stories</h2><p>Finished books · January–{new Date().toLocaleDateString("en-GB", { month: "long" })} {new Date().getFullYear()}</p><CountBars items={yearStats.months} compact month onSelect={() => router.push("/stats?view=time")} /><p>{yearStats.total} finished. No streaks, no pressure.</p><Button className={styles.button} href="/stats">Explore my reading stats</Button></section>
         {insightCard}
         <section className={styles.quick}><p>QUICK ACTIONS</p><div>
           <button type="button" onClick={openAdd}><span aria-hidden="true">＋</span><span>Add book</span></button>
           <Link href="/library"><span aria-hidden="true">▥</span><span>Open Library</span></Link>
           <Link href="/dna"><span aria-hidden="true">✦</span><span>View DNA</span></Link>
+          <Link href="/stats"><Image src="/reading-stats/stats-icon.svg" width={22} height={22} alt="" unoptimized/><span>Stats</span></Link>
         </div></section>
       </>}
       {state === "no-current" && <>
         <Card className={styles.hero}>
-          {summary.saved ? <BookCover title={summary.saved.title} author={summary.saved.author} src={summary.saved.coverSrc} size="current" className={styles.savedCover} placeholderType="book" decorative /> : <BrandLogo size={64} />}
+          {summary.saved ? <Link href={`/library/${summary.saved.id}`} aria-label={`Open ${summary.saved.title}`}><BookCover title={summary.saved.title} author={summary.saved.author} src={summary.saved.coverSrc} size="current" className={styles.savedCover} placeholderType="book" decorative /></Link> : <BrandLogo size={64} />}
           <h2>Ready for a new chapter?</h2><p>Start a book from your TBR or browse your Library.</p>
-          <Button className={styles.button} onClick={() => setModal("library")}>Browse Library</Button>
+          <Button className={styles.button} href="/library">Browse Library</Button>
         </Card>
         {nextRead(true)}{insightCard}
         {summary.saved ? <Card className={`${styles.support} ${styles.brassSupport}`}><h2>Saved for later</h2>
@@ -212,9 +210,15 @@ export default function HomeScreen({ userId, initialAction }) {
           {home.queue.length > 0 && <button type="button" className={styles.textAction} onClick={() => setModal("pending")}>Review {home.queue.length} saved {home.queue.length === 1 ? "update" : "updates"} →</button>}
         </Card>
       </>}
+      {["populated", "no-current", "offline"].includes(state) && home.snapshot && <Card className={styles.shelf}>
+        <h2>{offline ? "From your saved Library" : "A story waiting on your shelf"}</h2>
+        {home.snapshot.books.filter(book => !book.isRemoved && book.status === "want_to_read").slice(0, 2).map(book => <Link className={styles.shelfBook} key={book.id} href={`/library/${book.id}`}><BookCover src={book.coverSrc} title={book.title} author={book.author} size="search" decorative/><span>{book.title} · {book.author}</span></Link>)}
+        <p>{offline ? "Cached books remain available while offline." : "Choose from your TBR whenever you feel ready."}</p>
+        {offline ? <Button className={styles.button} onClick={() => setModal("library")}>Browse my TBR</Button> : <Button className={styles.button} href="/library?tab=want_to_read">Browse my TBR</Button>}
+      </Card>}
       {formError && modal === null && <InlineAlert type="error" className={styles.feedback}>{formError}</InlineAlert>}
     </div>
-    <BottomNavigation variant="home" activePath="/home" onNavigate={navigation} />
+    <BottomNavigation variant="home" activePath="/home" onNavigate={navigation} assetDirectory="reading-stats" />
 
     <BottomSheet open={modal === "progress"} title="Update progress" onClose={close}>
       {selectedBook && <form className={styles.form} onSubmit={saveProgress} noValidate>

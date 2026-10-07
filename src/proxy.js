@@ -56,5 +56,5 @@ export async function proxy(request) {
 }
 
 export const config = {
-  matcher: ["/", "/welcome", "/home/:path*", "/library/:path*", "/discover/:path*", "/dna/:path*", "/settings/:path*", "/setup/:path*", "/login", "/signup", "/forgot-password", "/reset-password", "/auth/:path*", "/api/:path*"],
+  matcher: ["/", "/welcome", "/home/:path*", "/stats/:path*", "/library/:path*", "/discover/:path*", "/dna/:path*", "/settings/:path*", "/setup/:path*", "/login", "/signup", "/forgot-password", "/reset-password", "/auth/:path*", "/api/:path*"],
 };

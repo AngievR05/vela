@@ -1,0 +1,50 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { PGlite } from "@electric-sql/pglite";
+import { deriveReadingStats, booksForStats, saveStatsRecordSchema, validDay } from "../src/lib/reading-stats.js";
+const a="11111111-1111-4111-8111-111111111111", b="22222222-2222-4222-8222-222222222222", id="33333333-3333-4333-8333-333333333333";
+test("Reading stats use finished, dated, visible records and exact page/rating denominators",()=>{
+  const book={id,title:"Example",status:"finished",finishedAt:"2026-02-28",updatedAt:"2026-03-01T00:00:00Z",pageCount:300,rating:5,categories:["Fiction / Fantasy / General"]};
+  const snapshot={books:[book,{...book,id:b,title:"Unrated",finishedAt:"2026-01-02",pageCount:null,rating:null}, {...book,id:a,status:"reading"},{...book,id:"removed",isRemoved:true},{...book,id:"undated",finishedAt:null},{...book,id:"future",finishedAt:"2026-12-01"}],statsRecords:[{id,finishedAt:"2024-01-01",format:"Ebook",primaryGenre:"Fantasy",pace:"Slow",moods:["Cosy","Hopeful"],updatedAt:"2026-04-01T00:00:00Z"}]};
+  const stats=deriveReadingStats(snapshot,"2026",new Date(2026,9,7));
+  assert.equal(stats.total,2);assert.equal(stats.pages,300);assert.equal(stats.average,"5.0");assert.equal(stats.unrated,1);assert.equal(stats.undated,1);assert.equal(stats.futureDated,1);
+  assert.equal(stats.months.reduce((sum,item)=>sum+item.count,0),2);assert.equal(stats.months.length,10);
+  assert.equal(stats.genres.reduce((sum,item)=>sum+item.count,0),2);assert.equal(stats.formats.reduce((sum,item)=>sum+item.count,0),2);
+  assert.equal(booksForStats(stats,{type:"mood",value:"Cosy"})[0].id,id);assert.equal(booksForStats(stats,{type:"rating",value:"Unrated"})[0].id,b);
+  assert.equal(booksForStats(stats,{type:"month",value:"2026-02"})[0].updatedAt,book.updatedAt);
+  assert.equal(deriveReadingStats(snapshot,"2025",new Date(2026,9,7)).total,0);
+  assert.equal(booksForStats(deriveReadingStats(snapshot,"2025",new Date(2026,9,7)),{type:"book",value:"undated"})[0].id,"undated");
+  assert.equal(booksForStats(stats,{type:"book",value:"removed"}).length,0);
+  assert.equal(deriveReadingStats(snapshot,"all",new Date(2026,9,7)).months[0].count,2);
+  assert.equal(validDay("2026-02-30"),false);assert.equal(validDay("2024-02-29"),true);
+  const data={finishedAt:"2026-02-28",format:"Print",primaryGenre:"Fantasy",moods:["Cosy"],pace:"Slow",expectedUpdatedAt:book.updatedAt};
+  assert.equal(saveStatsRecordSchema.safeParse(data).success,true);
+  for(const change of [{userId:a},{moods:["Cosy","Cosy"]},{finishedAt:"2026-02-30"},{format:"Guessed"},{pace:"Made up"}])assert.equal(saveStatsRecordSchema.safeParse({...data,...change}).success,false);
+});
+test("Reading record migration enforces real RLS, ownership, concurrency and atomic finish dates",async()=>{
+ const db=new PGlite();
+ try{
+  await db.exec(`create schema auth;create schema extensions;create role anon;create role authenticated;grant usage on schema auth to anon,authenticated;create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');create function auth.uid() returns uuid language sql stable as $$select (current_setting('request.jwt.claims',true)::jsonb->>'sub')::uuid$$;`);
+  for(const file of ["202609220001_initial_schema_rls.sql","202610060001_reading_setup.sql","202610060002_library_detail.sql","202610070001_reading_stats.sql"])await db.exec((await readFile(new URL("../supabase/migrations/"+file,import.meta.url),"utf8")).replace("create extension if not exists pgcrypto with schema extensions;",""));
+  await db.exec(`insert into auth.users(id) values('${a}'),('${b}'); insert into public.books(id,google_books_id,title) values('${id}','Example','Example'); insert into public.user_books(id,user_id,book_id,status,progress_percent,started_at,finished_at) values('${id}','${a}','${id}','finished',100,'2026-01-01','2026-02-28');`);
+  const role=async(user,which="authenticated")=>db.exec(`reset role;select set_config('request.jwt.claims','${JSON.stringify(user?{sub:user}:{})}',false);set role ${which};`);
+  const updated=async()=>String((await db.query("select updated_at::text as value from public.user_books where id=$1",[id])).rows[0].value);
+  await role(a);const data={finishedAt:"2026-03-01",format:"Ebook",primaryGenre:"Fantasy",moods:["Cosy","Hopeful"],pace:"Slow",expectedUpdatedAt:await updated()};
+  await db.query("select public.save_reading_record($1,$2)",[id,data]);
+  assert.equal((await db.query("select reading_format from public.reader_book_stats")).rows[0].reading_format,"Ebook");
+  assert.equal((await db.query("select finished_at::text value from public.user_books")).rows[0].value,"2026-03-01");
+  await assert.rejects(db.query("select public.save_reading_record($1,$2)",[id,data]),/Book changed/);
+  const fresh={...data,expectedUpdatedAt:await updated()};
+  await assert.rejects(db.query("select public.save_reading_record($1,$2)",[id,{...fresh,moods:["Invented"],finishedAt:"2026-04-01"}]));
+  assert.equal((await db.query("select finished_at::text value from public.user_books")).rows[0].value,"2026-03-01");
+  await assert.rejects(db.query("select public.save_reading_record($1,$2)",[id,{...fresh,finishedAt:"2025-01-01"}]),/Check finish date/);
+  await role(b);assert.equal((await db.query("select * from public.reader_book_stats")).rows.length,0);
+  await assert.rejects(db.query("select public.save_reading_record($1,$2)",[id,fresh]),/Finished book unavailable/);
+  await assert.rejects(db.query("insert into public.reader_book_stats(id,user_id) values($1,$2)",[id,b]),/row-level security/);
+  assert.equal((await db.query("update public.reader_book_stats set reading_format='Print' where id=$1 returning id",[id])).rows.length,0);
+  await role(null,"anon");await assert.rejects(db.query("select * from public.reader_book_stats"),/permission denied/);await assert.rejects(db.query("select public.save_reading_record($1,$2)",[id,fresh]),/permission denied/);
+  await role(a);await db.query("select public.save_reading_record($1,$2)",[id,{...fresh,finishedAt:null}]);
+  assert.equal((await db.query("select finished_at from public.user_books")).rows[0].finished_at,null);
+ }finally{await db.close();}
+});

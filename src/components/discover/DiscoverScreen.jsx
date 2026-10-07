@@ -1,4 +1,5 @@
 "use client";
+import { createEntryId } from "@/lib/browser-id";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import DiscoverShell from "./DiscoverShell";
@@ -55,7 +56,7 @@ export default function DiscoverScreen({ userId }) {
   async function generate(event){
     event?.preventDefault();if(busy.current)return;
     if(!navigator.onLine){setOnline(false);return;}
-    const input=recommendationRequestSchema.safeParse({entryId:entryId.current||crypto.randomUUID(),request,filters});
+    const input=recommendationRequestSchema.safeParse({entryId:entryId.current||createEntryId(),request,filters});
     if(!input.success){setState("context");setError("");return;}
     entryId.current=input.data.entryId;busy.current=true;setState("loading");setError("");
     try{

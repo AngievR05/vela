@@ -96,3 +96,38 @@
 .libraryRow p, .evidence p { font: 400 13px/18px var(--font-body); color: var(--vela-subtle-text,#68625d); }
 @media (min-width: 600px) { .screen [role="dialog"], .screen [role="alertdialog"] { width: min(480px, 100%); margin-inline: auto; } }
 @media (prefers-reduced-motion: reduce) { .screen * { transition-duration: 0ms; } }
+
+/* Completed C · Home visual treatment; page layout continues to scroll above the floating navigation. */
+.screen { background:linear-gradient(90deg,#eadfe4 0%,#fcfaf6 48%,#dce8e4 100%); }
+.header p { font-size:12px; line-height:16px; }
+.screen .button { border-radius:18px; box-shadow:0 10px 22px #22201e1a,0 3px 6px #22201e1f; }
+.screen .current { background:#183b34; color:#fbf8f2; border-color:#d6c6a3; border-radius:20px; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
+.current [data-part="cover"] { flex:none; width:74px; height:112px; }
+.current [data-part="cover"] > div { width:74px; height:112px; }
+.current [data-part="label"],.current [data-part="author"],.current [data-part="progress"] > div:first-child,.current [data-part="progress"] strong { color:#fbf8f2; }
+.current h2 a { color:inherit; }
+.current [data-part="info"] { gap:4px; min-height:114px; }
+.current [data-part="update"] { min-height:44px; border-radius:18px; background:#fbf8f2; color:#183b34; }
+.current [role="progressbar"] { background:#2a6659; }
+.current [role="progressbar"] > div { background:#d6c6a3; }
+.screen .insight { border-radius:20px; background:#5d3648; color:#fbf8f2; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
+.insight > p,.insight .textAction { color:#fbf8f2; }
+.insight > p { font-size:12px; line-height:16px; }
+.quick { background:transparent; }
+.quick > p { font-size:12px; line-height:16px; }
+.quick > div { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.quick button,.quick a { font-size:12px; line-height:18px; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
+.quick a:last-child { background:#dce9e3; }
+.screen .hero { padding:20px 18px; border-radius:24px; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
+.screen .support { border-color:#d6c6a3; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
+.activity,.screen .shelf { display:flex; flex-direction:column; gap:10px; padding:16px; border:0; border-radius:20px; background:var(--vela-surface-base,#fbf8f2); box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
+.activity h2,.shelf h2 { color:var(--colour-plum); font:600 26px/36px var(--font-display); }
+.activity p { color:var(--vela-subtle-text,#47423e); font:400 13px/18px var(--font-body); }
+.activity .button,.shelf .button { min-height:48px; border-radius:14px; font-weight:400; font-size:14px; }
+.screen .shelf { background:var(--vela-mauve-surface,#e7e4ef); }
+.shelfBook { display:flex; align-items:center; gap:12px; color:var(--colour-ink); min-height:44px; }
+.screen .brassSupport { background:var(--vela-beige,#eee7d8); }
+.offline .current { background:var(--vela-beige,#eee7d8); color:var(--colour-ink); }
+.offline .current [data-part="label"],.offline .current [data-part="author"],.offline .current [data-part="progress"] > div:first-child,.offline .current [data-part="progress"] strong { color:var(--colour-ink); }
+.offline .current [data-part="update"] { background:#183b34; color:#fbf8f2; }
+:global(html[data-vela-theme="dark"]) .screen { background:linear-gradient(90deg,#30242c,#211f1e 48%,#20332c); }
