@@ -63,7 +63,8 @@ export async function mutateReaderBook(supabase, userId, mutation) {
       : mutation.kind === "review" ? { rating: mutation.rating, notes: mutation.notes, is_favourite: mutation.favourite }
         : { status: mutation.status, finished_at: mutation.status === "finished" ? date : null,
           progress_percent: mutation.status === "finished" ? 100 : row.progress_percent === 100 ? 0 : row.progress_percent,
-          current_page: null, dnf_reason: mutation.status === "dnf" ? mutation.reason : null,
+          current_page: mutation.status === "finished" ? row.books.page_count || null : row.progress_percent === 100 ? null : row.current_page,
+          dnf_reason: mutation.status === "dnf" ? mutation.reason : null,
           dnf_use_for_learning: mutation.status === "dnf" && mutation.useForLearning,
           started_at: ["reading", "finished"].includes(mutation.status) ? row.started_at || date : row.started_at };
     const result = await supabase.from("user_books").update(changes).eq("id", mutation.id).eq("user_id", userId)

@@ -136,6 +136,9 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
   change=await mutateReaderBook(supabase,a,{kind:'status',id:manualId,status:'dnf',reason:'Not in the mood',useForLearning:false});assert.equal(change.book.status,'dnf');assert.equal(change.book.dnfUse,false);
   change=await mutateReaderBook(supabase,a,{kind:'status',id:manualId,status:'reading'});assert.equal(change.book.status,'reading');assert.equal(change.book.dnfReason,null);
   change=await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:50,page:263});assert.equal(change.book.currentPage,263);
+  change=await mutateReaderBook(supabase,a,{kind:'status',id:manualId,status:'dnf',reason:'Taking a break',useForLearning:false});assert.equal(change.book.currentPage,263);
+  change=await mutateReaderBook(supabase,a,{kind:'status',id:manualId,status:'want_to_read'});assert.equal(change.book.currentPage,263);assert.equal(change.book.progressPercent,50);
+  change=await mutateReaderBook(supabase,a,{kind:'status',id:manualId,status:'reading'});assert.equal(change.book.currentPage,263);
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:50,page:900})).status,400);
   change=await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:99,page:525});assert.equal(change.book.status,'reading');assert.equal(change.book.currentPage,525);
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:100,page:525})).status,400);

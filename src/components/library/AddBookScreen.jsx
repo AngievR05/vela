@@ -13,7 +13,9 @@ import SkeletonLoader from "@/components/states/SkeletonLoader";
 import { manualBookSchema, plainDescription } from "@/lib/library-data";
 import { libraryBookSchema } from "@/lib/home-data";
 import { createEntryId } from "@/lib/browser-id";
+import { z } from "zod";
 import styles from "./Library.module.css";
+const searchBooksSchema=z.array(z.object({googleBooksId:z.string().regex(/^[A-Za-z0-9_-]{1,100}$/),title:z.string().min(1),authors:z.array(z.string()),description:z.string().nullable(),pageCount:z.number().int().nonnegative().nullable(),categories:z.array(z.string()),publishedDate:z.string().nullable(),thumbnailUrl:z.string().nullable()})).max(20);
 export default function AddBookScreen({ userId }) {
   const home = useHome(userId);
   const [query, setQuery] = useState("");
@@ -40,7 +42,9 @@ export default function AddBookScreen({ userId }) {
       const body = await response.json();
       if (!response.ok) throw new Error(body.error || "Book search is temporarily unavailable.");
       if (version !== searchVersion.current) return;
-      setResults(body.books); setPhase("ready");
+      const parsed=searchBooksSchema.safeParse(body.books);
+      if(!parsed.success)throw new Error("Book results unavailable");
+      setResults(parsed.data); setPhase("ready");
     } catch (failure) {
       if (version !== searchVersion.current || signal?.reason?.name === "AbortError") return;
       setPhase("error"); setError("We couldn’t load book results. Check your connection and try again.");
@@ -90,8 +94,8 @@ export default function AddBookScreen({ userId }) {
   const code=stage==="manual"?"E05":stage==="preview"?existing?"E09":"E06":stage==="success"?duplicate?"E09":saved?.status==="reading"?"E08":"E07":phase==="loading"?"E02":phase==="error"?"E10":phase==="ready"?results.length?"E03":"E04":"E01";
   return <LibraryShell kind="add" title={title} subtitle={subtitle} code={code} back="/library" onBack={stage!=="search"&&stage!=="success"?()=>{if(!busy.current){setStage("search");setError("");}}:undefined}>
     {stage==="search"&&<>
-      <form onSubmit={event=>{event.preventDefault();runSearch(query,AbortSignal.timeout(20000));}}><SearchField label="Search title, author or ISBN" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)} className={styles.search} /></form>
-      {phase==="idle"&&<><Card className={styles.discovery}><h2>A door to your<br/>next world.</h2><p>Search by title, author or ISBN, then save it to a shelf.</p><span>TITLE · AUTHOR · ISBN</span></Card><Button variant="tertiary" onClick={beginManual}>Add manually</Button></>}
+      <form onSubmit={event=>{event.preventDefault();runSearch(query,AbortSignal.timeout(20000));}}><SearchField label="Search title, author or ISBN" placeholder="Search title, author or ISBN" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)} className={styles.search} /></form>
+      {phase==="idle"&&<><Card className={styles.discovery}><h2>A door to your<br/>next world.</h2><p>Search by title, author or ISBN, then save it to a shelf.</p><span>TITLE · AUTHOR · ISBN</span></Card><Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" onClick={beginManual}>Add manually</Button></>}
       {phase==="loading"&&<SkeletonLoader variant="library" label="Searching books" />}
       {phase==="ready"&&results.length>0&&<div className={styles.results}>{results.map(book=><button type="button" key={book.googleBooksId} className={styles.result} onClick={()=>selectBook(book)} aria-label={`Preview ${book.title} by ${book.authors.join(", ")}`}>
         <BookCover title={book.title} author={book.authors.join(", ")} src={book.thumbnailUrl} size="search" decorative />
@@ -103,7 +107,7 @@ export default function AddBookScreen({ userId }) {
     {stage==="preview"&&selected&&<><Card className={styles.preview}><BookCover title={selected.title} author={selected.authors.join(", ")} src={selected.thumbnailUrl} size="detail" className={styles.detailCover} placeholderType="book" decorative />
       <div><h2>{selected.title}</h2><p>{selected.authors.join(", ")}</p><p>{[selected.categories[0],selected.publishedDate?.slice(0,4)].filter(Boolean).join(" · ")}</p>{selected.pageCount>0&&<p>{selected.pageCount} pages</p>}<small>Book facts · Google Books</small></div>
     </Card>{selected.description&&<p className={styles.description}>{plainDescription(selected.description).slice(0,600)}</p>}
-      {existing?<Card className={styles.empty}><h2>Already on your shelf.</h2><p>{existing.title} · {existing.status.replaceAll("_"," ")} · {existing.progressPercent}%</p><Button href={`/library/${existing.id}`}>View existing book</Button></Card>:<><Button className={styles.fullButton} loading={saving} onClick={()=>save("want_to_read")} disabled={!home.online}>Save to TBR</Button><Button className={styles.fullButton} variant="secondary" disabled={saving||!home.online} onClick={()=>save("reading")}>Start reading</Button></>}
+      {existing?<Card className={styles.empty}><h2>Already on your shelf.</h2><p>{existing.title} · {existing.status.replaceAll("_"," ")} · {existing.progressPercent}%</p><Button href={`/library/${existing.id}`}>View existing book</Button></Card>:<><Button className={styles.fullButton} loading={saving} onClick={()=>save("want_to_read")} disabled={!home.online}>Save to TBR</Button><Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" disabled={saving||!home.online} onClick={()=>save("reading")}>Start reading</Button></>}
     </>}
     {stage==="manual"&&<form className={styles.form} onSubmit={saveManual} noValidate>
       <TextField label="Title" value={manual.title} onChange={event=>editManual("title",event.target.value)} error={fields.title?.[0]} maxLength={300} disabled={saving}/>
@@ -114,7 +118,7 @@ export default function AddBookScreen({ userId }) {
     </form>}
     {error&&stage!=="search"&&<InlineAlert type="error">{error}</InlineAlert>}
     {stage==="success"&&saved&&<><Card className={styles.success}><Link href={`/library/${saved.id}`} aria-label={`Open ${saved.title}`}><BookCover title={saved.title} author={saved.author} src={saved.coverSrc} size="detail" className={styles.detailCover} placeholderType="book" decorative/></Link><h2>{duplicate?"Already on your shelf.":saved.status==="reading"?"Now reading.":"Added to your Library."}</h2><p>{saved.title}</p></Card>
-      <Button className={styles.fullButton} href={`/library/${saved.id}`}>View book detail</Button><Button className={styles.fullButton} variant="secondary" href={`/library?tab=${saved.status}`}>View {saved.status==="want_to_read"?"TBR":saved.status.replaceAll("_"," ")} shelf</Button><Button variant="tertiary" onClick={()=>{setStage("search");setQuery("");setResults([]);setPhase("idle");setSelected(null);setManual({title:"",author:"",isbn:"",pages:""});setEntryId(null);}}>Add another book</Button>
+      <Button className={styles.fullButton} href={`/library/${saved.id}`}>View book detail</Button><Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" href={`/library?tab=${saved.status}`}>View {saved.status==="want_to_read"?"TBR":saved.status.replaceAll("_"," ")} shelf</Button><Button variant="tertiary" onClick={()=>{setStage("search");setQuery("");setResults([]);setPhase("idle");setSelected(null);setManual({title:"",author:"",isbn:"",pages:""});setEntryId(null);}}>Add another book</Button>
     </>}
   </LibraryShell>;
 }

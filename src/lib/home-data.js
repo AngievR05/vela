@@ -59,7 +59,8 @@ export function applyBookMutation(snapshot, mutation, date = localDate()) {
       : mutation.kind === "review" ? { rating: mutation.rating, notes: mutation.notes, favourite: mutation.favourite }
         : { status: mutation.status, finishedAt: mutation.status === "finished" ? date : null,
           progressPercent: mutation.status === "finished" ? 100 : book.progressPercent === 100 ? 0 : book.progressPercent,
-          currentPage: null, dnfReason: mutation.status === "dnf" ? mutation.reason : null,
+          currentPage: mutation.status === "finished" ? book.pageCount : book.progressPercent === 100 ? null : book.currentPage,
+          dnfReason: mutation.status === "dnf" ? mutation.reason : null,
           dnfUse: mutation.status === "dnf" && mutation.useForLearning, startedAt: mutation.status === "reading" || mutation.status === "finished" ? book.startedAt || date : book.startedAt }),
     updatedAt: new Date().toISOString(),
   }) };

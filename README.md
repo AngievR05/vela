@@ -108,6 +108,10 @@ This starter deliberately sets up the project architecture without pretending un
 - Discover creates three validated Gemini recommendations using canonical Google Books metadata and the reader’s permitted preferences.
 - Recommendation sessions, feedback and explicit Reading DNA corrections persist in Supabase.
 - The five main product areas are represented: Home, Library, Discover, DNA and Settings.
+
+Library, Add Book and Book Detail follow the completed **D / E / F** designs with shared Figma SVG artwork, shelf ledges, larger real Google Books covers, grid view and responsive scroll areas. All shelves include Reading, TBR, DNF and Finished. Search, filters, sorting, manual entry, duplicate protection, exact-page progress, notes, favourites, removal and Undo use the existing reader-protected backend. Shelf moves retain exact pages; rounded percentage-only progress is labelled approximate.
+
+Book detail includes the full description, genre tags, edition and page length in every shelf state, plus a provisional fit summary based on explicit permitted Reading DNA choices. Readers can request mood, pace and trope clues through the authenticated `/api/library/[id]/insights` endpoint. The server loads only the reader's own book through RLS and sends its public Google Books description to Gemini, without notes, ratings or reading history. Every clue requires a verified description quote and is labelled as an interpretation; unsupported traits stay unknown. Manual entries remain private and are not sent to this provider. Personalisation-off readers still have all book facts. No additional migration is required.
 - Vela's colour tokens and mobile-first visual foundation are included.
 
 See `docs/PROJECT_SCOPE.md` and `docs/FOLDER_STRUCTURE.md` before adding features.

@@ -1,14 +1,12 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
-import { Grid2X2, PanelsTopLeft } from "lucide-react";
 import LibraryShell from "./LibraryShell";
 import BookDetail from "./BookDetail";
 import useHome from "@/components/home/useHome";
 import { filterLibrary, libraryStatuses } from "@/lib/library-data";
 import BookCover from "@/components/books/BookCover";
 import Button from "@/components/ui/Button";
-import IconButton from "@/components/ui/IconButton";
 import SearchField from "@/components/ui/SearchField";
 import Tabs from "@/components/ui/Tabs";
 import Card from "@/components/ui/Card";
@@ -43,17 +41,18 @@ function LibraryShelves({ userId, initialTab, onOfflineBook }) {
     return <Link key={book.id} href={`/library/${book.id}`} className={styles.bookLink} aria-label={`Open ${book.title} by ${book.author || "unknown author"}`} onClick={event => { if (offline) { event.preventDefault(); onOfflineBook(book); } }}>
       <BookCover title={book.title} author={book.author} src={book.coverSrc} size="card" placeholderType="book" className={styles.shelfCover} decorative />
       <span className={styles.bookTitle}>{book.title}</span>
-      {view === "grid" && <span className={styles.bookAuthor}>{book.author}</span>}
+      <span className={styles.bookAuthor}>{book.author}</span>
     </Link>;
   }
   return <LibraryShell title="My Library" subtitle={`${books.length} ${books.length === 1 ? "BOOK" : "BOOKS"}`} code={code}
     action={<Button href="/library/add" className={styles.addButton} disabled={offline}>+ Add book</Button>}>
-    <Tabs label="Library shelves" items={[{value:"all",label:"All",panelId:"library-books"},...libraryStatuses.map(item=>({...item,panelId:"library-books"}))]} value={tab} onChange={setTab} className={styles.tabs} />
-    <SearchField label="Search your Library" value={query} onChange={event=>setQuery(event.target.value)} maxLength={200} className={styles.search} />
+    <Tabs label="Library shelves" items={[{value:"all",label:"All",panelId:"library-books"},...["reading","want_to_read","finished","dnf"].map(value=>({...libraryStatuses.find(item=>item.value===value),label:value==="dnf"?"Set aside":libraryStatuses.find(item=>item.value===value).label,panelId:"library-books"}))]} value={tab} onChange={setTab} className={styles.tabs} />
+    <SearchField label="Search your Library" placeholder="Search title or author" value={query} onChange={event=>setQuery(event.target.value)} maxLength={200} className={styles.search} />
     <div className={styles.tools}><Button variant="secondary" onClick={()=>{setDraft(filters);setModal("filter");}}>Filter{activeFilters ? ` (${activeFilters})` : ""}</Button>
       <Button variant="secondary" onClick={()=>setModal("sort")}>Sort: {sortLabels[sort]}</Button>
-      <IconButton icon={view === "shelf" ? Grid2X2 : PanelsTopLeft} label={view === "shelf" ? "Show grid view" : "Show shelf view"} onClick={()=>setView(view === "shelf" ? "grid" : "shelf")} />
+      <span className={styles.resultCount}>{visible.length} books</span>
     </div>
+    <Button variant={view==="shelf"?"secondary":"primary"} className={styles.viewButton} onClick={()=>setView(view === "shelf" ? "grid" : "shelf")}>{view === "shelf" ? "Switch to grid view  ›" : "Switch to shelves"}</Button>
     {offline && <InlineAlert type="info">You’re offline. Saved books are available here; progress changes will sync when you reconnect.</InlineAlert>}
     {home.syncError && <InlineAlert type="error">{home.syncError}<Button variant="tertiary" onClick={home.refresh} disabled={offline}>Retry sync</Button></InlineAlert>}
     <div role="tabpanel" id="library-books" aria-label="Library books">
@@ -68,16 +67,17 @@ function LibraryShelves({ userId, initialTab, onOfflineBook }) {
           </section>;
         })}</div>}
     </div>
-    <BottomSheet open={modal === "filter"} title="Filter Library" onClose={close}>
+    <BottomSheet className={styles.sheet} backdropClassName={styles.backdrop} open={modal === "filter"} title="Filter Library" onClose={close}>
       <div className={styles.form}>{genreChoices.map(genre=><Checkbox key={genre} label={genre} checked={draft.genres.includes(genre)} onChange={event=>setDraft({...draft,genres:event.target.checked?[...draft.genres,genre]:draft.genres.filter(value=>value!==genre)})} />)}
         {!genreChoices.length && <p>Genre filters become available when books have genre information.</p>}
         <Checkbox label="Under 400 pages" checked={draft.short} onChange={event=>setDraft({...draft,short:event.target.checked})} />
         <Checkbox label="Favourites only" checked={draft.favourites} onChange={event=>setDraft({...draft,favourites:event.target.checked})} />
         <Button onClick={()=>{setFilters(draft);setModal(null);}}>Show {filterLibrary(books,{...draft,status:tab,query}).length} books</Button>
         <Button variant="tertiary" onClick={()=>setDraft({genres:[],short:false,favourites:false})}>Clear filters</Button>
+        <Button variant="secondary" onClick={close}>Cancel</Button>
       </div>
     </BottomSheet>
-    <BottomSheet open={modal === "sort"} title="Sort books" onClose={close}>
+    <BottomSheet className={styles.sheet} backdropClassName={styles.backdrop} open={modal === "sort"} title="Sort books" onClose={close}>
       <div className={styles.form}>{Object.entries(sortLabels).map(([value,label])=><label key={value} className={styles.choice}><input type="radio" name="library-sort" checked={sort === value} onChange={()=>{setSort(value);setModal(null);}} />{value === "recent" ? "Recently updated" : label}</label>)}</div>
     </BottomSheet>
   </LibraryShell>;
