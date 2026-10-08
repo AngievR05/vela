@@ -1,0 +1,6 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="300" height="350" viewBox="0 0 300 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="stroke0_0_85" fill="white">
+<path d="M300 175C300 271.65 232.843 350 150 350C67.1573 350 0 271.65 0 175C0 78.3502 67.1573 0 150 0C232.843 0 300 78.3502 300 175Z"/>
+</mask>
+<path id="Vela / Background / Brass orbit" d="M300 175C300 271.65 232.843 350 150 350C67.1573 350 0 271.65 0 175C0 78.3502 67.1573 0 150 0C232.843 0 300 78.3502 300 175Z" stroke-width="2" stroke="#D6C6A3" mask="url(#stroke0_0_85)"/>
+</svg>
