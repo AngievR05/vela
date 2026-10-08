@@ -2,6 +2,7 @@ import { z } from "zod";
 import { detailMutationSchema } from "./library-data.js";
 import { statsRecordSchema } from "./reading-stats.js";
 import { localDate } from "./reading-calendar.js";
+import { readingFlowMutations } from "./reading-flow.js";
 export { localDate } from "./reading-calendar.js";
 
 export const libraryBookSchema = z.object({
@@ -12,6 +13,7 @@ export const libraryBookSchema = z.object({
   dnfUse: z.boolean(), startedAt: z.string().nullable(), finishedAt: z.string().nullable(), updatedAt: z.string(),
   description: z.string().nullable().default(null), categories: z.array(z.string()).default([]), publishedDate: z.string().nullable().default(null), isbn: z.string().nullable().default(null),
   favourite: z.boolean().default(false), notes: z.string().default(""), currentPage: z.number().int().nonnegative().nullable().default(null), isRemoved: z.boolean().default(false), dnfReason: z.string().nullable().default(null),
+  stoppedAt:z.string().nullable().default(null),finishFeedback:z.array(z.string()).default([]),finishUse:z.boolean().default(false),ratingUse:z.boolean().default(true),historyUse:z.boolean().default(true),dnfReasons:z.array(z.string()).default([]),privateDnfNote:z.string().default(""),
 });
 export const homeSnapshotSchema = z.object({
   version: z.literal(1), userId: z.uuid(), displayName: z.string(), fetchedAt: z.number(),
@@ -25,9 +27,10 @@ export const homeSnapshotSchema = z.object({
   })),
 });
 export const bookMutationSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("progress"), id: z.uuid(), percent: z.number().int().min(0).max(100), page: z.number().int().nonnegative().optional() }).strict(),
-  z.object({ kind: z.literal("start"), id: z.uuid() }).strict(),
+  z.object({ kind: z.literal("progress"), id: z.uuid(), percent: z.number().int().min(0).max(100), page: z.number().int().nonnegative().optional(),note:z.string().max(300).optional(),operationId:z.uuid().optional(),expectedUpdatedAt:z.iso.datetime({offset:true}).optional() }).strict(),
+  z.object({ kind: z.literal("start"), id: z.uuid(), expectedUpdatedAt:z.iso.datetime({offset:true}).optional() }).strict(),
   ...detailMutationSchema.options,
+  ...readingFlowMutations,
 ]);
 export const addBookSchema = z.object({ googleBooksId: z.string().regex(/^[A-Za-z0-9_-]{1,100}$/), status: z.enum(["want_to_read", "reading"]).default("want_to_read") }).strict();
 export function homeCacheKey(userId) { return `vela:home:v1:${userId}`; }
@@ -46,6 +49,12 @@ export function parseHomeQueue(raw) {
 }
 export function queueMutation(queue, mutation) {
   // Keep only the latest progress for each book; starting must precede progress.
+  const previous=queue.find(item=>item.id===mutation.id&&item.kind===mutation.kind);
+  if(mutation.kind==="progress"&&mutation.operationId&&previous) {
+    const note=[previous.note,mutation.note].filter(Boolean).join("\n");
+    if(note.length>300)throw new Error("Sync your saved reading note before adding another.");
+    mutation={...mutation,expectedUpdatedAt:previous.expectedUpdatedAt||mutation.expectedUpdatedAt,note};
+  }
   const next = queue.filter((item) => item.id !== mutation.id || item.kind !== mutation.kind);
   if (next.length >= 500) throw new Error("This device has many saved updates. Reconnect and sync them before adding another.");
   const progressIndex = mutation.kind === "start" ? next.findIndex((item) => item.id === mutation.id && item.kind === "progress") : -1;
@@ -65,12 +74,13 @@ export function applyBookMutation(snapshot, mutation, date = localDate()) {
     updatedAt: new Date().toISOString(),
   }) };
   return { ...snapshot, books: snapshot.books.map((book) => book.id !== mutation.id ? book : {
-    ...book, status: mutation.kind === "start" ? "reading" : mutation.percent === 100 ? "finished" : "reading",
+    ...book, status: "reading",
     progressPercent: mutation.kind === "progress" ? mutation.percent : book.progressPercent,
     currentPage: mutation.kind === "progress" ? mutation.page ?? null : book.currentPage ?? null,
     startedAt: book.startedAt || date,
-    finishedAt: mutation.kind === "progress" && mutation.percent === 100 ? date : null,
-    updatedAt: new Date().toISOString(),
+    finishedAt: null,
+    notes: mutation.kind==="progress"&&mutation.note ? [book.notes,mutation.note].filter(Boolean).join("\n") : book.notes,
+    updatedAt: book.updatedAt,
   }) };
 }
 export function deriveHome(snapshot, date = new Date()) {

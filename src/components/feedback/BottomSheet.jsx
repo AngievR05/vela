@@ -8,7 +8,7 @@ function focusable(container){
   if(!container)return[];
   return Array.from(container.querySelectorAll('a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'));
 }
-export default function BottomSheet({ open,title,children,actions,onClose,dismissOnBackdrop=true,showHandle=true,className="",backdropClassName="" }) {
+export default function BottomSheet({ open,title,children,actions,onClose,dismissOnBackdrop=true,showHandle=true,showCloseButton=true,className="",backdropClassName="" }) {
   const titleId=useId(); const ref=useRef(null);
   useEffect(()=>{
     if(!open)return;
@@ -34,7 +34,7 @@ export default function BottomSheet({ open,title,children,actions,onClose,dismis
         {showHandle?<div className={styles.sheetHandle} aria-hidden="true"/>:null}
         <div className={styles.sheetHeader}>
           <h2 id={titleId} className={[styles.h2,styles.fill].join(" ")}>{title}</h2>
-          {onClose?<IconButton icon={X} label="Close sheet" onClick={onClose}/>:null}
+          {onClose&&showCloseButton?<IconButton icon={X} label="Close sheet" onClick={onClose}/>:null}
         </div>
         <div className={styles.sheetBody}>{children}</div>
         {actions?<div className={styles.sheetActions}>{actions}</div>:null}

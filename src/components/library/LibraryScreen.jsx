@@ -47,6 +47,7 @@ function LibraryShelves({ userId, initialTab, onOfflineBook }) {
   return <LibraryShell title="My Library" subtitle={`${books.length} ${books.length === 1 ? "BOOK" : "BOOKS"}`} code={code}
     action={<Button href="/library/add" className={styles.addButton} disabled={offline}>+ Add book</Button>}>
     <Tabs label="Library shelves" items={[{value:"all",label:"All",panelId:"library-books"},...["reading","want_to_read","finished","dnf"].map(value=>({...libraryStatuses.find(item=>item.value===value),label:value==="dnf"?"Set aside":libraryStatuses.find(item=>item.value===value).label,panelId:"library-books"}))]} value={tab} onChange={setTab} className={styles.tabs} />
+    {(tab==="all"||tab==="reading"||tab==="dnf")&&<div className={styles.tools}>{tab!=="dnf"&&<Button href="/library/reading" variant="tertiary">Current reading & progress</Button>}{tab!=="reading"&&<Button href="/library/graveyard" variant="tertiary">Graveyard</Button>}</div>}
     <SearchField label="Search your Library" placeholder="Search title or author" value={query} onChange={event=>setQuery(event.target.value)} maxLength={200} className={styles.search} />
     <div className={styles.tools}><Button variant="secondary" onClick={()=>{setDraft(filters);setModal("filter");}}>Filter{activeFilters ? ` (${activeFilters})` : ""}</Button>
       <Button variant="secondary" onClick={()=>setModal("sort")}>Sort: {sortLabels[sort]}</Button>

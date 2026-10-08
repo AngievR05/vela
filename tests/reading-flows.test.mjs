@@ -1,0 +1,57 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile, readdir } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { PGlite } from "@electric-sql/pglite";
+import { progressValue, validReadingDate, checkReadingDates } from "../src/lib/reading-flow.js";
+import { describeDNASignals } from "../src/lib/reading-dna.js";
+const a="11111111-1111-4111-8111-111111111111",b="22222222-2222-4222-8222-222222222222",catalogue="33333333-3333-4333-8333-333333333333";
+test("atomic reading updates preserve progress, privacy, consent, dates and guarded Undo",async()=>{
+ const db=new PGlite();try{
+  await db.exec(`create schema auth;create schema extensions;create role anon;create role authenticated;grant usage on schema auth to anon,authenticated;create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');create function auth.uid()returns uuid language sql stable as $$select(current_setting('request.jwt.claims',true)::jsonb->>'sub')::uuid$$;`);
+  for(const file of (await readdir(new URL('../supabase/migrations/',import.meta.url))).filter(f=>f.endsWith('.sql')).sort())await db.exec((await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8')).replace('create extension if not exists pgcrypto with schema extensions;',''));
+  await db.exec(`insert into auth.users(id)values('${a}'),('${b}');insert into public.books(id,google_books_id,title,page_count,categories)values('${catalogue}','actual-google-id','A real book',200,array['Fiction / Mystery']);`);
+  const role=async(id,kind='authenticated')=>db.exec(`reset role;select set_config('request.jwt.claims','${JSON.stringify(id?{sub:id}:{})}',false);set role ${kind};`);
+  await role(a);await db.exec(`insert into public.user_books(user_id,book_id,status,current_page,progress_percent,started_at)values('${a}','${catalogue}','reading',50,25,'2026-01-01');update public.ai_settings set personalisation_enabled=true,use_recent_ratings=true,use_recent_history=true,use_dnf_reasons=true;`);
+  const get=async()=>(await db.query('select * from public.user_books')).rows[0];
+  const row=await get(),id=row.id;
+  const make=async(payload)=>({id,operationId:randomUUID(),expectedUpdatedAt:(await get()).updated_at.toISOString(),...payload});
+  const run=async(payload)=>(await db.query('select public.save_reader_update($1,$2) result',[id,JSON.stringify(payload)])).rows[0].result;
+  const progress=await make({kind:'progress',percent:100,page:200,note:'SECRET PRIVATE PROGRESS'});
+  const saved=await run(progress);assert.equal((await get()).status,'reading');assert.equal((await get()).finished_at,null);
+  await run(progress);assert.equal((await get()).notes,'SECRET PRIVATE PROGRESS');
+  await run(await make({kind:'undo_reading',updateId:saved.operationId}));assert.equal((await get()).current_page,50);
+  const noChange=await run(await make({kind:'progress',percent:25,page:50,note:''}));assert.equal(noChange.noChange,true);
+  const finish=await make({kind:'finish',startedAt:'2026-01-01',finishedAt:'2026-02-01',rating:5,notes:'SECRET FINISH NOTE',feedback:['Characters','Mystery'],useForLearning:false});
+  const finished=await run(finish);assert.equal(finished.learningUsed,false);assert.equal((await get()).status,'finished');
+  assert.equal((await db.query("select * from public.reading_dna_signals where evidence<>'[]'::jsonb")).rows.length,0);
+  await run(await make({kind:'undo_reading',updateId:finished.operationId}));assert.equal((await get()).status,'reading');assert.equal((await get()).current_page,50);assert.equal((await get()).notes,'SECRET FINISH NOTE');
+  const learned=await run(await make({...finish,useForLearning:true,operationId:randomUUID(),expectedUpdatedAt:(await get()).updated_at.toISOString()}));assert.equal(learned.learningUsed,true);
+  const signals=(await db.query("select * from public.reading_dna_signals where evidence<>'[]'::jsonb")).rows;assert.ok(signals.some(s=>s.category==='finish_feedback'));assert.equal(JSON.stringify(signals).includes('SECRET'),false);
+  const mapped={id,title:'A real book',status:'finished',rating:5,finishUse:true,ratingUse:true,historyUse:true};
+  assert.ok(describeDNASignals(signals,[mapped],{personalisation_enabled:true,use_recent_ratings:true,use_recent_history:true}).filter(s=>s.category==='finish_feedback').every(s=>s.active));
+  await run(await make({kind:'undo_reading',updateId:learned.operationId}));
+  await assert.rejects(run(await make({kind:'finish',startedAt:'2026-02-01',finishedAt:'2026-01-01',rating:5,notes:'',feedback:[],useForLearning:true})),e=>e.code==='22023');assert.equal((await get()).status,'reading');
+  const dnf=await run(await make({kind:'dnf',startedAt:'2026-01-01',stoppedAt:'2026-02-02',reasons:[],privateReason:'PRIVATE OTHER REASON',useForLearning:false}));assert.equal((await get()).status,'dnf');assert.equal((await get()).current_page,50);assert.equal((await get()).dnf_use_for_learning,false);
+  const restored=await run(await make({kind:'restore_reading'}));assert.equal((await get()).status,'reading');assert.equal((await get()).current_page,50);assert.equal((await get()).private_dnf_note,'PRIVATE OTHER REASON');
+  await run(await make({kind:'undo_reading',updateId:restored.operationId}));assert.equal((await get()).status,'dnf');
+  await assert.rejects(run(await make({kind:'undo_reading',updateId:dnf.operationId})),e=>e.code==='40001');
+  await run(await make({kind:'restore_reading'}));
+  const mood=await run(await make({kind:'dnf',startedAt:'2026-01-01',stoppedAt:'2026-02-02',reasons:['Not in the mood'],privateReason:'PRIVATE MOOD',useForLearning:true}));assert.equal(mood.learningUsed,false);
+  assert.equal((await db.query("select * from public.reading_dna_signals where category='dnf_feedback' and evidence<>'[]'::jsonb")).rows.length,0);
+  await run(await make({kind:'restore_reading'}));
+  await run(await make({kind:'dnf',startedAt:'2026-01-01',stoppedAt:'2026-02-02',reasons:['Not in the mood','Pacing too slow'],privateReason:'PRIVATE MOOD',useForLearning:true}));
+  assert.deepEqual((await db.query("select label from public.reading_dna_signals where category='dnf_feedback' and evidence<>'[]'::jsonb")).rows.map(r=>r.label),['Did not finish · Pacing too slow']);
+  await db.exec('update public.ai_settings set use_dnf_reasons=false');assert.equal((await db.query("select * from public.reading_dna_signals where category='dnf_feedback' and evidence<>'[]'::jsonb")).rows.length,0);
+  const stale=await make({kind:'reading_dates',startedAt:'2026-01-02',finishedAt:null,stoppedAt:'2026-02-02'});await run(await make({kind:'reading_dates',startedAt:'2026-01-03',finishedAt:null,stoppedAt:'2026-02-02'}));await assert.rejects(run(stale),e=>e.code==='40001');
+  await role(b);assert.equal((await db.query('select * from public.reader_book_updates')).rows.length,0);assert.equal((await db.query('select * from public.user_books')).rows.length,0);
+  await assert.rejects(run({...stale,operationId:randomUUID()}),e=>e.code==='42501');
+  await assert.rejects(db.query('insert into public.reader_book_updates(id,user_id,user_book_id,kind,request,before_state)values($1,$2,$3,$4,$5,$6)',[randomUUID(),b,id,'progress','{}','{}']),e=>e.code==='42501');
+  await role(null,'anon');await assert.rejects(db.query('select * from public.reader_book_updates'),e=>e.code==='42501');await assert.rejects(run(stale),e=>e.code==='42501');
+ }finally{await db.close();}
+});
+test("date and page validation rejects invalid inputs without finishing at 100 percent",()=>{
+ assert.equal(validReadingDate('2026-99-99'),false);assert.equal(validReadingDate('2026-02-30'),false);assert.equal(validReadingDate('2024-02-29'),true);
+ assert.match(checkReadingDates('2026-02-02','2026-01-01','2026-10-08'),/after/);assert.match(checkReadingDates(null,'2027-01-01','2026-10-08'),/future/);
+ assert.deepEqual(progressValue('200','page',200),{percent:100,page:200});assert.equal(progressValue('199','page',200).percent,99);assert.throws(()=>progressValue('1.5','percent',200));assert.throws(()=>progressValue('','percent',null));
+});

@@ -42,7 +42,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
     }
     const parsed = libraryBookSchema.safeParse(body.book);
     if (!parsed.success || parsed.data.id !== mutation.id) throw new Error("We couldn’t confirm your saved update. Your input is still here; please try again.");
-    return { book: parsed.data };
+    return { ...body, book: parsed.data };
   }
 
   useEffect(() => {
@@ -59,11 +59,12 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
       try {
         while (live && current.active && current.queue.length && navigator.onLine) {
           const mutation = current.queue[0];
+          const beforeStamp=current.snapshot?.books.find(book=>book.id===mutation.id)?.updatedAt;
           const result = await send(mutation);
-          if (["review","status","remove","restore"].includes(mutation.kind) || result.book.status === "finished") notifyReadingActivity(userId);
+          if (["review","status","remove","restore","finish","dnf","undo_reading","restore_reading"].includes(mutation.kind) || result.book.status === "finished") notifyReadingActivity(userId);
           if (!live) return;
           // Keep updates added while this request was in flight.
-          keepQueue(current.queue.filter((item) => item !== mutation));
+          keepQueue(current.queue.filter((item) => item !== mutation).map(item=>item.id===mutation.id&&item.expectedUpdatedAt===beforeStamp?{...item,expectedUpdatedAt:result.book.updatedAt}:item));
           if (current.active) setSyncError("");
         }
       } catch (error) {
@@ -135,25 +136,27 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
   }, [userId, endpoint, cacheKey, returnPath]);
 
   function enqueue(mutation) {
+    if(!["progress","start"].includes(mutation.kind))throw new Error("Reconnect to save this change. Your entries are still here.");
     const value = state.current.snapshot;
     if (!value) throw new Error("Load your Library once while online before saving offline progress.");
+    const previousQueue=state.current.queue;
+    const before=value.books.find(book=>book.id===mutation.id);
+    if(mutation.kind==="progress"&&before.progressPercent===mutation.percent&&before.currentPage===(mutation.page??null)&&!mutation.note)return {queued:false,noChange:true,book:before};
     keepQueue(queueMutation(state.current.queue, mutation), true);
     state.current.revision += 1;
     publish(applyBookMutation(value, mutation));
     setPhase("offline");
-    return { queued: true };
+    return { queued: true, before, previousQueue, book:state.current.snapshot.books.find(book=>book.id===mutation.id) };
   }
   async function mutate(mutation) {
+    if(mutation.kind==="start"&&!mutation.expectedUpdatedAt){const book=state.current.snapshot?.books.find(book=>book.id===mutation.id);if(book)mutation={...mutation,expectedUpdatedAt:book.updatedAt};}
     const parsed = bookMutationSchema.safeParse(mutation);
     if (!parsed.success) throw new Error("Check your progress value.");
     if (!navigator.onLine) return enqueue(parsed.data);
     // Preserve the order of a queued start/progress pair before sending new progress.
     if (state.current.queue.length) {
-      keepQueue(queueMutation(state.current.queue, parsed.data), true);
-      state.current.revision += 1;
-      publish(applyBookMutation(state.current.snapshot, parsed.data));
       await loadRef.current?.(true);
-      return { queued: state.current.queue.length > 0 };
+      if(state.current.queue.length) throw new Error("Sync your saved progress before making another change. Your entries are still here.");
     }
     try {
       const result = await send(parsed.data);
@@ -161,12 +164,20 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
       const value = state.current.snapshot;
       if (value) publish({ ...value, books: [...value.books.filter(book => book.id !== result.book.id), result.book] });
       setPhase("ready");
-      if (["review","status","remove","restore"].includes(parsed.data.kind) || result.book.status === "finished") notifyReadingActivity(userId);
-      return { queued: false, book: result.book };
+      if (["review","status","remove","restore","finish","dnf","undo_reading","restore_reading"].includes(parsed.data.kind) || result.book.status === "finished") notifyReadingActivity(userId);
+      return { ...result, queued: false };
     } catch (error) {
       if (!navigator.onLine) return enqueue(parsed.data);
       throw error;
     }
+  }
+  function undoQueued(mutation,result){
+    if(!state.current.queue.some(item=>item.operationId===mutation.operationId))throw new Error("This update has already synced. Refresh the book before Undo.");
+    keepQueue(result.previousQueue,true);
+    state.current.revision+=1;
+    const value=state.current.snapshot;
+    if(value)publish({...value,books:value.books.map(book=>book.id===mutation.id?result.before:book)});
+    if(navigator.onLine)loadRef.current?.(true);
   }
   function removePending(mutation) {
     keepQueue(state.current.queue.filter((item) => item.id !== mutation.id || item.kind !== mutation.kind), true);
@@ -175,6 +186,6 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
     setSyncError("");
     loadRef.current?.(true);
   }
-  return { snapshot, phase, online, queue, syncError, mutate, removePending,
+  return { snapshot, phase, online, queue, syncError, mutate, removePending, undoQueued,
     refresh: () => loadRef.current?.(true), refreshQuietly: () => loadRef.current?.() };
 }

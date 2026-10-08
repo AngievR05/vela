@@ -27,7 +27,7 @@ export async function PATCH(request, { params }) {
   if (!parsed.success || parsed.data.id !== id) return Response.json({ error: "Check the book and progress value." }, { status: 400 });
   try {
     const result = await mutateReaderBook(reader.supabase, reader.user.id, parsed.data);
-    return Response.json(result.error ? { error: result.error } : { book: result.book }, {
+    return Response.json(result.error ? { error: result.error } : result, {
       status: result.status || 200, headers: { "Cache-Control": "private, no-store" },
     });
   } catch {

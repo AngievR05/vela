@@ -26,12 +26,12 @@ export function describeDNASignals(rows, books, settings, resetAt = null) {
       const book=books.find(book=>!book.isRemoved&&(book.id===key||book.bookId===key));
       if(!book||evidence.some(item=>item.bookId===book.id))continue;
       if(resetAt&&(!entry?.occurred_at||!(Date.parse(entry.occurred_at)>Date.parse(resetAt))))continue;
-      if(row.source_type==="rating"&&(book.rating==null||(entry?.rating!=null&&entry.rating!==book.rating)))continue;
-      if(row.source_type==="history"&&book.status!=="finished")continue;
-      if(row.source_type==="dnf"&&(book.status!=="dnf"||!book.dnfUse))continue;
+      if(row.source_type==="rating"&&((entry?.reflection ? !book.finishUse || book.status!=="finished" : book.ratingUse===false || book.rating==null || (entry?.rating!=null&&entry.rating!==book.rating))))continue;
+      if(row.source_type==="history"&&(book.status!=="finished"||book.historyUse===false))continue;
+      if(row.source_type==="dnf"&&(book.status!=="dnf"||!book.dnfUse||(entry?.reason&&(!book.dnfReasons?.includes(entry.reason)||entry.reason==="Not in the mood"))))continue;
       // Legacy corrections have no per-activity source map; show the explicit correction, not guessed evidence.
       if(row.source_type==="correction")continue;
-      evidence.push({id:`book:${book.id}`,bookId:book.id,title:sources[row.source_type],context:`${book.title}${row.source_type==="rating"?` · ${book.rating} stars`:row.source_type==="dnf"?` · ${book.dnfReason||"Stopped reading"}`:""} · Use approved by you`});
+      evidence.push({id:`book:${book.id}`,bookId:book.id,title:entry?.reflection?"Approved finishing feedback":sources[row.source_type],context:`${book.title}${entry?.reflection?` · Selected feedback: ${(book.finishFeedback||[]).join(", ")}`:row.source_type==="rating"?` · ${book.rating} stars`:row.source_type==="dnf"?` · ${entry?.reason||book.dnfReason||"Stopped reading"}`:""} · Use approved by you`});
     }
     if(row.source_type==="correction")evidence.push({id:`correction:${row.id}`,bookId:null,title:"Explicit correction",context:"A saved reading preference correction. No book-level provenance was recorded."});
     const reason=!settings.personalisation_enabled?"Personalisation is off":!permitted?"Permission or evidence provenance not available":!row.active?"Stopped or no longer selected":!evidence.length?"No current approved evidence":"";

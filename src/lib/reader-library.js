@@ -20,12 +20,13 @@ export function mapLibraryBook(row) {
     id: row.id, bookId: row.book_id, googleBooksId: book.google_books_id, title: book.title, author: (book.authors || []).join(", "),
     pageCount: book.page_count > 0 ? book.page_count : null, coverSrc: book.thumbnail_url || null,
     status: row.status, progressPercent: row.progress_percent, rating: row.rating,
+    stoppedAt: row.stopped_at || null, finishFeedback: row.finish_feedback || [], finishUse: row.finish_use_for_learning || false, ratingUse: row.rating_use_for_learning ?? true, historyUse: row.history_use_for_learning ?? true, dnfReasons: row.dnf_reasons || [], privateDnfNote: row.private_dnf_note || "",
     dnfUse: row.dnf_use_for_learning, startedAt: row.started_at, finishedAt: row.finished_at, updatedAt: row.updated_at,
     description: book.description || null, categories: book.categories || [], publishedDate: book.published_date || null, isbn: book.isbn || null,
     favourite: row.is_favourite || false, notes: row.notes || "", currentPage: row.current_page ?? null, isRemoved: row.is_removed || false, dnfReason: row.dnf_reason || null,
   };
 }
-const libraryColumns = "id,book_id,status,progress_percent,current_page,rating,notes,is_favourite,is_removed,dnf_reason,dnf_use_for_learning,started_at,finished_at,updated_at,books!inner(google_books_id,title,authors,page_count,thumbnail_url,description,categories,published_date,isbn)";
+const libraryColumns = "stopped_at,finish_feedback,finish_use_for_learning,rating_use_for_learning,history_use_for_learning,dnf_reasons,private_dnf_note,id,book_id,status,progress_percent,current_page,rating,notes,is_favourite,is_removed,dnf_reason,dnf_use_for_learning,started_at,finished_at,updated_at,books!inner(google_books_id,title,authors,page_count,thumbnail_url,description,categories,published_date,isbn)";
 export async function loadReaderBook(supabase, userId, id) {
   const { data, error } = await supabase.from("user_books").select(libraryColumns).eq("id", id).eq("user_id", userId).maybeSingle();
   if (error) throw new Error("We couldn’t load this book. Please try again.");
@@ -54,13 +55,19 @@ export async function mutateReaderBook(supabase, userId, mutation) {
     .eq("id", mutation.id).eq("user_id", userId).maybeSingle();
   if (readError) return { status: 503, error: "We couldn’t load this book. Please try again." };
   if (!row) return { status: 404, error: "This book is no longer in your Library." };
+  if (["finish","dnf","reading_dates","restore_reading","undo_reading"].includes(mutation.kind) || (mutation.kind === "progress" && mutation.operationId)) {
+    const { data, error } = await supabase.rpc("save_reader_update", { book_entry: mutation.id, changes: mutation });
+    if (error) return { status: error.code === "40001" ? 409 : error.code === "42501" ? 403 : ["22023","23514"].includes(error.code) ? 400 : 503,
+      error: error.code === "40001" ? "This book changed. Your entries are still here. Refresh the book before trying again." : error.code === "22023" ? error.message : "Your update wasn’t saved. Your entries are still here; please try again." };
+    return { ...data, book: await loadReaderBook(supabase,userId,mutation.id) };
+  }
   if (mutation.expectedUpdatedAt && Date.parse(mutation.expectedUpdatedAt) !== Date.parse(row.updated_at))
-    return { status: 409, error: "This book changed after you saved it. Open its details before removing it." };
+    return { status: 409, error: "This book changed after you saved it. Open its latest details before saving." };
   if (row.is_removed && mutation.kind !== "restore" && mutation.kind !== "remove") return { status: 409, error: "This book has been removed. Restore it before editing." };
   if (["status", "review", "remove", "restore"].includes(mutation.kind)) {
     const date = new Date().toISOString().slice(0, 10);
     const changes = mutation.kind === "remove" ? { is_removed: true } : mutation.kind === "restore" ? { is_removed: false }
-      : mutation.kind === "review" ? { rating: mutation.rating, notes: mutation.notes, is_favourite: mutation.favourite }
+      : mutation.kind === "review" ? { rating: mutation.rating, ...(mutation.ratingUse!=null ? {rating_use_for_learning:mutation.ratingUse} : {}), notes: mutation.notes, is_favourite: mutation.favourite }
         : { status: mutation.status, finished_at: mutation.status === "finished" ? date : null,
           progress_percent: mutation.status === "finished" ? 100 : row.progress_percent === 100 ? 0 : row.progress_percent,
           current_page: mutation.status === "finished" ? row.books.page_count || null : row.progress_percent === 100 ? null : row.current_page,
@@ -68,7 +75,7 @@ export async function mutateReaderBook(supabase, userId, mutation) {
           dnf_use_for_learning: mutation.status === "dnf" && mutation.useForLearning,
           started_at: ["reading", "finished"].includes(mutation.status) ? row.started_at || date : row.started_at };
     const result = await supabase.from("user_books").update(changes).eq("id", mutation.id).eq("user_id", userId)
-      .eq("updated_at", row.updated_at).select(libraryColumns).maybeSingle();
+      .eq("updated_at", mutation.expectedUpdatedAt || row.updated_at).select(libraryColumns).maybeSingle();
     if (result.error) return { status: 503, error: "Your changes weren’t saved. Your input is still here; please try again." };
     if (!result.data) return { status: 409, error: "This book changed while saving. Refresh and try again." };
     return { book: mapLibraryBook(result.data) };
@@ -82,10 +89,10 @@ export async function mutateReaderBook(supabase, userId, mutation) {
   if (mutation.page != null && (!row.books.page_count || mutation.page > row.books.page_count || pagePercent !== mutation.percent))
     return { status: 400, error: "Check the current page and total pages." };
   const changes = mutation.kind === "start" ? { status: "reading", started_at: row.started_at || date }
-    : { progress_percent: mutation.percent, current_page: mutation.page ?? null, status: mutation.percent === 100 ? "finished" : "reading",
-      started_at: row.started_at || date, finished_at: mutation.percent === 100 ? date : null };
+    : { progress_percent: mutation.percent, current_page: mutation.page ?? null, status: "reading",
+      started_at: row.started_at || date, finished_at: null };
   const { data, error } = await supabase.from("user_books").update(changes).eq("id", mutation.id).eq("user_id", userId)
-    .eq("status", row.status).eq("updated_at", row.updated_at).select(libraryColumns).maybeSingle();
+    .eq("status", row.status).eq("updated_at", mutation.expectedUpdatedAt || row.updated_at).select(libraryColumns).maybeSingle();
   if (error) return { status: 503, error: "Your progress wasn’t saved. Your input is still here; please try again." };
   if (!data) return { status: 409, error: "This book changed while saving. Refresh and try again." };
   return { book: mapLibraryBook(data) };

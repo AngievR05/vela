@@ -30,8 +30,8 @@ export async function recommendationContext(supabase, userId) {
   const cutoff=profile.data.reading_dna_reset_at?Date.parse(profile.data.reading_dna_reset_at):-Infinity;
   const activity=activityRows.map(row=>{
     const book=home.books.find(book=>book.id===row.id);if(!book)return null;
-    const rating=settings.data.use_recent_ratings&&book.rating!=null&&Date.parse(row.rating_recorded_at)>cutoff;
-    const history=settings.data.use_recent_history&&book.status==="finished"&&Date.parse(row.reading_completed_at)>cutoff;
+    const rating=settings.data.use_recent_ratings&&book.ratingUse!==false&&book.rating!=null&&Date.parse(row.rating_recorded_at)>cutoff;
+    const history=settings.data.use_recent_history&&book.historyUse!==false&&book.status==="finished"&&Date.parse(row.reading_completed_at)>cutoff;
     if(!rating&&!history)return null;
     return {at:Math.max(rating?Date.parse(row.rating_recorded_at):0,history?Date.parse(row.reading_completed_at):0),value:{title:book.title,author:book.author,categories:book.categories,description:plainDescription(book.description).slice(0,1200),...(rating?{rating:book.rating}:{}),...(history?{status:book.status}:{})}};
   }).filter(Boolean).sort((a,b)=>b.at-a.at).slice(0,20).map(row=>row.value);

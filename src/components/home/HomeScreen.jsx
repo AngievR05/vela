@@ -11,7 +11,7 @@ import BottomNavigation from "@/components/navigation/BottomNavigation";
 import CurrentlyReadingCard from "@/components/books/CurrentlyReadingCard";
 import BookCover from "@/components/books/BookCover";
 import BookSearchResultRow from "@/components/books/BookSearchResultRow";
-import ReadingProgressControl from "@/components/books/ReadingProgressControl";
+import ReadingFlow from "@/components/reading/ReadingFlow";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import SearchField from "@/components/ui/SearchField";
@@ -36,7 +36,6 @@ export default function HomeScreen({ userId, initialAction }) {
   const [salutation, setSalutation] = useState("Hello");
   const [modal, setModal] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-  const [progress, setProgress] = useState("");
   const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
@@ -70,22 +69,7 @@ export default function HomeScreen({ userId, initialAction }) {
 
   function openAdd() { router.push("/library/add"); }
   function openProgress(book) {
-    setSelectedId(book.id); setProgress(String(book.progressPercent)); setFormError(""); setModal("progress");
-  }
-  async function saveProgress(event) {
-    event.preventDefault();
-    if (busy.current || !selectedBook) return;
-    const percent = Number(progress);
-    if (!progress.trim() || !Number.isInteger(percent) || percent < 0 || percent > 100) {
-      setFormError("Enter a whole number from 0 to 100. Your input is still here."); return;
-    }
-    busy.current = true; setSaving(true); setFormError("");
-    try {
-      const result = await home.mutate({ kind: "progress", id: selectedBook.id, percent });
-      setNotice(result.queued ? "Progress saved on this device. It will sync when you’re online." : "Progress saved.");
-      setModal(null);
-    } catch (error) { setFormError(error.message); }
-    finally { busy.current = false; setSaving(false); }
+    setSelectedId(book.id); setFormError(""); setModal("progress");
   }
   async function startBook(book) {
     if (busy.current) return;
@@ -178,7 +162,7 @@ export default function HomeScreen({ userId, initialAction }) {
         <Card className={`${styles.shelf} ${styles.brassSupport}`}><h2>Your shelf, your pace</h2><p>Your stats will appear as you finish books. Ratings and reflection are always optional.</p><Button className={styles.button} href="/library">Explore my Library</Button></Card>
       </>}
       {state === "populated" && <>
-        {readingCard}{nextRead()}
+        {readingCard}<Link className={styles.textAction} href="/library/reading">Current reading & finish book →</Link>{nextRead()}
         <StatsMetrics stats={yearStats} home year={new Date().getFullYear()} />
         <section className={styles.activity}><h2>Your year in stories</h2><p>Finished books · January–{new Date().toLocaleDateString("en-GB", { month: "long" })} {new Date().getFullYear()}</p><CountBars items={yearStats.months} compact month onSelect={() => router.push("/stats?view=time")} /><p>{yearStats.total} finished. No streaks, no pressure.</p><Button className={styles.button} href="/stats">Explore my reading stats</Button></section>
         {insightCard}
@@ -220,14 +204,7 @@ export default function HomeScreen({ userId, initialAction }) {
     </div>
     <BottomNavigation variant="home" activePath="/home" onNavigate={navigation} assetDirectory="reading-stats" />
 
-    <BottomSheet open={modal === "progress"} title="Update progress" onClose={close}>
-      {selectedBook && <form className={styles.form} onSubmit={saveProgress} noValidate>
-        <p>{selectedBook.title}</p>
-        <ReadingProgressControl mode="percent" value={progress} onValueChange={setProgress} allowPages={false} error={formError} disabled={saving} />
-        <p className={styles.small}>100% marks this book finished.{offline ? " Your update will stay on this device until it can sync." : ""}</p>
-        <Button type="submit" className={styles.button} loading={saving}>{saving ? "Saving…" : offline ? "Save on this device" : "Save progress"}</Button>
-      </form>}
-    </BottomSheet>
+    {modal==="progress"&&selectedBook&&<ReadingFlow key={selectedBook.id} book={selectedBook} mode="progress" home={home} onClose={close}/>}
     <BottomSheet open={modal === "add"} title="Add a book" onClose={close}>
       <form className={styles.form} onSubmit={search}>
         <SearchField label="Find a book" value={query} onChange={(event) => { setQuery(event.target.value); setFormError(""); }} maxLength={200} disabled={searching || Boolean(addingId)} />

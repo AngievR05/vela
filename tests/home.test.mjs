@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { PGlite } from "@electric-sql/pglite";
 import { deriveHome, homeInsight, homeSnapshotSchema, parseHomeSnapshot, parseHomeQueue, homeCacheKey, homeQueueKey, queueMutation, applyBookMutation, bookMutationSchema, addBookSchema } from "../src/lib/home-data.js";
 import { loadHome, mutateReaderBook, saveLibraryBook } from "../src/lib/reader-library.js";
@@ -40,7 +40,7 @@ test("offline snapshots and update queues reject malformed and cross-reader data
  assert.deepEqual(queue,[start,{...progress,percent:80}]);
  assert.deepEqual(queueMutation([progress],start),[start,progress]);
  const finished=applyBookMutation(data,{...progress,percent:100},"2026-10-06").books[0];
- assert.equal(finished.status,"finished");assert.equal(finished.finishedAt,"2026-10-06");assert.equal(finished.startedAt,"2026-10-06");
+ assert.equal(finished.status,"reading");assert.equal(finished.finishedAt,null);assert.equal(finished.startedAt,"2026-10-06");
  for(const invalid of [{...progress,userId:b},{...progress,percent:1.5},{...progress,percent:-1},{...progress,percent:101},{...progress,percent:"30"}])assert.equal(bookMutationSchema.safeParse(invalid).success,false);
  assert.equal(addBookSchema.safeParse({googleBooksId:"Example",userId:b}).success,false);
  assert.equal(addBookSchema.safeParse({googleBooksId:"../book"}).success,false);
@@ -93,7 +93,7 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
    grant usage on schema auth to anon,authenticated;
    create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');
    create function auth.uid() returns uuid language sql stable as $$ select (current_setting('request.jwt.claims',true)::jsonb->>'sub')::uuid $$;`);
-  for(const file of ['202609220001_initial_schema_rls.sql','202610060001_reading_setup.sql','202610060002_library_detail.sql'])await db.exec((await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8')).replace('create extension if not exists pgcrypto with schema extensions;',''));
+  for(const file of (await readdir(new URL('../supabase/migrations/',import.meta.url))).filter(f=>f.endsWith('.sql')).sort())await db.exec((await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8')).replace('create extension if not exists pgcrypto with schema extensions;',''));
   await db.exec(`insert into auth.users(id) values ('${a}'),('${b}');`);
   const role=async(user,which='authenticated')=>db.exec(`reset role; select set_config('request.jwt.claims','${user?JSON.stringify({sub:user}):'{}'}',false); set role ${which};`);
   const supabase=client(db);
@@ -106,7 +106,8 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
   let result=await mutateReaderBook(supabase,a,{kind:'start',id:owned});assert.equal(result.book.status,'reading');const startDate=result.book.startedAt;
   result=await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:70});assert.equal(result.book.progressPercent,70);assert.equal(result.book.startedAt,startDate);
   await saveLibraryBook(supabase,a,'Example',lookup);home=await loadHome(supabase,a);assert.equal(home.books.length,1);assert.equal(home.books[0].progressPercent,70);assert.equal(home.books[0].status,'reading');assert.equal(lookups,1);
-  result=await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:100});assert.equal(result.book.status,'finished');assert.ok(result.book.finishedAt);
+  result=await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:100});assert.equal(result.book.status,'reading');assert.equal(result.book.finishedAt,null);
+  result=await mutateReaderBook(supabase,a,{kind:'status',id:owned,status:'finished'});assert.equal(result.book.status,'finished');assert.ok(result.book.finishedAt);
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:99})).status,409);
   assert.equal((await mutateReaderBook(supabase,a,{kind:'start',id:owned})).status,409);
   await role(b);assert.equal((await loadHome(supabase,b)).books.length,0);
