@@ -2,23 +2,25 @@
 import {useEffect,useRef,useState} from "react";
 import Link from "next/link";
 import {previewLibraryImport,MAX_IMPORT_BYTES} from "@/lib/library-import";
+import {notifyReadingActivity} from "@/lib/reading-activity-events";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import InlineAlert from "@/components/ui/InlineAlert";
 import styles from "./Settings.module.css";
 const labels={reading:"Reading",want_to_read:"TBR",finished:"Finished",dnf:"DNF"};
-export default function CsvLibraryImport(){
+export default function CsvLibraryImport({userId}){
   const [preview,setPreview]=useState(null),[name,setName]=useState(""),[error,setError]=useState(""),[results,setResults]=useState([]),[pending,setPending]=useState(false),[done,setDone]=useState(false);
-  const running=useRef(false),stop=useRef(false);
-  useEffect(()=>()=>{stop.current=true;},[]);
+  const running=useRef(false),stop=useRef(false),selection=useRef(0);
+  useEffect(()=>()=>{stop.current=true;selection.current++;},[]);
   async function choose(event){const file=event.target.files?.[0];if(!file)return;setError("");setDone(false);setResults([]);setPreview(null);setName(file.name);
-    try{if(!/\.csv$/i.test(file.name))throw new Error("Choose a .csv file.");if(file.size>MAX_IMPORT_BYTES)throw new Error("Choose a CSV smaller than 2 MB.");setPreview(previewLibraryImport(await file.text()));}catch(error){setError(error.message);}}
+    const chosen=++selection.current;
+    try{if(!/\.csv$/i.test(file.name))throw new Error("Choose a .csv file.");if(file.size>MAX_IMPORT_BYTES)throw new Error("Choose a CSV smaller than 2 MB.");const parsed=previewLibraryImport(await file.text());if(chosen===selection.current)setPreview(parsed);}catch(error){if(chosen===selection.current)setError(error.message);}}
   async function run(){if(running.current||!preview)return;running.current=true;stop.current=false;setPending(true);setError("");setDone(false);
     const completed=new Set(results.filter(row=>row.state!=="failed").map(row=>row.row));const remaining=preview.rows.filter(row=>!completed.has(row.row));let current=results.filter(row=>row.state!=="failed");
     try{for(let offset=0;offset<remaining.length;offset+=5){if(stop.current)break;const response=await fetch("/api/library/import",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({rows:remaining.slice(offset,offset+5)}),signal:AbortSignal.timeout(95000)});
       if(response.status===401){setError("Please log in again. Completed rows are saved; this file remains ready to retry.");break;}
       const body=await response.json();if(!response.ok||!Array.isArray(body.results))throw new Error(body.error||"Import interrupted.");
-      current=[...current,...body.results];setResults(current);
+      current=[...current,...body.results];setResults(current);if(userId&&body.results.some(row=>row.state==="added"))notifyReadingActivity(userId);
     }setDone(!stop.current&&current.filter(row=>row.state!=="failed").length===preview.rows.length);
     }catch{setError("Import interrupted. Completed books are saved. Retry the remaining rows safely.");}
     finally{running.current=false;setPending(false);}}

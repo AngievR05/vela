@@ -46,13 +46,13 @@ export default function Button({
       ) : null}
     </>;
   if (href) {
-    return <Link href={href} className={classNames} aria-busy={loading || undefined}
+    return <Link href={href} className={classNames} data-variant={variant} aria-busy={loading || undefined}
       aria-disabled={disabled || loading || undefined} {...props}
       onClick={(event) => {
         if (disabled || loading) event.preventDefault();
         else props.onClick?.(event);
       }}>{content}</Link>;
   }
-  return <button type={type} className={classNames} disabled={disabled || loading}
+  return <button type={type} className={classNames} data-variant={variant} disabled={disabled || loading}
     aria-busy={loading || undefined} {...props}>{content}</button>;
 }

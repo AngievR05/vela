@@ -3,8 +3,17 @@ import assert from "node:assert/strict";
 import {readFile} from "node:fs/promises";
 import {PGlite} from "@electric-sql/pglite";
 import {previewLibraryImport,importBatchSchema,importLibraryRows} from "../src/lib/library-import.js";
-import {readerPreferencesSchema,defaultReaderPreferences,settingsMutationSchema} from "../src/lib/reader-settings.js";
+import {readerPreferencesSchema,defaultReaderPreferences,settingsMutationSchema,readerNotificationChoices} from "../src/lib/reader-settings.js";
 const a="abd563cb-fdcc-4208-9e62-e1457a9df95e",b="dce88169-75db-43ef-8682-21949d0ab369";
+test("Optional reminders follow the displayed daily and Sunday schedules",()=>{
+ const preferences={...defaultReaderPreferences,reminders:true,digest:true,nudges:true,reminderTime:"20:00"};
+ const active=date=>readerNotificationChoices(preferences,new Date(...date)).filter(choice=>choice.enabled).map(choice=>choice.key);
+ assert.deepEqual(active([2026,9,11,18,0]),["digest"]);
+ assert.deepEqual(active([2026,9,11,20,0]),["reminder","nudge"]);
+ assert.deepEqual(active([2026,9,12,20,0]),["reminder"]);
+ assert.deepEqual(active([2026,9,12,18,0]),[]);
+ assert.deepEqual(readerNotificationChoices(defaultReaderPreferences,new Date(2026,9,11,19,0)).filter(choice=>choice.enabled),[]);
+});
 test("CSV handles Goodreads formula ISBNs, quoted multiline notes, StoryGraph status and explicit skipped rows",()=>{
  const goodreads='\uFEFFTitle,Author,ISBN13,Exclusive Shelf,My Rating,Number of Pages,Date Read,Private Notes\r\n"A Book, A World",Writer,"=""9781635575637""",read,5,272,2026/10/05,"First line\nSecond ""quoted"" line"\r\nOther,Writer,,currently-reading,0,200,,\r\nBad,Writer,,unknown,1,100,,\r\n"A Book, A World",Writer,"=""9781635575637""",read,1,272,,\r\n';
  const result=previewLibraryImport(goodreads);assert.equal(result.rows.length,2);assert.equal(result.rows[0].isbn,"9781635575637");assert.equal(result.rows[0].status,"finished");assert.equal(result.rows[0].finishedAt,"2026-10-05");assert.equal(result.rows[0].notes,'First line\nSecond "quoted" line');assert.equal(result.rows[1].rating,null);assert.equal(result.issues.length,2);

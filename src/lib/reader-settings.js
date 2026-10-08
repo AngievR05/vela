@@ -11,6 +11,15 @@ export const settingsMutationSchema = z.discriminatedUnion("kind", [
   z.object({kind:z.literal("reset"), confirmation:z.literal("RESET")}).strict(),
 ]);
 export function settingsCacheKey(userId) { return `vela:settings:v1:${userId}`; }
+export function readerNotificationChoices(preferences,now) {
+  const time=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
+  const sunday=now.getDay()===0;
+  return [
+    {key:"reminder",enabled:preferences.reminders&&time===preferences.reminderTime,text:"A little reading, whenever you’re ready."},
+    {key:"digest",enabled:preferences.digest&&sunday&&time==="18:00",text:"Explore your saved recommendations when you have a moment."},
+    {key:"nudge",enabled:preferences.nudges&&sunday&&time===preferences.reminderTime,text:"Want to save where you left off? Your Library is ready."},
+  ];
+}
 export async function loadReaderSettings(supabase, user) {
   const [profile, settings] = await Promise.all([
     supabase.from("profiles").select("display_name,created_at,reader_preferences").eq("id",user.id).single(),

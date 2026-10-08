@@ -4,7 +4,8 @@ import Button from "@/components/ui/Button";
 import styles from "@/components/design-system/DesignSystem.module.css";
 
 export default function ConfirmationDialog({
-  open,title,description,confirmLabel,cancelLabel="Cancel",destructive=false,loading=false,onConfirm,onCancel
+  open,title,description,confirmLabel,cancelLabel="Cancel",destructive=false,loading=false,onConfirm,onCancel,
+  children,eyebrow,className="",backdropClassName="",confirmDisabled=false,confirmFirst=false
 }) {
   const titleId=useId(),descriptionId=useId(),ref=useRef(null);
   useEffect(()=>{
@@ -25,14 +26,17 @@ export default function ConfirmationDialog({
   },[open,onCancel]);
   if(!open)return null;
   return (
-    <div className={styles.dialogBackdrop}>
-      <section ref={ref} className={styles.dialog} role="alertdialog" aria-modal="true"
+    <div className={`${styles.dialogBackdrop} ${backdropClassName}`}>
+      <section ref={ref} className={`${styles.dialog} ${className}`} role="alertdialog" aria-modal="true"
         aria-labelledby={titleId} aria-describedby={descriptionId}>
+        {eyebrow&&<span>{eyebrow}</span>}
         <h2 id={titleId} className={styles.h2}>{title}</h2>
         <p id={descriptionId} className={styles.small}>{description}</p>
+        {children}
         <div className={styles.stack}>
-          <Button variant="secondary" onClick={onCancel} disabled={loading} data-safe-action="true">{cancelLabel}</Button>
-          <Button variant={destructive?"destructive":"primary"} onClick={onConfirm} loading={loading}>{confirmLabel}</Button>
+          {!confirmFirst&&<Button variant="secondary" onClick={onCancel} disabled={loading} data-safe-action="true">{cancelLabel}</Button>}
+          <Button variant={destructive?"destructive":"primary"} onClick={onConfirm} loading={loading} disabled={confirmDisabled}>{confirmLabel}</Button>
+          {confirmFirst&&<Button variant="secondary" onClick={onCancel} disabled={loading} data-safe-action="true">{cancelLabel}</Button>}
         </div>
       </section>
     </div>
