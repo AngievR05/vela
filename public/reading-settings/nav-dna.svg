@@ -1,7 +1,7 @@
 <svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Icon / DNA">
-<path id="Vector" d="M6 3C6 6.7 14 6.3 14 10C14 13.7 6 13.3 6 17" stroke="#22201E" stroke-width="1.5" stroke-linecap="round"/>
-<path id="Vector_2" d="M14 3C14 6.7 6 6.3 6 10C6 13.7 14 13.3 14 17" stroke="#22201E" stroke-width="1.5" stroke-linecap="round"/>
-<path id="Vector_3" d="M7.2 6H12.8M7.2 14H12.8" stroke="#22201E" stroke-width="1.5" stroke-linecap="round"/>
+<path id="Vector" d="M6 3C6 6.7 14 6.3 14 10C14 13.7 6 13.3 6 17" stroke-width="1.5" stroke-linecap="round" stroke="#22201E"/>
+<path id="Vector_2" d="M14 3C14 6.7 6 6.3 6 10C6 13.7 14 13.3 14 17" stroke-width="1.5" stroke-linecap="round" stroke="#22201E"/>
+<path id="Vector_3" d="M7.2 6H12.8M7.2 14H12.8" stroke-width="1.5" stroke-linecap="round" stroke="#22201E"/>
 </g>
 </svg>
