@@ -8,7 +8,7 @@ export default function GlobalError({ reset }) {
       <p className="eyebrow">Something went wrong</p>
       <h1 className="heading">Vela could not load this page.</h1>
       <p className="lead">
-        Your data has not been changed. Try the action again.
+        Reload this page. If a save was interrupted, check the current record before trying again.
       </p>
       <div className="heroActions">
         <Button onClick={() => reset()}>Try again</Button>

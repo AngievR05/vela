@@ -7,6 +7,7 @@ import { readingDays } from "@/lib/library-data";
 import { libraryBookSchema } from "@/lib/home-data";
 import BookCover from "@/components/books/BookCover";
 import ReadingFlow from "@/components/reading/ReadingFlow";
+import ReflectionEditor from "@/components/reading/ReflectionEditor";
 import Rating from "@/components/ui/Rating";
 import Checkbox from "@/components/ui/Checkbox";
 import TextArea from "@/components/ui/TextArea";
@@ -60,6 +61,7 @@ export default function BookDetail({ userId, initialBook, onBack }) {
     try{if(navigator.share)await navigator.share(info);else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText([info.text,info.url].filter(Boolean).join("\n"));setNotice("Book information copied.");}else{setModal("share");return;}setModal(null);}catch(failure){if(failure.name!=="AbortError"){setError("");setModal("share");}}
   }
   const days=readingDays(book);
+  if(modal==="reflection")return <ReflectionEditor key={`reflection:${book.id}`} book={book} home={home} onClose={close} onSaved={updated=>{setOverride(updated);setNotice("Reflection saved. Your finish date and learning choices were kept.");}}/>;
   const percentText=book.pageCount?`${book.currentPage==null?"About ":""}${book.currentPage??Math.round(book.pageCount*book.progressPercent/100)} of ${book.pageCount} pages`:`${book.progressPercent}% complete`;
   return <LibraryShell title="Book detail" subtitle={book.isRemoved?"REMOVED":offline?"OFFLINE":labels[book.status].toUpperCase()} kind="detail" back="/library" onBack={onBack}>
     {offline&&<InlineAlert type="info">You’re offline. Saved book facts are available; progress will sync when online.</InlineAlert>}
@@ -79,8 +81,9 @@ export default function BookDetail({ userId, initialBook, onBack }) {
     {!book.isRemoved&&<Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" onClick={()=>{setError("");setModal("actions");}} disabled={pending}>More actions</Button>}
     {notice&&<p className={styles.notice} role="status">{notice}</p>}
     {error&&!modal&&<InlineAlert type="error">{error}</InlineAlert>}
-    {!book.isRemoved&&<BookInformation key={book.id} book={book} snapshot={home.snapshot} offline={offline}/>}
+    {!book.isRemoved&&<BookInformation key={`information:${book.id}`} book={book} snapshot={home.snapshot} offline={offline}/>}
     {book.status==="finished"&&!book.isRemoved&&<Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" href={`/stats?view=books&book=${book.id}`}>Edit finish date and reading record</Button>}
+    {book.status==="finished"&&!book.isRemoved&&<><Card className={styles.note}><h2>Your reflection</h2><p>{book.finishFeedback?.length?book.finishFeedback.join(" · "):"No structured reflection saved"}</p></Card><Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" onClick={()=>{setError("");setModal("reflection");}} disabled={offline}>Edit reflection</Button></>}
     {!offline&&<Button variant="tertiary" onClick={refreshBook} loading={revision}>Refresh book</Button>}
     <BottomSheet className={styles.sheet} backdropClassName={styles.backdrop} open={modal==="share"} title="Share book" onClose={close}>
       <div className={styles.form}><p>Select and copy this book information to share it.</p><textarea aria-label="Book information to share" readOnly rows={4} value={`${book.title}${book.author?` by ${book.author}`:""}${!book.googleBooksId.startsWith("manual:")?`\nhttps://books.google.com/books?id=${encodeURIComponent(book.googleBooksId)}`:""}`} onFocus={event=>event.currentTarget.select()}/><Button variant="secondary" onClick={close}>Done</Button></div>
@@ -104,6 +107,6 @@ export default function BookDetail({ userId, initialBook, onBack }) {
     </form></BottomSheet>
 
     {["progress","finish","dnf","dates","restore"].includes(modal)&&<ReadingFlow key={book.id+modal} book={book} mode={modal} home={home} onClose={close} onSaved={setOverride}/> }
-    <ConfirmationDialog open={modal==="remove"} title="Remove this book?" description={error||"This book will leave your Library. Your progress and private notes are retained so you can Undo."} confirmLabel="Remove book" destructive loading={pending} onCancel={close} onConfirm={()=>change({kind:"remove"})}/>
+    <ConfirmationDialog open={modal==="remove"} title="Remove this book?" description={error||"This book will leave your Library. Your progress and private notes are retained so you can Undo."} confirmLabel="Remove book" destructive confirmFirst loading={pending} onCancel={close} onConfirm={()=>change({kind:"remove"})} className={styles.removeDialog} backdropClassName={styles.removeBackdrop}/>
   </LibraryShell>;
 }

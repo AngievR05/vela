@@ -19,6 +19,7 @@ export const homeSnapshotSchema = z.object({
   version: z.literal(1), userId: z.uuid(), displayName: z.string(), fetchedAt: z.number(),
   books: z.array(libraryBookSchema).max(50000),
   personalisationEnabled: z.boolean(),
+  learningPermissions: z.object({ratings:z.boolean(),history:z.boolean(),dnf:z.boolean()}).optional(),
   statsRecords: z.array(statsRecordSchema).max(50000).default([]),
   statsSetupRequired: z.boolean().default(false),
   signals: z.array(z.object({

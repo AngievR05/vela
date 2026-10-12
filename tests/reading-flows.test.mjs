@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { PGlite } from "@electric-sql/pglite";
-import { progressValue, validReadingDate, checkReadingDates } from "../src/lib/reading-flow.js";
+import { progressValue, progressHasChanges, validReadingDate, checkReadingDates } from "../src/lib/reading-flow.js";
 import { describeDNASignals } from "../src/lib/reading-dna.js";
 const a="11111111-1111-4111-8111-111111111111",b="22222222-2222-4222-8222-222222222222",catalogue="33333333-3333-4333-8333-333333333333";
 test("atomic reading updates preserve progress, privacy, consent, dates and guarded Undo",async()=>{
@@ -44,7 +44,19 @@ test("atomic reading updates preserve progress, privacy, consent, dates and guar
   assert.deepEqual((await db.query("select label from public.reading_dna_signals where category='dnf_feedback' and evidence<>'[]'::jsonb")).rows.map(r=>r.label),['Did not finish · Pacing too slow']);
   await db.exec('update public.ai_settings set use_dnf_reasons=false');assert.equal((await db.query("select * from public.reading_dna_signals where category='dnf_feedback' and evidence<>'[]'::jsonb")).rows.length,0);
   const stale=await make({kind:'reading_dates',startedAt:'2026-01-02',finishedAt:null,stoppedAt:'2026-02-02'});await run(await make({kind:'reading_dates',startedAt:'2026-01-03',finishedAt:null,stoppedAt:'2026-02-02'}));await assert.rejects(run(stale),e=>e.code==='40001');
+  await run(await make({kind:'restore_reading'}));
+  await run(await make({kind:'finish',startedAt:'2026-01-03',finishedAt:'2026-02-03',rating:4,notes:'PRIVATE SAVED NOTE',feedback:['Characters'],useForLearning:true}));
+  const reflectionBefore=await get();
+  await db.query('update public.user_books set finish_feedback=$1,reflection_recorded_at=clock_timestamp() where id=$2 and user_id=$3 and updated_at=$4',[['Atmosphere'],id,a,reflectionBefore.updated_at]);
+  const reflectionAfter=await get();
+  for(const key of ['status','rating','notes','started_at','finished_at','progress_percent','current_page','finish_use_for_learning','rating_use_for_learning','history_use_for_learning'])assert.deepEqual(reflectionAfter[key],reflectionBefore[key]);
+  assert.deepEqual(reflectionAfter.finish_feedback,['Atmosphere']);
+  assert.ok((await db.query("select label from public.reading_dna_signals where category='finish_feedback' and evidence<>'[]'::jsonb")).rows.some(row=>row.label==='Worked for me · Atmosphere'));
+  await db.exec('update public.ai_settings set use_recent_ratings=false');
+  await db.query('update public.user_books set finish_feedback=$1,reflection_recorded_at=clock_timestamp() where id=$2',[['Themes'],id]);
+  assert.equal((await db.query("select id from public.reading_dna_signals where category='finish_feedback' and evidence<>'[]'::jsonb")).rows.length,0);
   await role(b);assert.equal((await db.query('select * from public.reader_book_updates')).rows.length,0);assert.equal((await db.query('select * from public.user_books')).rows.length,0);
+  assert.equal((await db.query('update public.user_books set finish_feedback=$1 where id=$2 returning id',[['Romance'],id])).rows.length,0);
   await assert.rejects(run({...stale,operationId:randomUUID()}),e=>e.code==='42501');
   await assert.rejects(db.query('insert into public.reader_book_updates(id,user_id,user_book_id,kind,request,before_state)values($1,$2,$3,$4,$5,$6)',[randomUUID(),b,id,'progress','{}','{}']),e=>e.code==='42501');
   await role(null,'anon');await assert.rejects(db.query('select * from public.reader_book_updates'),e=>e.code==='42501');await assert.rejects(run(stale),e=>e.code==='42501');
@@ -54,4 +66,14 @@ test("date and page validation rejects invalid inputs without finishing at 100 p
  assert.equal(validReadingDate('2026-99-99'),false);assert.equal(validReadingDate('2026-02-30'),false);assert.equal(validReadingDate('2024-02-29'),true);
  assert.match(checkReadingDates('2026-02-02','2026-01-01','2026-10-08'),/after/);assert.match(checkReadingDates(null,'2027-01-01','2026-10-08'),/future/);
  assert.deepEqual(progressValue('200','page',200),{percent:100,page:200});assert.equal(progressValue('199','page',200).percent,99);assert.throws(()=>progressValue('1.5','percent',200));assert.throws(()=>progressValue('','percent',null));
+});
+test("progress dismissal recognises meaningful edits in both formats and private notes",()=>{
+ const book={pageCount:516,currentPage:232,progressPercent:45};
+ assert.equal(progressHasChanges(book,"232","page",""),false);
+ assert.equal(progressHasChanges(book,"45","percent",""),false);
+ assert.equal(progressHasChanges(book,"046","percent",""),true);
+ assert.equal(progressHasChanges(book,"233","page",""),true);
+ assert.equal(progressHasChanges(book,"232","page","private thought"),true);
+ assert.equal(progressHasChanges(book,"","page",""),true);
+ assert.equal(progressHasChanges({...book,currentPage:null},"45","percent",""),false);
 });

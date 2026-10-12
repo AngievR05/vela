@@ -47,7 +47,8 @@ export async function loadHome(supabase, userId) {
       evidence: signal.evidence.filter(item => item.bookId).map(item => ({ id: item.bookId, title: books.find(book => book.id === item.bookId).title })),
     }));
   return { version: 1, userId, displayName: profile.data.display_name, fetchedAt: Date.now(), books,
-    personalisationEnabled: settings.data.personalisation_enabled, signals };
+    personalisationEnabled: settings.data.personalisation_enabled,
+    learningPermissions: {ratings:settings.data.use_recent_ratings,history:settings.data.use_recent_history,dnf:settings.data.use_dnf_reasons}, signals };
 }
 
 export async function mutateReaderBook(supabase, userId, mutation) {
@@ -64,9 +65,11 @@ export async function mutateReaderBook(supabase, userId, mutation) {
   if (mutation.expectedUpdatedAt && Date.parse(mutation.expectedUpdatedAt) !== Date.parse(row.updated_at))
     return { status: 409, error: "This book changed after you saved it. Open its latest details before saving." };
   if (row.is_removed && mutation.kind !== "restore" && mutation.kind !== "remove") return { status: 409, error: "This book has been removed. Restore it before editing." };
-  if (["status", "review", "remove", "restore"].includes(mutation.kind)) {
+  if (mutation.kind === "reflection" && row.status !== "finished") return { status: 409, error: "Reflection editing needs a finished book. Refresh its details before saving." };
+  if (["status", "review", "reflection", "remove", "restore"].includes(mutation.kind)) {
     const date = new Date().toISOString().slice(0, 10);
     const changes = mutation.kind === "remove" ? { is_removed: true } : mutation.kind === "restore" ? { is_removed: false }
+      : mutation.kind === "reflection" ? { finish_feedback: mutation.feedback, reflection_recorded_at: new Date().toISOString() }
       : mutation.kind === "review" ? { rating: mutation.rating, ...(mutation.ratingUse!=null ? {rating_use_for_learning:mutation.ratingUse} : {}), notes: mutation.notes, is_favourite: mutation.favourite }
         : { status: mutation.status, finished_at: mutation.status === "finished" ? date : null,
           progress_percent: mutation.status === "finished" ? 100 : row.progress_percent === 100 ? 0 : row.progress_percent,

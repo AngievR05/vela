@@ -26,6 +26,7 @@ export default function AddBookScreen({ userId }) {
   const [saved, setSaved] = useState(null);
   const [duplicate, setDuplicate] = useState(false);
   const [error, setError] = useState("");
+  const [notice,setNotice]=useState("");
   const [saving, setSaving] = useState(false);
   const [manual, setManual] = useState({ title:"", author:"", isbn:"", pages:"" });
   const [entryId, setEntryId] = useState(null);
@@ -62,7 +63,7 @@ export default function AddBookScreen({ userId }) {
   function editManual(field, value) { setManual({...manual,[field]:value}); setFields({}); setError(""); setEntryId(createEntryId()); }
   async function save(status) {
     if (busy.current || !selected) return;
-    busy.current = true; setSaving(true); setError("");
+    busy.current = true; setSaving(true); setError("");setNotice("");
     try {
       const response = await fetch("/api/library", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({googleBooksId:selected.googleBooksId,status}), signal:AbortSignal.timeout(20000) });
       if (response.status === 401) { window.location.replace("/login?next=/library/add"); return; }
@@ -78,7 +79,7 @@ export default function AddBookScreen({ userId }) {
     event.preventDefault(); if (busy.current) return;
     const parsed = manualBookSchema.safeParse({entryId,title:manual.title,author:manual.author,isbn:manual.isbn,pageCount:manual.pages.trim()?Number(manual.pages):null});
     if (!parsed.success) { setFields(parsed.error.flatten().fieldErrors); setError("Check your entry. Your input is still here."); return; }
-    busy.current=true;setSaving(true);setError("");setFields({});
+    busy.current=true;setSaving(true);setError("");setFields({});setNotice("");
     try {
       const response=await fetch("/api/library/manual",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(parsed.data),signal:AbortSignal.timeout(30000)});
       if(response.status===401){window.location.replace("/login?next=/library/add");return;}
@@ -89,10 +90,17 @@ export default function AddBookScreen({ userId }) {
     }catch(failure){setError(failure.name==="TimeoutError"||failure instanceof TypeError?"We couldn’t connect. Your entry is still here; please try again.":failure.message);}
     finally{busy.current=false;setSaving(false);}
   }
+  async function undoAdd(){
+    if(busy.current||!saved||duplicate)return;busy.current=true;setSaving(true);setError("");
+    try{await home.mutate({kind:"remove",id:saved.id,expectedUpdatedAt:saved.updatedAt});setSaved(null);setStage(selected?"preview":"manual");setNotice("Addition undone. Your Library is back to its previous state.");}
+    catch(failure){setError(failure.message||"Undo could not be confirmed. Your saved book is still available; retry after refreshing.");}
+    finally{busy.current=false;setSaving(false);}
+  }
   const title=stage==="manual"?"Manual entry":stage==="preview"?"Book preview":"Add a book";
   const subtitle=stage==="manual"?"Title and author are required":stage==="preview"?"Check before adding":stage==="success"?duplicate?"Already on your shelf":"Saved to your Library":phase==="loading"?"Searching books…":phase==="ready"?`${results.length} books found`:"Search your next read";
   const code=stage==="manual"?"E05":stage==="preview"?existing?"E09":"E06":stage==="success"?duplicate?"E09":saved?.status==="reading"?"E08":"E07":phase==="loading"?"E02":phase==="error"?"E10":phase==="ready"?results.length?"E03":"E04":"E01";
   return <LibraryShell kind="add" title={title} subtitle={subtitle} code={code} back="/library" onBack={stage!=="search"&&stage!=="success"?()=>{if(!busy.current){setStage("search");setError("");}}:undefined}>
+    {notice&&<p role="status" className={styles.notice}>{notice}</p>}
     {stage==="search"&&<>
       <form onSubmit={event=>{event.preventDefault();runSearch(query,AbortSignal.timeout(20000));}}><SearchField label="Search title, author or ISBN" placeholder="Search title, author or ISBN" value={query} maxLength={200} onChange={event=>setQuery(event.target.value)} className={styles.search} /></form>
       {phase==="idle"&&<><Card className={styles.discovery}><h2>A door to your<br/>next world.</h2><p>Search by title, author or ISBN, then save it to a shelf.</p><span>TITLE · AUTHOR · ISBN</span></Card><Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" onClick={beginManual}>Add manually</Button></>}
@@ -117,8 +125,10 @@ export default function AddBookScreen({ userId }) {
       <Button type="submit" className={styles.fullButton} loading={saving}>Add book</Button>
     </form>}
     {error&&stage!=="search"&&<InlineAlert type="error">{error}</InlineAlert>}
-    {stage==="success"&&saved&&<><Card className={styles.success}><Link href={`/library/${saved.id}`} aria-label={`Open ${saved.title}`}><BookCover title={saved.title} author={saved.author} src={saved.coverSrc} size="detail" className={styles.detailCover} placeholderType="book" decorative/></Link><h2>{duplicate?"Already on your shelf.":saved.status==="reading"?"Now reading.":"Added to your Library."}</h2><p>{saved.title}</p></Card>
-      <Button className={styles.fullButton} href={`/library/${saved.id}`}>View book detail</Button><Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" href={`/library?tab=${saved.status}`}>View {saved.status==="want_to_read"?"TBR":saved.status.replaceAll("_"," ")} shelf</Button><Button variant="tertiary" onClick={()=>{setStage("search");setQuery("");setResults([]);setPhase("idle");setSelected(null);setManual({title:"",author:"",isbn:"",pages:""});setEntryId(null);}}>Add another book</Button>
+    {stage==="success"&&saved&&<><Card className={`${styles.success} ${saved.status==="reading"?styles.readingSuccess:""}`}><Link href={`/library/${saved.id}`} aria-label={`Open ${saved.title}`}><BookCover title={saved.title} author={saved.author} src={saved.coverSrc} size="detail" className={styles.detailCover} placeholderType="book" decorative/></Link><h2>{duplicate?"Already on your shelf.":saved.status==="reading"?"Now reading.":"Added to TBR."}</h2><p>{duplicate?"Your existing status and progress were kept.":saved.status==="reading"?`Starts at ${saved.currentPage??0}${saved.pageCount?` of ${saved.pageCount}`:""} pages. You can set an existing starting page next.`:"Saved to To be read (TBR). Undo removes this addition."}</p></Card>
+      <Button className={styles.fullButton} href={duplicate?`/library/${saved.id}`:saved.status==="reading"?`/library/reading?book=${saved.id}`:"/library?tab=want_to_read"}>{duplicate?"View existing book":saved.status==="reading"?"Open current reading":"View TBR shelf"}</Button>
+      {!duplicate&&<Button className={`${styles.fullButton} ${styles.secondary}`} variant="secondary" onClick={undoAdd} loading={saving} disabled={!home.online}>{saved.status==="reading"?"Undo start reading":"Undo add"}</Button>}
+      <Button variant="tertiary" onClick={()=>{setStage("search");setQuery("");setResults([]);setPhase("idle");setSelected(null);setManual({title:"",author:"",isbn:"",pages:""});setEntryId(null);setNotice("");}}>Add another book</Button>
     </>}
   </LibraryShell>;
 }

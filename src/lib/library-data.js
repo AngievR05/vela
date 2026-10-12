@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { finishChoices } from "./reading-flow.js";
 
 export const libraryStatuses = [
   { value: "reading", label: "Reading", heading: "Reading now" },
@@ -18,6 +19,7 @@ export const manualBookSchema = z.object({
 }).strict();
 const identity = { id: z.uuid() };
 export const detailMutationSchema = z.discriminatedUnion("kind", [
+  z.object({ ...identity, kind: z.literal("reflection"), expectedUpdatedAt: z.iso.datetime({offset:true}), feedback: z.array(z.enum(finishChoices)).max(finishChoices.length).refine(values=>new Set(values).size===values.length,"Choose each option once.") }).strict(),
   z.object({ ...identity, kind: z.literal("status"), status: z.enum(["reading", "want_to_read", "dnf", "finished"]), reason: z.string().trim().max(500).optional(), useForLearning: z.boolean().optional() }).strict()
     .refine(value => value.status !== "dnf" || (Boolean(value.reason) && typeof value.useForLearning === "boolean"), "Choose why you stopped and whether Vela may use it."),
   z.object({ ...identity, kind: z.literal("review"), rating: z.number().int().min(1).max(5).nullable(), notes: z.string().max(2000), favourite: z.boolean(), ratingUse:z.boolean().optional() }).strict(),

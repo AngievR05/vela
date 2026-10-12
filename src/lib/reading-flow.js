@@ -24,3 +24,10 @@ export function progressValue(value,mode,pageCount){
  if(!String(value).trim()||!Number.isInteger(number)||number<0||!limit||number>limit)throw new Error(`Enter a whole number from 0 to ${limit||100}. Your entry is still here.`);
  return {percent:mode==="page"?number===pageCount?100:Math.min(99,Math.round(number*100/pageCount)):number,...(mode==="page"?{page:number}:{})};
 }
+export function progressHasChanges(book,value,unit,note){
+ if(note)return true;
+ try{const progress=progressValue(value,unit,book.pageCount);
+  const page=unit==="percent"&&progress.percent===book.progressPercent?book.currentPage:progress.page??null;
+  return progress.percent!==book.progressPercent||page!==(book.currentPage??null);
+ }catch{return String(value)!==String(unit==="page"?book.currentPage??"":book.progressPercent);}
+}
