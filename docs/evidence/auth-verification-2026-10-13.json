@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-13",
+  "applicationRevision": "fe16271",
+  "liveExistingAccount": {
+    "date": "2026-10-13",
+    "origin": "http://localhost:3000",
+    "mode": "Live hosted Supabase; isolated browser session",
+    "checks": [
+      {
+        "check": "Unauthenticated Library route",
+        "result": "PASS",
+        "detail": "Redirects to login"
+      },
+      {
+        "check": "Live password login and return route",
+        "result": "PASS"
+      },
+      {
+        "check": "Persistent cookie session after reload",
+        "result": "PASS"
+      },
+      {
+        "check": "Authenticated backend access",
+        "result": "PASS"
+      },
+      {
+        "check": "Live local-scope logout",
+        "result": "PASS"
+      },
+      {
+        "check": "Private API after logout",
+        "result": "PASS",
+        "status": 401
+      },
+      {
+        "check": "Private route after logout",
+        "result": "PASS"
+      },
+      {
+        "check": "Invalid login and input retention",
+        "result": "PASS"
+      },
+      {
+        "check": "Existing reader Library preserved",
+        "result": "PASS"
+      },
+      {
+        "check": "Live password-recovery email request",
+        "result": "PASS: accepted (200); inbox receipt confirmed by user",
+        "status": 200
+      },
+      {
+        "check": "Account identity",
+        "result": "Existing confirmed reader verified",
+        "detail": "No password reset, deletion, or Library changes performed"
+      }
+    ]
+  },
+  "newSignup": {
+    "date": "2026-10-13",
+    "origin": "http://localhost:3000",
+    "checks": [
+      {
+        "check": "Live new-account signup",
+        "result": "ACCEPTED",
+        "status": 200,
+        "confirmationPending": false,
+        "returnedUser": true,
+        "confirmationPendingAtSignup": true
+      }
+    ],
+    "emailReceipt": "Confirmed by user",
+    "activation": "Verified by successful login after opening supplied confirmation link"
+  },
+  "newAccountLogin": {
+    "date": "2026-10-13",
+    "check": "New test-account password login",
+    "status": 200,
+    "result": "PASS",
+    "destination": "/home",
+    "sessionAfterReload": true,
+    "logout": "PASS",
+    "privateApiAfterLogout": 401
+  },
+  "emailConfiguration": {
+    "customSmtp": false,
+    "emailProviderEnabled": true,
+    "emailConfirmationRequired": true
+  },
+  "qualityChecks": {
+    "testsPassed": 49,
+    "testsFailed": 0,
+    "postgresqlPrivacyAssertions": 122,
+    "lint": "PASS",
+    "productionBuild": "PASS"
+  },
+  "limitations": [
+    "Original signup browser closed before confirmation; same-browser PKCE callback completion not verified",
+    "Existing password preserved; live password-change cycle not executed",
+    "RLS suite runs on local PostgreSQL, not a fresh hosted-policy audit"
+  ]
+}

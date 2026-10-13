@@ -2,6 +2,8 @@
 
 **Your reading life, intelligently organised.**
 
+Milestone checks (13 October 2026): **49 passing tests**, lint/build passed, live login/session/logout verified and reset-email receipt confirmed. See the [bug and testing log](docs/BUG_AND_TEST_LOG.md) and [test-account guide](docs/authentication-test-accounts.md) for evidence and outstanding email setup.
+
 Vela is a mobile-first responsive reading companion for self-directed readers. The MVP centres on the loop:
 
 **Track → Reflect → Learn → Recommend → Correct → Read**
