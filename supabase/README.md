@@ -1,5 +1,22 @@
 # Supabase setup and verification
 
+## Migration order
+
+For a new project, apply every checked-in migration once in filename order. For an existing project, apply only migrations not already recorded as applied; do not rerun SQL blindly.
+
+1. `migrations/202609220001_initial_schema_rls.sql`
+2. `migrations/202610060001_reading_setup.sql`
+3. `migrations/202610060002_library_detail.sql`
+4. `migrations/202610060003_recommendations.sql`
+5. `migrations/202610060004_settings_import.sql`
+6. `migrations/202610070001_reading_stats.sql`
+7. `migrations/202610070002_reading_dna.sql`
+8. `migrations/202610070003_entry_setup_options.sql`
+9. `migrations/202610070004_live_reading_activity.sql`
+10. `migrations/202610080001_reading_flows.sql`
+
+The last three expand setup choices, refresh consent-approved DNA activity and add the shared progress/finish/DNF operations. Saving 100% progress leaves a book Reading until the reader explicitly finishes it. Current tests apply all ten migrations. Historical verification notes below describe checks at their stated dates; use the [current testing log](../docs/BUG_AND_TEST_LOG.md) and [risks update](../docs/RISKS_UPDATE.md) for the latest evidence.
+
 Apply `migrations/202609220001_initial_schema_rls.sql` to the Supabase project before using accounts. The Auth trigger creates each reader's profile (default name: Reader) and AI settings. Personalisation choices are not required during sign-up.
 
 Apply `migrations/202610060001_reading_setup.sql` next. It adds saved setup choices and completion time to profiles, changes new-reader AI defaults to off, and adds `save_reading_setup`. This function runs with the reader’s permissions, derives ownership from `auth.uid()`, validates the same allowed choices as the frontend, and saves preferences, data permissions and onboarding DNA signals atomically. It deactivates removed onboarding signals while preserving learned/manual evidence and existing references. Existing readers’ AI settings are not silently overwritten.
@@ -47,7 +64,7 @@ In Supabase Authentication URL Configuration:
 - The hosted project also allows `http://192.168.3.7:3000/auth/callback**` for this computer’s LAN preview (added October 7, 2026). Request and open confirmation/recovery links using the same network address and browser, since the PKCE verifier and session belong to that origin. Update this exact host if the computer’s LAN IP changes.
 - Add the deployed application's `/auth/callback` URL for production. Query parameters carry the safe return route or `/reset-password`.
 - Enable email confirmations and require passwords of at least 8 characters. Local `config.toml` includes these settings; hosted projects must be configured separately.
-- Configure custom SMTP before opening sign-up to readers. Supabase's default mail service sends only to project-team addresses and is intended for development. Custom SMTP was still disabled during the 2026-10-05 verification; confirmation and recovery email delivery to other readers therefore remains a setup requirement. See [Supabase SMTP configuration](https://supabase.com/docs/guides/auth/auth-smtp).
+- Configure custom SMTP before opening sign-up to the public. Supabase's default mail service restricts recipients to project-team addresses and is intended for development. Custom SMTP was still disabled during the 2026-10-13 dashboard check. Confirmation and recovery messages reached the supplied controlled inboxes, and the new test account was activated; delivery to arbitrary public readers remains unverified. See [Supabase SMTP configuration](https://supabase.com/docs/guides/auth/auth-smtp).
 
 Default Supabase email links use the PKCE callback at `/auth/callback`. Open these links in the browser where the email was requested. For links that work across browsers, use token-hash email templates:
 

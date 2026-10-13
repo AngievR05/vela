@@ -2,7 +2,7 @@
 
 **Your reading life, intelligently organised.**
 
-Milestone checks (13 October 2026): **49 passing tests**, lint/build passed, live login/session/logout verified and reset-email receipt confirmed. See the [bug and testing log](docs/BUG_AND_TEST_LOG.md) and [test-account guide](docs/authentication-test-accounts.md) for evidence and outstanding email setup.
+Milestone checks (13 October 2026): **49 passing tests**, lint/build passed, live signup activation/login/session/logout verified and confirmation/reset-email receipt confirmed for the controlled test inboxes. See the [bug and testing log](docs/BUG_AND_TEST_LOG.md), [test-account guide](docs/authentication-test-accounts.md) and [risks update](docs/RISKS_UPDATE.md) for evidence and remaining checks.
 
 Vela is a mobile-first responsive reading companion for self-directed readers. The MVP centres on the loop:
 
@@ -26,17 +26,13 @@ The application uses transparent, reader-controlled personalisation. Readers man
 
 ## Start the project
 
-1. Unzip this folder.
-2. Open the folder in VS Code.
-3. Install dependencies:
+Use Node.js 20.19 or later. Clone/open the repository, then install the dependencies from its checked-in lockfile:
 
 ```bash
-npm install
+npm ci
 ```
 
-This will create `package-lock.json`. Commit that file to GitHub.
-
-4. Copy the environment template:
+Copy the environment template:
 
 ```bash
 cp .env.example .env.local
@@ -48,8 +44,7 @@ On Windows PowerShell:
 Copy-Item .env.example .env.local
 ```
 
-5. Add your Supabase, Gemini and Google Books values to `.env.local`.
-6. Start development:
+Add your Supabase public URL/key and server-only Gemini/Google Books keys to `.env.local`. Apply the checked-in migrations in filename order using [Supabase setup and verification](supabase/README.md), and configure allowed callback URLs. Start development:
 
 ```bash
 npm run dev
@@ -59,72 +54,48 @@ Open `http://localhost:3000`.
 
 For another device on the same Wi-Fi, use `http://192.168.3.7:3000` and sign in there separately; sessions and offline caches belong to each browser origin. The development server allows that exact network hostname. If your computer’s IP changes, update `allowedDevOrigins` in `next.config.mjs` and the Supabase callback allowlist. Manual books and recommendation IDs use secure random bytes even on LAN HTTP, and book sharing offers selectable text when native sharing/clipboard is unavailable.
 
-## Git setup
-
-If this folder is not already inside your GitHub repository:
+## Verification and production
 
 ```bash
-git init
-git add .
-git commit -m "chore: initialise Vela project structure"
-git branch -M main
-git remote add origin YOUR_GITHUB_REPOSITORY_URL
-git push -u origin main
+npm test
+npm run lint
+npm run build
+npm run start
 ```
 
-Use `main` as the stable branch and create short feature branches such as:
+The latest run on 13 October passed **49 tests**, including **122 local PostgreSQL privacy assertions**, lint and the production build. The tests execute the checked-in migrations with PGlite; they do not establish that every hosted policy/configuration is current. Browser checks include isolated state fixtures and real hosted authentication, identified separately in the [testing log](docs/BUG_AND_TEST_LOG.md).
 
-```text
-feature/auth
-feature/library-crud
-feature/google-books
-feature/reading-dna
-feature/recommendations
-feature/privacy-controls
-```
-
-Example commits:
-
-```text
-feat: add Supabase authentication
-feat: add Google Books search
-feat: create Reading DNA signals
-fix: validate recommendation JSON
-style: add mobile navigation
-docs: update README
-```
+Production deployment remains a release task. Set the production environment variables and Supabase Site URL/callback allowlist, then verify authentication, private access and core flows on the deployed origin. Keep `main` stable and use short branches/descriptive commits; retain the checked-in lockfile.
 
 ## Important security rule
 
-Never commit `.env.local`.
+Never commit environment files or test-account credentials. `.env.local` and the private `.env.auth-test.local` are Git-ignored; `.env.example` contains placeholders only.
 
 `GEMINI_API_KEY` is server-only. Do not expose it in a browser component and do not rename it with the `NEXT_PUBLIC_` prefix.
 
-## Current scaffold
-
-This starter deliberately sets up the project architecture without pretending unfinished features are complete.
+## Implemented features
 
 - Google Books search and canonical metadata lookup power book discovery and saving to the reader's Library.
-- Supabase authentication and protected routes are implemented; hosted email configuration is required.
+- Supabase authentication and protected routes are implemented; public email delivery still needs custom SMTP configuration.
 - Reading setup, editable taste choices and independent data permissions are saved through a reader-protected Supabase operation.
-- Discover creates three validated Gemini recommendations using canonical Google Books metadata and the reader’s permitted preferences.
+- Discover creates three validated Gemini recommendations using canonical Google Books metadata and permitted reader evidence when enough eligible works are available; insufficient matches have an explicit recovery state.
 - Recommendation sessions, feedback and explicit Reading DNA corrections persist in Supabase.
-- The five main product areas are represented: Home, Library, Discover, DNA and Settings.
+- The five main product areas are Home, Library, Discover, DNA and Settings, with reading stats reachable from Home.
 
 Library, Add Book and Book Detail follow the completed **D / E / F** designs with shared Figma SVG artwork, shelf ledges, larger real Google Books covers, grid view and responsive scroll areas. All shelves include Reading, TBR, DNF and Finished. Search, filters, sorting, manual entry, duplicate protection, exact-page progress, notes, favourites, removal and Undo use the existing reader-protected backend. Shelf moves retain exact pages; rounded percentage-only progress is labelled approximate.
 
 Book detail includes the full description, genre tags, edition and page length in every shelf state, plus a provisional fit summary based on explicit permitted Reading DNA choices. Readers can request mood, pace and trope clues through the authenticated `/api/library/[id]/insights` endpoint. The server loads only the reader's own book through RLS and sends its public Google Books description to Gemini, without notes, ratings or reading history. Every clue requires a verified description quote and is labelled as an interpretation; unsupported traits stay unknown. Manual entries remain private and are not sent to this provider. Personalisation-off readers still have all book facts. No additional migration is required.
-- Vela's colour tokens and mobile-first visual foundation are included.
-
-See `docs/PROJECT_SCOPE.md` and `docs/FOLDER_STRUCTURE.md` before adding features.
+Vela's colour tokens and mobile-first visual foundation are included. Refer to the [Final UI state audit](docs/final-ui-state-audit.md) and [frozen scope in Notion](https://app.notion.com/p/3f8505c6697b8154bc6ee1047e5b1dab) before expanding features.
 
 ## Reading Home
 
-`/home` follows Figma’s **C · Home** populated, no-current-book, new-reader, loading, offline and retry states. Greeting, current book, progress, annual finished count, rating average and permitted DNA evidence come from the authenticated reader’s Supabase data. Book search, adding to the Library, starting reading and saving progress use protected APIs; reaching 100% marks the book finished. Library shows saved books; Discover provides recommendations and protected catalogue details.
+`/home` follows Figma’s **C · Home** populated, no-current-book, new-reader, loading, offline and retry states. Greeting, current book, progress, annual finished count, rating average and permitted DNA evidence come from the authenticated reader’s Supabase data. Book search, adding to the Library, starting reading and saving progress use protected APIs. **Saving 100% progress keeps the book Reading** and offers a separate Mark finished action. Library shows saved books; Discover provides recommendations and protected catalogue details.
+
+Home, Current Reading and Book Detail use the shared progress modal with page/percentage validation, optional private notes, retained retry, Undo and confirmation before discarding edits. Finish and DNF each use one sheet with optional rating/reflection or reasons, dates and separate learning consent. Tracking remains available when learning is off. Saved structured reflections can be edited independently without changing finish dates.
 
 While an already-loaded Home is offline, reader-scoped local snapshots and a durable progress queue keep saved books usable. Updates sync after reconnection; conflicts remain visible for retry or explicit removal. Signing out or changing readers clears the old reader’s cached data. This is offline support for an open Home tab, not a service-worker-backed offline app launch.
 
-No additional migration is needed beyond the two existing migrations. `npm test` exercises actual Home data operations against PostgreSQL with those migrations and reader/anonymous roles, including consent filtering, cross-reader denial, duplicate saves and reading transitions. Live account saves still need an authenticated hosted session to verify deployment-specific behavior.
+Apply all migrations listed in [Supabase setup and verification](supabase/README.md). `npm test` exercises Home/reading operations against PostgreSQL, including consent, cross-reader denial, duplicate saves and reading transitions. Live writes, callback configuration and release behaviour need verification on the deployed environment.
 
 ## Authentication
 
@@ -132,7 +103,7 @@ Email/password sign-up, login, logout, password recovery, persistent cookie sess
 
 The entry and authentication UI follows Figma’s **A · Entry and Authentication** section. `/` verifies the saved session, `/welcome` presents the entry choices, and the forms display focused, validation, pending, connection-error and success states. The supplied logo and decorative SVGs are local assets; Cormorant Garamond and Geist are bundled under their OFL licenses. Device status bars and home indicators belong to the device rather than the web page.
 
-Live account and email checks require a reachable Supabase project, the schema migration, and allowed callback URLs for the port or deployed origin in use. The PostgreSQL test suite verifies the checked-in policies; it does not assert that a hosted project has applied them.
+On 13 October, live checks verified signup activation, login, session persistence after reload, local-scope logout, protected route/API denial and input retention. The owner confirmed confirmation and reset emails reached the supplied inboxes. Custom SMTP remains disabled; arbitrary public delivery is not established. A complete disposable password-change cycle and same-browser PKCE callback remain open checks. The PostgreSQL suite verifies checked-in policies rather than hosted deployment configuration.
 
 ## Reading setup
 
@@ -146,7 +117,7 @@ Apply the migrations listed in [Supabase setup and verification](supabase/README
 
 Apply `supabase/migrations/202610060003_recommendations.sql` after the earlier migrations. Sessions save three distinct validated recommendations atomically. Helpful and ordinary rejection feedback do not change Reading DNA. Show less records a separate future preference with Undo; Keep, Reduce and Remove change only the explicitly selected, permitted signal. Reader-scoped snapshots support browsing already-loaded results offline and clear on logout.
 
-The server uses `GEMINI_API_KEY` with `gemini-3.5-flash-lite` by default; optional server-only `GEMINI_MODEL` overrides it. Google Books supplies canonical candidates, facts and covers. Client-provided candidates, reader IDs and evidence are rejected. Generated book and signal IDs must belong to the server’s allowed lists.
+The server uses `GEMINI_API_KEY` with `gemini-3.5-flash-lite` by default; server-only `GEMINI_MODEL` overrides it. Bounded transient-error retries use `gemini-3.1-flash-lite` by default, configurable with `GEMINI_FALLBACK_MODEL`. These are the code defaults, not a guarantee of provider availability or quota. Google Books supplies canonical candidates, facts and covers. Client-provided candidates, reader IDs and evidence are rejected. Generated book and signal IDs must belong to the server’s allowed lists.
 
 The PostgreSQL tests cover atomic saves, idempotent retry, feedback, correction and anonymous/cross-reader denial. Live hosted generation, session persistence, Google Books covers and Helpful feedback were verified after the migration was applied. Temporary browser fixtures verified preference Undo, explicit corrections and retained input after feedback/save failures; fixtures are removed from the app.
 
@@ -170,7 +141,7 @@ Import Library accepts UTF-8 Goodreads/StoryGraph-style CSV files or the downloa
 
 The preview precedes import. Small batches save each row atomically; interrupted batches retry safely. Existing books, including removed books, are skipped without overwriting status, notes or progress. Exact ISBN or title/author matches use Google Books metadata and covers; unmatched books become reader-private manual entries. Imported data does not enable any AI permission. Files and their unsaved previews remain in browser memory rather than being stored on a public server.
 
-Notifications run only while Vela is open and browser permission is granted. Closed-app push and email scheduling are not configured. Supabase email delivery still requires the SMTP setup described in `supabase/README.md`. Hosted profile saves, CSV duplicate preservation, export and anonymous denial were verified; isolated browser checks verified appearance, larger text, retained choices and deletion safeguards. `npm test` covers CSV parsing, canonical matching, retry, PKCE email handling, verification identity, RLS and deletion freshness.
+Notifications run only while Vela is open, the browser supports notifications and permission is granted. Browser/OS restrictions and background-tab throttling can delay or prevent reminders; closed-app push and email scheduling are not configured. Public authentication-email delivery still needs the SMTP setup in [Supabase setup](supabase/README.md). Hosted profile saves, CSV duplicate preservation, export and anonymous denial were verified; isolated browser checks verified appearance, larger text, retained choices and deletion safeguards. `npm test` covers CSV parsing, canonical matching, retry, PKCE email handling, verification identity, RLS and deletion freshness.
 
 ## Reading DNA
 
@@ -180,4 +151,15 @@ Migration `202610070002_reading_dna.sql` was applied successfully to the hosted 
 
 Home, Discover and Reading DNA share evidence/permission filtering. Only visible reader-owned books with currently approved activity contribute evidence; unknown mixed provenance is excluded. Strong requires at least three distinct approved evidence items, rather than a weight threshold. Ratings alone do not explain why a reader liked a book. Reduced influence affects recommendation weights; stopped signals are excluded. Personalisation off permits reviewing stored signals without enabling it.
 
-Verification: all 34 tests pass, including real PostgreSQL reader/anonymous isolation, duplicate retries, stale edits/Undo and preference-preserving reset. Hosted Reduce and Undo were saved and verified through the UI, restoring the original signal. Live reset was not executed on the reader's account. Mobile layouts and all eight SVG call sites were checked against the design; private caches clear at logout and reader changes.
+The automatic-reading-activity and reading-flow migrations refresh eligible DNA evidence when books are completed/rated or permitted reflections/reasons change; current permissions and reset cutoffs still apply. This is not unconditional learning from every update.
+
+Verification: the latest **49-test suite** includes PostgreSQL reader/anonymous isolation, duplicate retries, stale edits/Undo and preference-preserving reset. Hosted Reduce and Undo were saved and verified through the UI, restoring the original signal. Live reset was not executed on the reader's account. Mobile layouts and SVG assets were checked against the design; private caches clear at logout and reader changes.
+
+## Remaining service limitations
+
+- **Email:** controlled confirmation/reset delivery is verified, but custom SMTP is still off. Supabase's default service is intended for development and restricts recipients/rates; configure SMTP and verify a non-team inbox before public signup. See [Supabase SMTP guidance](https://supabase.com/docs/guides/auth/auth-smtp).
+- **Notifications:** open-app reminders depend on browser support and permission; no background push/email scheduler or guaranteed delivery.
+- **Google Books/Gemini:** outages, timeouts, quota, credential/model configuration or insufficient catalogue candidates can interrupt search/recommendations and book insights. Drafts remain available for retry; manual entry and existing Library tracking do not require successful AI generation. Missing covers/facts stay visibly missing. Recommendation fit is provisional, not guaranteed accuracy.
+- **Supabase/offline:** authentication and durable saves need a reachable project. Cached/open-tab recovery does not guarantee offline app launch; conflicts need reader review. Local tests do not replace final hosted privacy and production smoke checks.
+
+The [risks update](docs/RISKS_UPDATE.md) records impact, current safeguards, remaining checks and the milestone plan.
