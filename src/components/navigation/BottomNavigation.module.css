@@ -10,6 +10,7 @@
 }
 
 .desktopBrand,.desktopNote { display:none; }
+.desktopOnly { display:none; }
 
 .navigation {
   display: grid;
@@ -122,6 +123,7 @@
 }
 
 @media (min-width:1024px) {
+ .wrapper.desktopOnly { display:flex; z-index:90; }
  .wrapper,.floating { top:16px; bottom:16px; left:16px; right:auto; width:224px; max-width:none; transform:none; padding:28px 16px; display:flex; flex-direction:column; border:1px solid var(--colour-mist); border-radius:24px; background:var(--vela-surface-base,var(--colour-paper)); box-shadow:0 8px 24px rgb(34 32 30 / .08); overflow-y:auto; }
  .desktopBrand { display:flex; align-items:center; gap:12px; margin-bottom:40px; padding-inline:8px; text-decoration:none; color:var(--colour-evergreen); font:600 30px/1.2 var(--auth-font-display),Georgia,serif; }
  .desktopBrand img { width:42px; height:auto; flex:none; }
@@ -133,4 +135,5 @@
  .activeIndicator,.floating .activeIndicator { top:50%; bottom:auto; left:0; width:3px; height:24px; transform:translateY(-50%); border-radius:4px; }
  .desktopNote { display:block; margin:auto 8px 0; padding-top:32px; color:var(--vela-subtle-text,#68625d); font:400 12px/1.6 var(--font-body); }
  .safeArea { display:none; }
+ .item[aria-disabled="true"] { opacity:.65; cursor:default; }
 }

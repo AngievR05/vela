@@ -3,12 +3,14 @@ import { useEffect,useId,useRef } from "react";
 import { X } from "lucide-react";
 import IconButton from "@/components/ui/IconButton";
 import styles from "@/components/design-system/DesignSystem.module.css";
+import {useNavigationGuard} from "@/components/navigation/NavigationGuard";
 
 function focusable(container){
   if(!container)return[];
   return Array.from(container.querySelectorAll('a[href],button:not([disabled]),textarea:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'));
 }
 export default function BottomSheet({ open,title,children,actions,onClose,dismissOnBackdrop=true,showHandle=true,showCloseButton=true,className="",backdropClassName="" }) {
+  useNavigationGuard(open);
   const titleId=useId(); const ref=useRef(null);
   useEffect(()=>{
     if(!open)return;

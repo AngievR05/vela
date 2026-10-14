@@ -193,6 +193,7 @@
 :global(html[data-vela-theme="dark"]) .shelfBooks { background:linear-gradient(#ae9157,#675536) 0 148px/100% 10px no-repeat,linear-gradient(#2a3631,#2a3631) 0 0/100% 152px no-repeat; }
 
 /* Tablet and desktop layouts retain the mobile visual system. */
+.libraryToolbar { display:contents; }
 @media (min-width:768px) {
  .screen { width:min(calc(100% - 48px),1120px); }
  .viewport { margin:40px 32px 0; height:auto; overflow:visible; }
@@ -216,9 +217,10 @@
  .screen .empty { max-width:640px; margin-inline:auto; width:100%; }
  .screen .tabs { justify-content:flex-start; gap:10px; }
  .tabs > button { flex:0 0 auto; min-width:80px; font-size:14px; }
- .search { max-width:760px; }
- .viewButton { align-self:flex-end; width:auto!important; min-width:190px; margin-top:-64px; }
- .tools { padding-right:210px; min-height:44px; }
+ .libraryToolbar { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:14px; align-items:center; }
+ .search { grid-column:1 / -1; max-width:none; }
+ .viewButton { width:auto!important; min-width:190px; margin:0; grid-column:2; grid-row:2; }
+ .tools { padding-right:0; min-height:44px; min-width:0; flex-wrap:wrap; }
  .tools > button:not(:last-child) { flex:0 0 auto; min-width:120px; font-size:13px; }
  .shelf { min-width:0; padding:18px; border-radius:20px; background:var(--vela-surface-base,#fbf8f2); box-shadow:0 6px 18px #22201e12; }
  .shelfHeading h2 { font-size:23px; line-height:1.3; }

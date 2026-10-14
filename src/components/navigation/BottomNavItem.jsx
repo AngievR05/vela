@@ -11,6 +11,7 @@ export default function BottomNavItem({
   active = false,
   iconSrc,
   onClick,
+  disabled=false,
 }) {
   return (
     <Link
@@ -22,6 +23,7 @@ export default function BottomNavItem({
         .filter(Boolean)
         .join(" ")}
       aria-current={active ? "page" : undefined}
+      aria-disabled={disabled||undefined}
       onClick={onClick}
     >
       <span className={styles.activeIndicator} aria-hidden="true" />

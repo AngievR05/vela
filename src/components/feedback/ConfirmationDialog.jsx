@@ -2,11 +2,13 @@
 import { useEffect,useId,useRef } from "react";
 import Button from "@/components/ui/Button";
 import styles from "@/components/design-system/DesignSystem.module.css";
+import {useNavigationGuard} from "@/components/navigation/NavigationGuard";
 
 export default function ConfirmationDialog({
   open,title,description,confirmLabel,cancelLabel="Cancel",destructive=false,loading=false,onConfirm,onCancel,
   children,eyebrow,className="",backdropClassName="",confirmDisabled=false,confirmFirst=false
 }) {
+  useNavigationGuard(open);
   const titleId=useId(),descriptionId=useId(),ref=useRef(null);
   useEffect(()=>{
     if(!open)return;

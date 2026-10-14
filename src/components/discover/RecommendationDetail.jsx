@@ -16,6 +16,7 @@ import InlineAlert from "@/components/ui/InlineAlert";
 import BottomSheet from "@/components/feedback/BottomSheet";
 import styles from "./Discover.module.css";
 import {notifyReadingActivity} from "@/lib/reading-activity-events";
+import {useNavigationGuard} from "@/components/navigation/NavigationGuard";
 const reasons=["Not in the mood","Wrong genre","Pacing is not important","I don’t care about this trope","Other"];
 const sources={onboarding:"Chosen during reading setup",manual:"Chosen by you",correction:"Corrected by you",rating:"From your permitted ratings",history:"From your permitted completed reading",dnf:"From DNF reasons you approved"};
 export default function RecommendationDetail({ userId,session,recommendation:rec,online,onSession,onBack }) {
@@ -24,6 +25,7 @@ export default function RecommendationDetail({ userId,session,recommendation:rec
   const [modal,setModal]=useState(false);const [reason,setReason]=useState("");const [other,setOther]=useState("");
   const [pending,setPending]=useState(false);const [error,setError]=useState("");const [notice,setNotice]=useState("");const [recorded,setRecorded]=useState(null);
   const busy=useRef(false);const [lastFeedback,setLastFeedback]=useState(null);
+  useNavigationGuard(pending);
   const close=useCallback(()=>{if(!busy.current)setModal(false);},[]);
   const book=rec.book,signal=rec.signals.find(item=>item.id===signalId);
   const facts=[book.categories.join(" · "),book.publishedDate?`Published ${book.publishedDate}`:null,book.pageCount?`${book.pageCount} pages`:null].filter(Boolean);

@@ -181,6 +181,41 @@
       "width": 1440,
       "screenWidth": 1120,
       "result": "PASS"
+    },
+    {
+      "route": "Settings account",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "Settings profile",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "Desktop link Library",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "Desktop link Discover",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "Desktop link DNA",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "Desktop link Home",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "Desktop link Settings",
+      "width": 1440,
+      "result": "PASS"
     }
   ],
   "errors": [],

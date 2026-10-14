@@ -10,6 +10,7 @@ import ReadingDNAEvidenceRow from "./ReadingDNAEvidenceRow";
 import useReadingDNA from "./useReadingDNA";
 import {createEntryId} from "@/lib/browser-id";
 import styles from "./ReadingDNA.module.css";
+import {useNavigationGuard} from "@/components/navigation/NavigationGuard";
 
 function DNAAction({kind,label,...props}){return <Button variant={kind} className={styles[kind]} {...props}>{label}</Button>;}
 const allowedViews=["overview","strong","emerging","unused","evidence","change","reduce","remove","updated","manage","explained","reset","reset-complete"];
@@ -18,6 +19,7 @@ export default function ReadingDNAScreen({userId,initialView}){
   const [view,setView]=useState(allowedViews.includes(initialView)?initialView:"overview");
   const [selectedId,setSelectedId]=useState(null),[error,setError]=useState(""),[failedAction,setFailedAction]=useState(null),[pending,setPending]=useState(false),[changedAction,setChangedAction]=useState(null),[lastChange,setLastChange]=useState(null),[conflict,setConflict]=useState(false);
   const busy=useRef(false),operation=useRef(null),panel=useRef(null);
+  useNavigationGuard(pending);
   const snapshot=dna.snapshot,selected=snapshot?.signals.find(signal=>signal.id===selectedId),online=dna.phase!=="offline";
   const strong=snapshot?.signals.filter(signal=>signal.strength==="strong")||[],emerging=snapshot?.signals.filter(signal=>signal.strength==="emerging")||[],unused=snapshot?.signals.filter(signal=>!signal.active)||[];
   const empty=!snapshot?.signals.some(signal=>signal.active),forming=!empty&&!strong.length&&emerging.length<=2;

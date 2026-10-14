@@ -2,6 +2,14 @@
 
 The app now uses distinct mobile and desktop layouts. Phones keep bottom navigation and touch-friendly sheets; desktop (1024px and wider) has branded side navigation, a clear content viewport and centred dialogs. Home balances current reading with Discover; Library has compact tools, paired shelves and a flexible grid; Book Detail uses a cover/metadata column beside reading controls and descriptions. Settings and recommendations adapt their columns to available space. Book covers keep portrait proportions, and entry/setup forms stay at readable widths.
 
+## Persistent desktop navigation follow-up
+
+Moved desktop navigation from individual screens into the shared authenticated layout. It now remains visible in account/profile editing, recommendation assumptions and show-less views, while scrolling, and alongside open dialogs. Dialogs and pending saves temporarily block navigation; closing or unmounting releases the block. Stats highlights Home and setup highlights DNA. Mobile navigation remains at the bottom.
+
+Also removed Library's negative-margin toolbar placement, allowed Settings subpages to use normal page scrolling, positioned desktop notices within the content area, and corrected recommendation feedback overlays that still used mobile geometry.
+
+**42 targeted desktop interaction checks passed** at 1024, 1440 and 1920px with no browser errors. They verify sidebar persistence during nested views and scrolling, repeated dialog/discard cycles, blocked navigation preserving progress input, Keep editing, and guard cleanup after close/unmount. These use simulated API responses and make no hosted writes. Evidence: [persistent navigation checks](evidence/desktop-navigation-2026-10-14.json).
+
 ## Browser evidence
 
 157 isolated Chromium checks passed with no browser errors after the full desktop refinement. Real application components used simulated reader/API records; no hosted account, Library or password was changed.
@@ -20,6 +28,7 @@ Sanitized layout results: [responsive evidence](evidence/responsive-verification
 
 ## Final build checks
 
-Lint and the production build passed on 14 October; 36 generated pages exclude the preview route. An additional **30 live production screen checks** passed at 320, 390, 768, 1024 and 1440px using the disposable account, including explicit desktop-sidebar checks. Desktop core screens measured 960–1120px at 1440px, the removed preview returned 404, the Library was preserved and logout succeeded. No browser errors occurred. See [production evidence](evidence/responsive-production-2026-10-14.json).
+Lint and the production build passed on 14 October; 36 generated pages exclude the preview route. An additional **37 live production checks (30 screen layouts, two account subviews and five desktop navigation links)** passed at 320, 390, 768, 1024 and 1440px using the disposable account, including explicit desktop-sidebar checks. Desktop core screens measured 960–1120px at 1440px, the removed preview returned 404, the Library was preserved and logout succeeded. No browser errors occurred. See [production evidence](evidence/responsive-production-2026-10-14.json).
 
 Browser check counts are separate from the unit/database suite. The shared-navigation/page-structure refinement passed a fresh **49-test regression run**, including 122 PostgreSQL privacy assertions, lint and the production build on 14 October.
+

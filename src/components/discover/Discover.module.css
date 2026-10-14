@@ -122,3 +122,4 @@
 /* Desktop navigation leaves the content viewport clear. */
 @media(min-width:1024px){.content{padding-bottom:48px}.form{max-width:760px}.results{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}.results > *{height:100%}.resultsIntro{max-width:650px}}
 @media(min-width:1024px){.screen:not(:has(.results)) .content{max-width:800px;margin-inline:auto}}
+@media(min-width:1024px){.sheetBackdrop{top:0!important;bottom:0!important;left:256px!important;right:0;width:auto;transform:none;background:rgb(0 0 0/.38)!important}.sheet{max-width:560px;min-height:0;max-height:calc(100dvh - 48px)}}

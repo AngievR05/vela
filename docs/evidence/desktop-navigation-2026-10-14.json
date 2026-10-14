@@ -1,0 +1,301 @@
+{
+  "date": "2026-10-14",
+  "mode": "Isolated real components with simulated reader API responses; no hosted writes",
+  "checks": [
+    {
+      "screen": "Settings account",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Settings profile",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress open 0",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Discard confirmation 0",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress closed 0",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress open 1",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Discard confirmation 1",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress closed 1",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation detail",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation why",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation feedback dialog",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation assumptions",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation show less",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Unmount releases guards",
+      "width": 1024,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Settings account",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Settings profile",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress open 0",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Discard confirmation 0",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress closed 0",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress open 1",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Discard confirmation 1",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress closed 1",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation detail",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation why",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation feedback dialog",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation assumptions",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation show less",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Unmount releases guards",
+      "width": 1440,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Settings account",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Settings profile",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress open 0",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Discard confirmation 0",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress closed 0",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress open 1",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Discard confirmation 1",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Progress closed 1",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation detail",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation why",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation feedback dialog",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation assumptions",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation show less",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    },
+    {
+      "screen": "Unmount releases guards",
+      "width": 1920,
+      "sidebarVisible": true,
+      "blocked": false,
+      "result": "PASS"
+    }
+  ],
+  "errors": []
+}

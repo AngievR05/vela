@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import styles from "./AppShell.module.css";
+import {useCallback,useState} from "react";
+import {NavigationGuardContext} from "@/components/navigation/NavigationGuard";
 
 export default function AppShell({
   children,
@@ -11,9 +13,15 @@ export default function AppShell({
   className = "",
 }) {
   const pathname = usePathname();
+  const [guards,setGuards]=useState(()=>new Set());
+  const registerGuard=useCallback(()=>{
+    const token=Symbol("navigation guard");
+    setGuards(previous=>new Set(previous).add(token));
+    return ()=>setGuards(previous=>{const next=new Set(previous);next.delete(token);return next;});
+  },[]);
   const home = pathname === "/home" || pathname === "/stats" || pathname === "/dna" || pathname === "/library" || pathname.startsWith("/library/") || pathname === "/discover" || pathname.startsWith("/discover/") || pathname === "/settings";
   return (
-    <div
+    <NavigationGuardContext.Provider value={registerGuard}><div
       className={[
         styles.shell,
         showBottomNavigation ? styles.withBottomNavigation : "",
@@ -24,12 +32,13 @@ export default function AppShell({
         .join(" ")}
     >
       {header}
+      <BottomNavigation variant="desktop" disabled={guards.size>0}/>
 
       <main className={styles.main} id="main-content">
         {children}
       </main>
 
-      {showBottomNavigation && !home ? <BottomNavigation /> : null}
-    </div>
+      {showBottomNavigation && !home ? <BottomNavigation className={styles.mobileOnly}/> : null}
+    </div></NavigationGuardContext.Provider>
   );
 }

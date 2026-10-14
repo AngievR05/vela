@@ -12,15 +12,17 @@ function routeIsActive(pathname, href) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export default function BottomNavigation({ className = "", variant = "default", onNavigate, activePath, assetDirectory = "reading-home" }) {
+export default function BottomNavigation({ className = "", variant = "default", onNavigate, activePath, assetDirectory = "reading-home",disabled=false }) {
   const pathname = usePathname();
+  function navigate(event,href){if(disabled){event.preventDefault();return;}onNavigate?.(event,href);}
+  const currentPath=pathname==="/stats"?"/home":pathname.startsWith("/setup")?"/dna":pathname;
 
   return (
     <nav
-      className={[styles.wrapper, authBody.variable, authDisplay.variable, variant === "home" ? styles.floating : "", className].filter(Boolean).join(" ")}
+      className={[styles.wrapper, authBody.variable, authDisplay.variable, variant === "home" ? styles.floating : "",variant==="desktop"?styles.desktopOnly:"", className].filter(Boolean).join(" ")}
       aria-label="Primary navigation"
     >
-      <Link href="/home" className={styles.desktopBrand} onClick={event=>onNavigate?.(event,"/home")} aria-label="Vela Home">
+      <Link href="/home" className={styles.desktopBrand} onClick={event=>navigate(event,"/home")} aria-disabled={disabled||undefined} aria-label="Vela Home">
         <Image src="/brand/logo.svg" width={42} height={40} alt="" unoptimized />
         <span>Vela<small>Your reading life</small></span>
       </Link>
@@ -29,14 +31,15 @@ export default function BottomNavigation({ className = "", variant = "default", 
           <BottomNavItem
             key={item.href}
             {...item}
-            active={routeIsActive(activePath || pathname, item.href)}
+            active={routeIsActive(activePath || currentPath, item.href)}
             iconSrc={variant === "home" ? `/${assetDirectory}/nav-${item.label.toLowerCase()}.svg` : undefined}
-            onClick={(event) => onNavigate?.(event, item.href)}
+            onClick={(event) => navigate(event, item.href)}
+            disabled={disabled}
           />
         ))}
       </div>
       <div className={styles.safeArea} aria-hidden="true" />
-      <p className={styles.desktopNote}>Read at your own pace.</p>
+      <p className={styles.desktopNote}>{disabled?"Finish the current action to navigate.":"Read at your own pace."}</p>
     </nav>
   );
 }
