@@ -5,7 +5,7 @@ import { authBody, authDisplay } from "@/components/auth/fonts";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 import styles from "./Library.module.css";
 export default function LibraryShell({ children, title, subtitle, kind = "library", back, onBack, action }) {
-  return <section className={`${styles.screen} ${kind === "add" ? styles.addScreen : ""} ${authBody.variable} ${authDisplay.variable}`} aria-label={title}>
+  return <section className={`${styles.screen} ${kind === "add" ? styles.addScreen : ""} ${authBody.variable} ${authDisplay.variable}`} aria-label={title} data-kind={kind}>
     <div className={styles.art} aria-hidden="true"><span className={styles.spine} /><span className={styles.rule} /><Image src="/reading-discover/blush-reading-arch.svg" width={330} height={420} alt="" className={styles.arch} loading="eager" unoptimized /><Image src="/reading-discover/mist-pool.svg" width={430} height={440} alt="" className={styles.wash} loading="eager" unoptimized /><Image src="/reading-discover/brass-orbit.svg" width={300} height={350} alt="" className={styles.orbit} loading="eager" unoptimized /></div>
     <div className={styles.viewport}><div className={styles.content}>
       <header className={`${styles.header} ${kind !== "library" ? styles.subHeader : ""}`}>

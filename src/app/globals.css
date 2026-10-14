@@ -37,6 +37,10 @@ body {
   line-height: 1.5;
 }
 
+#main-content { min-width: 0; }
+#main-content :is(h1, h2, h3, p) { overflow-wrap: anywhere; }
+#main-content :is(input, textarea, select) { max-width: 100%; }
+
 button,
 input,
 textarea,

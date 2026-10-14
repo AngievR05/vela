@@ -1,0 +1,765 @@
+{
+  "date": "2026-10-14",
+  "mode": "Isolated real components with simulated reader API responses; no hosted writes",
+  "checks": [
+    {
+      "screen": "home",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "library",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "add",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "detail",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "discover",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "dna",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "stats",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "reading",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "graveyard",
+      "width": 320,
+      "screenWidth": 320,
+      "overflow": false
+    },
+    {
+      "screen": "setup",
+      "width": 320,
+      "screenWidth": 0,
+      "overflow": false
+    },
+    {
+      "screen": "home",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "library",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "add",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "detail",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "discover",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "dna",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "stats",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "reading",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "graveyard",
+      "width": 390,
+      "screenWidth": 390,
+      "overflow": false
+    },
+    {
+      "screen": "setup",
+      "width": 390,
+      "screenWidth": 0,
+      "overflow": false
+    },
+    {
+      "screen": "home",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "library",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "add",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "detail",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "discover",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "dna",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "stats",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "reading",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "graveyard",
+      "width": 393,
+      "screenWidth": 393,
+      "overflow": false
+    },
+    {
+      "screen": "setup",
+      "width": 393,
+      "screenWidth": 0,
+      "overflow": false
+    },
+    {
+      "screen": "home",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "library",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "add",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "detail",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "discover",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "dna",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "stats",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "reading",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "graveyard",
+      "width": 428,
+      "screenWidth": 428,
+      "overflow": false
+    },
+    {
+      "screen": "setup",
+      "width": 428,
+      "screenWidth": 0,
+      "overflow": false
+    },
+    {
+      "screen": "home",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "library",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "add",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "detail",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "discover",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "dna",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "stats",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "reading",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "graveyard",
+      "width": 768,
+      "screenWidth": 720,
+      "overflow": false
+    },
+    {
+      "screen": "setup",
+      "width": 768,
+      "screenWidth": 0,
+      "overflow": false
+    },
+    {
+      "screen": "home",
+      "width": 1024,
+      "screenWidth": 976,
+      "overflow": false
+    },
+    {
+      "screen": "library",
+      "width": 1024,
+      "screenWidth": 976,
+      "overflow": false
+    },
+    {
+      "screen": "add",
+      "width": 1024,
+      "screenWidth": 976,
+      "overflow": false
+    },
+    {
+      "screen": "detail",
+      "width": 1024,
+      "screenWidth": 976,
+      "overflow": false
+    },
+    {
+      "screen": "discover",
+      "width": 1024,
+      "screenWidth": 976,
+      "overflow": false
+    },
+    {
+      "screen": "dna",
+      "width": 1024,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "stats",
+      "width": 1024,
+      "screenWidth": 976,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 1024,
+      "screenWidth": 976,
+      "overflow": false
+    },
+    {
+      "screen": "reading",
+      "width": 1024,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "graveyard",
+      "width": 1024,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "setup",
+      "width": 1024,
+      "screenWidth": 0,
+      "overflow": false
+    },
+    {
+      "screen": "home",
+      "width": 1440,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "library",
+      "width": 1440,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "add",
+      "width": 1440,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "detail",
+      "width": 1440,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "discover",
+      "width": 1440,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "dna",
+      "width": 1440,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "stats",
+      "width": 1440,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 1440,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "reading",
+      "width": 1440,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "graveyard",
+      "width": 1440,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "setup",
+      "width": 1440,
+      "screenWidth": 0,
+      "overflow": false
+    },
+    {
+      "screen": "home",
+      "width": 1920,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "library",
+      "width": 1920,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "add",
+      "width": 1920,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "detail",
+      "width": 1920,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "discover",
+      "width": 1920,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "dna",
+      "width": 1920,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "stats",
+      "width": 1920,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "settings",
+      "width": 1920,
+      "screenWidth": 1120,
+      "overflow": false
+    },
+    {
+      "screen": "reading",
+      "width": 1920,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "graveyard",
+      "width": 1920,
+      "screenWidth": 960,
+      "overflow": false
+    },
+    {
+      "screen": "setup",
+      "width": 1920,
+      "screenWidth": 0,
+      "overflow": false
+    },
+    {
+      "screen": "progress modal / retained edits",
+      "width": 320,
+      "height": 568,
+      "result": "PASS"
+    },
+    {
+      "screen": "progress modal / retained edits",
+      "width": 844,
+      "height": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "progress modal / retained edits",
+      "width": 1440,
+      "height": 650,
+      "result": "PASS"
+    },
+    {
+      "screen": "home",
+      "width": 320,
+      "largeText": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "library",
+      "width": 320,
+      "largeText": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "settings",
+      "width": 320,
+      "largeText": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "dna",
+      "width": 320,
+      "largeText": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "stats",
+      "width": 320,
+      "largeText": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "detail",
+      "width": 320,
+      "largeText": true,
+      "result": "PASS"
+    },
+    {
+      "screen": "discover",
+      "width": 320,
+      "largeText": true,
+      "result": "PASS"
+    },
+    {
+      "route": "/welcome",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/login",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/signup",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/forgot-password",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/welcome",
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/login",
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/signup",
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/forgot-password",
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/welcome",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "route": "/login",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "route": "/signup",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "route": "/forgot-password",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "route": "/welcome",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "/login",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "/signup",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "route": "/forgot-password",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library grid",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Account profile form",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup preference choices",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Mark as finished sheet",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Put book aside sheet",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendations / detail",
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library grid",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Account profile form",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup preference choices",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Mark as finished sheet",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Put book aside sheet",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendations / detail",
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library grid",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Account profile form",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup preference choices",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Mark as finished sheet",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Put book aside sheet",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendations / detail",
+      "width": 1440,
+      "result": "PASS"
+    }
+  ],
+  "errors": []
+}

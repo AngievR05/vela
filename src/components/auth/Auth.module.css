@@ -160,3 +160,8 @@
 .roomy .content { padding-top:78px; padding-bottom:max(58px,env(safe-area-inset-bottom)); gap:12px; }
 .roomy .headingGroup,.roomy .flow,.roomy .actions { gap:12px; }
 .back { border:0; background:transparent; cursor:pointer; }
+
+/* Tablet and desktop layouts retain the mobile visual system. */
+/* Keep entry forms readable on wide screens and avoid mobile input zoom. */
+.screen input,.screen textarea,.screen select { font-size:16px; }
+@media (min-width:768px) { .screen { width:640px; } .content { padding:56px 48px 48px; } }

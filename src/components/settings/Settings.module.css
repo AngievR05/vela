@@ -63,3 +63,13 @@ html[data-vela-density="compact"] .row {min-height:60px;}
 .profile p{font-weight:400}.accountProfile p:first-of-type{font-weight:500}
 .screen .exportPanel{background:var(--settings-paper);gap:14px;box-shadow:none}.screen .exportPanel h2{color:var(--settings-danger)}.screen .exportPanel button{box-shadow:none}
 .storedPanel{min-height:170px;padding:18px!important;gap:8px}.storedPanel h2{font-size:30px!important;line-height:35px!important;color:var(--colour-plum)}.content[data-view="data"] .row{background:var(--settings-paper);box-shadow:var(--settings-shadow)}.content[data-view="data"] .icon{background:#eee4d2;color:#183b34}.content[data-view="data"] .dangerRow{background:var(--settings-red)}.content[data-view="data"] .dangerRow .icon{background:var(--settings-paper);color:var(--settings-danger)}.exportPanel{min-height:350px;padding:72px 24px 24px!important;gap:14px;background:var(--settings-paper)}.exportPanel h2{font-size:33px!important;line-height:1.2!important;color:var(--settings-danger)}.exportPanel p{font-size:14px;line-height:1.2}.exportPanel .primary,.exportPanel .secondary{width:100%;min-height:52px;border-radius:14px}.exportPanel .secondary{border:1.5px solid var(--colour-evergreen)}.content[data-view="exportPreparing"] .exportPanel h2{color:var(--colour-evergreen)}
+
+/* Tablet and desktop layouts retain the mobile visual system. */
+@media (min-width:768px) {
+ .screen { width:min(calc(100% - 48px),1120px); padding-top:0; }
+ .content { padding:40px 32px 128px; gap:20px; max-width:800px; margin-inline:auto; }
+ .content[data-view="root"] { max-width:none; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; }
+ .content[data-view="root"] > :is(.header,.profile,[role="alert"],[role="status"]) { grid-column:1 / -1; }
+ .content > * { min-width:0; }
+ .header h1 { font-size:36px; line-height:1.2; }
+}

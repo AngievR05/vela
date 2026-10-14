@@ -48,3 +48,7 @@ Sanitized live evidence: [authentication verification](evidence/auth-verificatio
 - Automated/browser checks do not replace an independent human usability test. Record another reader's short walkthrough before the milestone demo.
 
 Repeatable checks: [Authentication test accounts](authentication-test-accounts.md). Credentials are excluded from this log and version control.
+
+## Responsive follow-up — 14 October
+
+Replaced the phone-only desktop width limits with tablet/desktop layouts while retaining mobile styling. Improved shelves/grid covers, Home and Settings cards, recommendation columns, form widths, navigation and long-text wrapping. **132 isolated responsive checks and 24 live production screen checks passed**; fresh lint/build passed. The temporary preview was removed, and the test Library/password were preserved. Coverage and limits: [responsive verification](responsive-verification.md). Physical-device/cross-browser and full contrast review remain part of final accessibility QA.

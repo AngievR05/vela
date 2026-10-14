@@ -110,3 +110,11 @@
     transition: none;
   }
 }
+
+/* Tablet and desktop layouts retain the mobile visual system. */
+@media (min-width:768px) {
+ .floating { width:560px; max-width:calc(100% - 48px); bottom:max(20px,env(safe-area-inset-bottom,0px)); }
+ .floating .navigation { height:56px; }
+ .floating .item { height:56px; }
+ .floating .label { font-size:12px; line-height:16px; }
+}

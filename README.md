@@ -65,6 +65,8 @@ npm run start
 
 The latest run on 13 October passed **49 tests**, including **122 local PostgreSQL privacy assertions**, lint and the production build. The tests execute the checked-in migrations with PGlite; they do not establish that every hosted policy/configuration is current. Browser checks include isolated state fixtures and real hosted authentication, identified separately in the [testing log](docs/BUG_AND_TEST_LOG.md).
 
+On 14 October, **132 responsive browser checks** passed across 320–1920px, larger text, short-height dialogs, forms and recommendation states. Tablet/desktop layouts now use wider content, paired shelves/cards and larger navigation; mobile keeps the existing styling. See [responsive verification](docs/responsive-verification.md) for coverage and limits.
+
 Production deployment remains a release task. Set the production environment variables and Supabase Site URL/callback allowlist, then verify authentication, private access and core flows on the deployed origin. Keep `main` stable and use short branches/descriptive commits; retain the checked-in lockfile.
 
 ## Important security rule

@@ -111,3 +111,10 @@
 .permission > span > label::before { content:""; position:absolute; inset:6px 0; border:1.5px solid #766f68; border-radius:18px; background:#d9ded7; }
 .permission > span > input:checked + label::before { background:#183b34; border-color:#183b34; }
 .permission > span > label > span { width:24px; height:24px; border:1px solid #5e5852; }
+
+/* Tablet and desktop layouts retain the mobile visual system. */
+@media (min-width:768px) {
+ .screen { width:720px; }
+ .choices { max-width:none; grid-template-columns:repeat(3,minmax(0,1fr)); }
+ .heading { font-size:38px; line-height:1.2; }
+}

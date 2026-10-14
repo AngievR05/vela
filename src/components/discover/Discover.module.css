@@ -106,3 +106,15 @@
 @media(prefers-reduced-motion:reduce){.skeletonCard{animation:none}}
 @media(max-width:360px){.hero{gap:10px}.hero .pill{padding-inline:10px}.result{gap:10px}}
 :global(html[data-vela-theme="dark"]) .screen { background:linear-gradient(90deg,#30242c,#211f1e 48%,#20332c); }
+
+/* Tablet and desktop layouts retain the mobile visual system. */
+@media (min-width:768px) {
+ .screen { width:min(calc(100% - 48px),1120px); }
+ .viewport,.fullViewport { margin:40px 32px 0; height:auto; overflow:visible; }
+ .content { padding-bottom:128px; gap:20px; }
+ .header h1 { font-size:36px; line-height:1.2; }
+ .form { width:100%; max-width:680px; margin-inline:auto; }
+ .results { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); align-items:start; }
+ .results > * { min-width:0; }
+}
+@media (max-height:600px) { .viewport,.fullViewport { height:auto; overflow:visible; } .content { padding-bottom:128px; } }

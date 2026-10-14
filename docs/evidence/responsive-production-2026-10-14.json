@@ -1,0 +1,154 @@
+{
+  "date": "2026-10-14",
+  "mode": "Production build / live disposable test account / read-only screens",
+  "checks": [
+    {
+      "route": "/home",
+      "width": 320,
+      "screenWidth": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/library",
+      "width": 320,
+      "screenWidth": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/discover",
+      "width": 320,
+      "screenWidth": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/dna",
+      "width": 320,
+      "screenWidth": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/settings",
+      "width": 320,
+      "screenWidth": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/stats",
+      "width": 320,
+      "screenWidth": 320,
+      "result": "PASS"
+    },
+    {
+      "route": "/home",
+      "width": 390,
+      "screenWidth": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/library",
+      "width": 390,
+      "screenWidth": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/discover",
+      "width": 390,
+      "screenWidth": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/dna",
+      "width": 390,
+      "screenWidth": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/settings",
+      "width": 390,
+      "screenWidth": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/stats",
+      "width": 390,
+      "screenWidth": 390,
+      "result": "PASS"
+    },
+    {
+      "route": "/home",
+      "width": 768,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/library",
+      "width": 768,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/discover",
+      "width": 768,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/dna",
+      "width": 768,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/settings",
+      "width": 768,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/stats",
+      "width": 768,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/home",
+      "width": 1440,
+      "screenWidth": 1120,
+      "result": "PASS"
+    },
+    {
+      "route": "/library",
+      "width": 1440,
+      "screenWidth": 1120,
+      "result": "PASS"
+    },
+    {
+      "route": "/discover",
+      "width": 1440,
+      "screenWidth": 1120,
+      "result": "PASS"
+    },
+    {
+      "route": "/dna",
+      "width": 1440,
+      "screenWidth": 960,
+      "result": "PASS"
+    },
+    {
+      "route": "/settings",
+      "width": 1440,
+      "screenWidth": 1120,
+      "result": "PASS"
+    },
+    {
+      "route": "/stats",
+      "width": 1440,
+      "screenWidth": 1120,
+      "result": "PASS"
+    }
+  ],
+  "errors": [],
+  "previewRoute": "404",
+  "libraryPreserved": true,
+  "logout": "PASS"
+}

@@ -42,3 +42,12 @@
 @media(prefers-reduced-motion:reduce){.skeleton{animation:none}}
 @media(max-height:550px){.viewport{height:auto;min-height:180px;padding-bottom:14px}.actions{position:relative;left:auto;transform:none;bottom:auto;margin:10px 16px 120px;width:auto}}
 :global(html[data-vela-theme="dark"]) .screen { background:linear-gradient(90deg,#30242c,#211f1e 48%,#20332c); }
+
+/* Tablet and desktop layouts retain the mobile visual system. */
+@media (min-width:768px) {
+ .screen { width:min(calc(100% - 48px),960px); }
+ .viewport { margin:40px 32px 0; height:auto; overflow:visible; }
+ .content { padding-bottom:24px; gap:18px; }
+ .actions { position:relative; left:auto; bottom:auto; transform:none; width:auto; max-width:640px; margin:16px auto 128px; padding-inline:16px; }
+ .header h1 { font-size:36px; line-height:1.2; }
+}
