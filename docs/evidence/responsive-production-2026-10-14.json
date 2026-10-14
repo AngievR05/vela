@@ -112,6 +112,42 @@
     },
     {
       "route": "/home",
+      "width": 1024,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/library",
+      "width": 1024,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/discover",
+      "width": 1024,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/dna",
+      "width": 1024,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/settings",
+      "width": 1024,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/stats",
+      "width": 1024,
+      "screenWidth": 720,
+      "result": "PASS"
+    },
+    {
+      "route": "/home",
       "width": 1440,
       "screenWidth": 1120,
       "result": "PASS"

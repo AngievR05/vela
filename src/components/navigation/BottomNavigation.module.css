@@ -9,6 +9,8 @@
   background: var(--colour-paper);
 }
 
+.desktopBrand,.desktopNote { display:none; }
+
 .navigation {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -117,4 +119,18 @@
  .floating .navigation { height:56px; }
  .floating .item { height:56px; }
  .floating .label { font-size:12px; line-height:16px; }
+}
+
+@media (min-width:1024px) {
+ .wrapper,.floating { top:16px; bottom:16px; left:16px; right:auto; width:224px; max-width:none; transform:none; padding:28px 16px; display:flex; flex-direction:column; border:1px solid var(--colour-mist); border-radius:24px; background:var(--vela-surface-base,var(--colour-paper)); box-shadow:0 8px 24px rgb(34 32 30 / .08); overflow-y:auto; }
+ .desktopBrand { display:flex; align-items:center; gap:12px; margin-bottom:40px; padding-inline:8px; text-decoration:none; color:var(--colour-evergreen); font:600 30px/1.2 var(--auth-font-display),Georgia,serif; }
+ .desktopBrand img { width:42px; height:auto; flex:none; }
+ .desktopBrand small { display:block; margin-top:6px; font:400 12px/1.5 var(--font-body); color:var(--vela-subtle-text,#68625d); }
+ .navigation,.floating .navigation { display:flex; flex-direction:column; height:auto; gap:8px; }
+ .item,.floating .item { justify-content:flex-start; flex-direction:row; gap:14px; height:auto; min-height:56px; padding:14px 16px; border-radius:14px; }
+ .label,.floating .label { font:500 15px/22px var(--font-body); }
+ .itemActive { background:var(--colour-evergreen-soft,#dce9e5); }
+ .activeIndicator,.floating .activeIndicator { top:50%; bottom:auto; left:0; width:3px; height:24px; transform:translateY(-50%); border-radius:4px; }
+ .desktopNote { display:block; margin:auto 8px 0; padding-top:32px; color:var(--vela-subtle-text,#68625d); font:400 12px/1.6 var(--font-body); }
+ .safeArea { display:none; }
 }

@@ -51,3 +51,6 @@
  .actions { position:relative; left:auto; bottom:auto; transform:none; width:auto; max-width:640px; margin:16px auto 128px; padding-inline:16px; }
  .header h1 { font-size:36px; line-height:1.2; }
 }
+
+/* Desktop navigation leaves the content viewport clear. */
+@media(min-width:1024px){.actions{margin-bottom:48px}.viewport{margin-top:40px}.content{max-width:800px;margin-inline:auto}}

@@ -335,61 +335,61 @@
     {
       "screen": "home",
       "width": 1024,
-      "screenWidth": 976,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "library",
       "width": 1024,
-      "screenWidth": 976,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "add",
       "width": 1024,
-      "screenWidth": 976,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "detail",
       "width": 1024,
-      "screenWidth": 976,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "discover",
       "width": 1024,
-      "screenWidth": 976,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "dna",
       "width": 1024,
-      "screenWidth": 960,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "stats",
       "width": 1024,
-      "screenWidth": 976,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "settings",
       "width": 1024,
-      "screenWidth": 976,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "reading",
       "width": 1024,
-      "screenWidth": 960,
+      "screenWidth": 720,
       "overflow": false
     },
     {
       "screen": "graveyard",
       "width": 1024,
-      "screenWidth": 960,
+      "screenWidth": 720,
       "overflow": false
     },
     {
@@ -732,6 +732,36 @@
     },
     {
       "screen": "Library grid",
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Account profile form",
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup preference choices",
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Mark as finished sheet",
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Put book aside sheet",
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendations / detail",
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library grid",
       "width": 1440,
       "result": "PASS"
     },
@@ -757,6 +787,117 @@
     },
     {
       "screen": "Recommendations / detail",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Empty desktop Home",
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "home",
+      "width": 1024,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "library",
+      "width": 1024,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "detail",
+      "width": 1024,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "discover",
+      "width": 1024,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "dna",
+      "width": 1024,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "stats",
+      "width": 1024,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "settings",
+      "width": 1024,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "reading",
+      "width": 1024,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "Empty desktop Home",
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "home",
+      "width": 1440,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "library",
+      "width": 1440,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "detail",
+      "width": 1440,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "discover",
+      "width": 1440,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "dna",
+      "width": 1440,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "stats",
+      "width": 1440,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "settings",
+      "width": 1440,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "reading",
+      "width": 1440,
+      "theme": "dark",
+      "result": "PASS"
+    },
+    {
+      "screen": "Desktop unavailable/cached recovery",
       "width": 1440,
       "result": "PASS"
     }

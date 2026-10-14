@@ -38,7 +38,7 @@ function LibraryShelves({ userId, initialTab, onOfflineBook }) {
   const activeFilters = filters.genres.length + Number(filters.short) + Number(filters.favourites);
   const code = home.phase === "loading" ? "D15" : offline ? "D14" : query ? visible.length ? "D09" : "D10" : !books.length ? "D06" : !visible.length ? "D07" : view === "grid" ? "D13" : { all:"D01", reading:"D02", want_to_read:"D03", finished:"D04", dnf:"D05" }[tab];
   function cover(book) {
-    return <Link key={book.id} href={`/library/${book.id}`} className={styles.bookLink} aria-label={`Open ${book.title} by ${book.author || "unknown author"}`} onClick={event => { if (offline) { event.preventDefault(); onOfflineBook(book); } }}>
+    return <Link key={book.id} href={`/library/${book.id}`} className={styles.bookLink} title={`${book.title}${book.author ? ` by ${book.author}` : ""}`} aria-label={`Open ${book.title} by ${book.author || "unknown author"}`} onClick={event => { if (offline) { event.preventDefault(); onOfflineBook(book); } }}>
       <BookCover title={book.title} author={book.author} src={book.coverSrc} size="card" placeholderType="book" className={styles.shelfCover} decorative />
       <span className={styles.bookTitle}>{book.title}</span>
       <span className={styles.bookAuthor}>{book.author}</span>

@@ -16,3 +16,7 @@
   );
 }
 .homeShell.withBottomNavigation .main { padding-bottom: 0; }
+
+@media (min-width:1024px) {
+ .withBottomNavigation .main,.main:has(nav[aria-label="Primary navigation"]) { width:calc(100% - 256px); margin-left:256px; padding-bottom:0; }
+}
