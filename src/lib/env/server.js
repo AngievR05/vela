@@ -2,8 +2,8 @@ import "server-only";
 import { z } from "zod";
 
 const serverEnvSchema = z.object({
-  GEMINI_API_KEY: z.string().min(1),
-  GOOGLE_BOOKS_API_KEY: z.string().min(1),
+  GEMINI_API_KEY: z.string().default(""),
+  GOOGLE_BOOKS_API_KEY: z.string().default(""),
 });
 
 export const serverEnv = serverEnvSchema.parse({

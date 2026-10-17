@@ -1,0 +1,166 @@
+{
+  "date": "2026-10-17",
+  "mode": "Real local production routes + hosted disposable reader; Google/Gemini network replaced by process-local 503/429 simulation, zero live provider calls",
+  "checks": [
+    {
+      "name": "Catalogue 503 offers retry/manual recovery",
+      "result": "PASS"
+    },
+    {
+      "name": "Gemini 503 offers retry and Library recovery",
+      "result": "PASS"
+    },
+    {
+      "name": "Provider 402 degrades without enabling paid usage",
+      "result": "PASS"
+    },
+    {
+      "name": "Provider 403 degrades without enabling paid usage",
+      "result": "PASS"
+    },
+    {
+      "name": "Provider 429 degrades without enabling paid usage",
+      "result": "PASS"
+    },
+    {
+      "name": "Core read available: /api/home",
+      "result": "PASS"
+    },
+    {
+      "name": "Core read available: /api/stats",
+      "result": "PASS"
+    },
+    {
+      "name": "Core read available: /api/dna",
+      "result": "PASS"
+    },
+    {
+      "name": "Core read available: /api/settings",
+      "result": "PASS"
+    },
+    {
+      "name": "Core read available: /api/settings/export",
+      "result": "PASS"
+    },
+    {
+      "name": "Core read available: /api/recommendations",
+      "result": "PASS"
+    },
+    {
+      "name": "Manual book added while catalogue quota unavailable",
+      "result": "PASS"
+    },
+    {
+      "name": "Progress saved under provider outages",
+      "result": "PASS"
+    },
+    {
+      "name": "Finish/rating saved under provider outages",
+      "result": "PASS"
+    },
+    {
+      "name": "Original disposable Library preserved; only audit book soft-removed",
+      "result": "PASS"
+    },
+    {
+      "name": "Quota cooldown blocks repeated outgoing provider attempts",
+      "result": "PASS"
+    },
+    {
+      "name": "Anonymous API denied: /api/home",
+      "result": "PASS"
+    },
+    {
+      "name": "Anonymous API denied: /api/dna",
+      "result": "PASS"
+    },
+    {
+      "name": "Anonymous API denied: /api/settings",
+      "result": "PASS"
+    },
+    {
+      "name": "Anonymous API denied: /api/recommendations",
+      "result": "PASS"
+    },
+    {
+      "name": "Anonymous API denied: /api/settings/export",
+      "result": "PASS"
+    },
+    {
+      "name": "Unknown Library ID cannot be read or mutated",
+      "result": "PASS"
+    },
+    {
+      "name": "Account deletion requires fresh verification",
+      "result": "PASS"
+    },
+    {
+      "name": "Deletion API rejects caller-supplied target reader",
+      "result": "PASS"
+    }
+  ],
+  "providerRequests": [
+    {
+      "provider": "Google Books",
+      "simulated": true,
+      "status": 503,
+      "at": "2026-10-17T10:57:37.546Z"
+    },
+    {
+      "provider": "Gemini",
+      "simulated": true,
+      "status": 503,
+      "at": "2026-10-17T10:57:39.547Z"
+    },
+    {
+      "provider": "Gemini",
+      "simulated": true,
+      "status": 503,
+      "at": "2026-10-17T10:57:40.197Z"
+    },
+    {
+      "provider": "Gemini",
+      "simulated": true,
+      "status": 503,
+      "at": "2026-10-17T10:57:41.589Z"
+    },
+    {
+      "provider": "Google Books",
+      "simulated": true,
+      "status": 402,
+      "at": "2026-10-17T10:57:42.090Z"
+    },
+    {
+      "provider": "Gemini",
+      "simulated": true,
+      "status": 402,
+      "at": "2026-10-17T10:57:43.936Z"
+    },
+    {
+      "provider": "Google Books",
+      "simulated": true,
+      "status": 403,
+      "at": "2026-10-17T10:57:44.453Z"
+    },
+    {
+      "provider": "Gemini",
+      "simulated": true,
+      "status": 403,
+      "at": "2026-10-17T10:57:46.191Z"
+    },
+    {
+      "provider": "Google Books",
+      "simulated": true,
+      "status": 429,
+      "at": "2026-10-17T10:57:46.699Z"
+    },
+    {
+      "provider": "Gemini",
+      "simulated": true,
+      "status": 429,
+      "at": "2026-10-17T10:57:48.584Z"
+    }
+  ],
+  "completed": true,
+  "frameworkVersion": "16.4.2"
+}

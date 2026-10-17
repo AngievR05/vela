@@ -2,11 +2,31 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { PGlite } from "@electric-sql/pglite";
-import { recommendationRequestSchema, validRecommendations, eligibleCandidates } from "../src/lib/validation/recommendation.js";
+import { recommendationRequestSchema, validRecommendations, eligibleCandidates, bookWorkKey } from "../src/lib/validation/recommendation.js";
 import { createRecommendations } from "../src/lib/recommendation-data.js";
 const a="abd563cb-fdcc-4208-9e62-e1457a9df95e",b="dce88169-75db-43ef-8682-21949d0ab369",session="08978c87-0a49-4382-9e32-801751323371";
 const filters={source:"anywhere",genre:"",mood:"",length:"any"};
 const candidates=[1,2,3].map(index=>({googleBooksId:`rec-${index}`,title:`Book ${index}`,authors:["Author"],categories:["Fantasy"],pageCount:250,thumbnailUrl:null}));
+
+test("work identity groups numbered editions and ampersands, and explicit genre descriptions survive generic categories",()=>{
+ const novel={googleBooksId:"novel",title:"Legends & Lattes",authors:["T. J. Writer"],categories:["Fiction"],description:"A cozy fantasy about friendship."};
+ const edition={...novel,googleBooksId:"edition",title:"Legends and Lattes: Book 1",authors:["T J Writer"]};
+ assert.equal(bookWorkKey(novel),bookWorkKey(edition));
+ assert.equal(eligibleCandidates([novel,edition],{...filters,genre:"Fantasy"}).length,1);
+ assert.equal(eligibleCandidates([{...novel,description:"A mystery about friendship."}],{...filters,genre:"Fantasy"}).length,0);
+});
+
+test("catalogue detail resolves generic search genres before strict filtering",async()=>{
+ const tables={profiles:[{id:a,display_name:"Reader"}],ai_settings:[{user_id:a,personalisation_enabled:false}],user_books:[],reading_dna_signals:[],recommendation_sessions:[],recommendations:[],recommendation_feedback:[]};
+ const db={from(table){let one=false;const where=[];const q={select(){return q},eq(k,v){where.push([k,v]);return q},order(){return q},limit(){return q},range(){return q},single(){one=true;return q},maybeSingle(){one=true;return q},then(resolve){const rows=tables[table].filter(r=>where.every(([k,v])=>r[k]===v));return Promise.resolve({data:one?rows[0]||null:rows,error:null}).then(resolve)}};return q},async rpc(name,args){assert.equal(name,"save_recommendation_session");assert.equal(args.candidates.length,3);tables.recommendation_sessions=[{id:session,user_id:a,request_text:args.reading_request,filters:args.selected_filters,status:"completed",created_at:new Date().toISOString()}];tables.recommendations=args.results.map((r,i)=>({id:[a,b,session][i],user_id:a,session_id:session,rank:r.rank,reason:r.reason,matched_signals:[],confidence_label:r.confidence,recommendation_feedback:[],books:{google_books_id:r.book.googleBooksId,title:r.book.title,authors:r.book.authors,description:r.book.description,categories:r.book.categories,page_count:250,thumbnail_url:r.book.thumbnailUrl}}));return{data:session,error:null}}};
+ let calls=0;const resolved=[];
+ const output=await createRecommendations(db,a,{entryId:session,request:"Hopeful fantasy",filters:{...filters,genre:"Fantasy"}},{
+  search:async()=>[...candidates.map(c=>({...c,categories:["Fiction"],description:"Search summary",thumbnailUrl:"https://books.google.com/example"})),{...candidates[0],googleBooksId:"review",title:"Fantasy Book Review Annual"}],
+  lookup:async id=>{resolved.push(id);return {...candidates.find(c=>c.googleBooksId===id),description:"A hopeful fantasy about friendship.",thumbnailUrl:null}},
+  generate:async(schema,instruction,data)=>{if(++calls===1)return{needsContext:false,queries:["fantasy friendship"]};assert.equal(data.candidates.length,3);assert.ok(data.candidates.every(c=>c.categories.includes("Fantasy")));return{recommendations:candidates.map(c=>({bookId:c.googleBooksId,reason:"Catalogue describes hopeful fantasy; further details uncertain.",confidence:"Good match",matchedSignals:[],bookEvidence:["hopeful fantasy"]}))}},
+ });
+ assert.deepEqual(resolved.sort(),candidates.map(c=>c.googleBooksId));assert.equal(output.session.recommendations.length,3);assert.ok(output.session.recommendations.every(r=>r.book.thumbnailUrl==="https://books.google.com/example"));
+});
 test("the server broadens empty catalogue searches and never sends opted-out signals or private notes to the model",async()=>{
  const tables={ profiles:[{id:a,display_name:"Reader"}], ai_settings:[{user_id:a,personalisation_enabled:false,use_recent_ratings:true,use_dnf_reasons:true}],
   user_books:[{id:b,user_id:a,book_id:b,status:"finished",progress_percent:100,current_page:null,rating:5,notes:"SECRET PRIVATE NOTES",is_favourite:true,is_removed:false,dnf_use_for_learning:false,started_at:null,finished_at:"2026-10-06",updated_at:"2026-10-06T00:00:00Z",books:{google_books_id:"owned-history",title:"Private reading history",authors:["Writer"],categories:[],page_count:200}}],

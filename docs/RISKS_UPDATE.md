@@ -4,6 +4,8 @@ Prepared for the 14 October milestone and the plan through 28 October. Scope rem
 
 ## Current evidence
 
+17 October follow-up: **51 tests**, 122 PostgreSQL privacy assertions, lint and production build passed. [Hosted recommendation/DNA evaluation](recommendation-evaluation-2026-10-17.md) records 15 live requests, automatic finish/rating evidence, effective consent denial and before/after feedback corrections. Genre retrieval and edition/bundle handling were improved. Strict content exclusions/reading order remain unverified (REC-02), and one provider timeout recovered on retry (REC-04). These findings do not establish objective recommendation accuracy or change official deadlines. Earlier evidence below is retained at its stated date.
+
 49 automated tests and 122 local PostgreSQL privacy assertions passed; lint and the production build passed on 13 October. Real hosted authentication checks verified signup activation, login, reload persistence, logout and private route/API denial. The owner confirmed confirmation and reset emails arrived. The existing reader's Library and password were preserved. See the [testing log](BUG_AND_TEST_LOG.md) and [sanitized authentication evidence](evidence/auth-verification-2026-10-13.json).
 
 ## Remaining risks and limits

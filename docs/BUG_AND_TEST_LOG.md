@@ -4,6 +4,8 @@ Milestone preparation for 14 October. Application revision checked: `fe16271`. F
 
 ## Latest verification
 
+**17 October follow-up:** 51 tests (including 122 PostgreSQL privacy assertions), lint and production build passed. A hosted recommendation evaluation ran 15 requests and verified automatic finish/rating DNA, consent denial, ordinary feedback storage, Show less and before/after signal corrections. Fixed generic-genre retrieval and edition/bundle diversity. Strict exclusion/reading-order accuracy and provider timeouts remain open; generation confidence is not an accuracy score. See [evaluation, results and linked bugs](recommendation-evaluation-2026-10-17.md).
+
 | Check | Result and evidence |
 | --- | --- |
 | Automated suite | **49 passed, 0 failed** on 13 October; includes 122 PostgreSQL privacy/RLS assertions. |

@@ -15,7 +15,7 @@ test("Gemini retries overload with an alternate model and never includes credent
 });
 test("invalid JSON is repaired with bounded retries; blocked output and exhausted retries stay failures",async()=>{
  let calls=0;await requestGemini(schema,"",{}, {apiKey:"key",wait:async()=>{},fetcher:async()=>{calls++;return calls===1?Response.json({candidates:[{finishReason:"STOP",content:{parts:[{text:'{"ok":"wrong"}'}]}}]}):success();}});assert.equal(calls,2);
- calls=0;await assert.rejects(requestGemini(schema,"",{}, {apiKey:"key",wait:async()=>{},fetcher:async()=>{calls++;return new Response(null,{status:429});}}));assert.equal(calls,3);
+ calls=0;await assert.rejects(requestGemini(schema,"",{}, {apiKey:"key",wait:async()=>{},fetcher:async()=>{calls++;return new Response(null,{status:429});},quotaGuard:{check(){},observe(){}}}));assert.equal(calls,1);
  calls=0;await assert.rejects(requestGemini(schema,"",{}, {apiKey:"key",wait:async()=>{},fetcher:async()=>{calls++;return Response.json({candidates:[{finishReason:"SAFETY"}]});}}));assert.equal(calls,1);
 });
 

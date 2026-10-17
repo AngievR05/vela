@@ -37,6 +37,6 @@ export async function POST(request) {
     return Response.json(await createRecommendations(reader.supabase, reader.user.id, parsed.data, { search: searchGoogleBooks, lookup: getGoogleBook, generate: generateStructured }), { headers });
   } catch (error) {
     console.warn("Recommendation request failed:", error.name === "ZodError" ? "Generated output validation failed" : error.message);
-    return Response.json({ error: "Recommendations are temporarily unavailable. Your request is still here; please try again." }, { status: 503, headers });
+    return Response.json({ error: "Recommendations are temporarily unavailable or paused. Your request is still here. Wait a minute and try again; your Library and reading tracker still work." }, { status: 503, headers });
   }
 }

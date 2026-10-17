@@ -40,8 +40,8 @@ export function parseRecommendationSession(value, userId) {
 }
 const normalise = value => String(value || "").normalize("NFKD").toLowerCase().replace(/<[^>]*>/g," ").replace(/&(?:nbsp|amp|quot|#39);/g," ").replace(/[^\p{L}\p{N}]+/gu," ").trim();
 export function bookWorkKey(book) {
-  const title=normalise(book.title?.replace(/\s*\((?:[^)]*edition|[^)]*paperback|[^)]*hardback)\)\s*$/i,""));
-  const author=normalise(book.authors?.[0] || book.author);
+  const title=normalise(book.title?.replace(/\s*\((?:[^)]*edition|[^)]*paperback|[^)]*hardback)\)\s*$/i,"").replace(/\s*:\s*(?:book\s+\d+|a\s+novel)\s*$/i,"").replaceAll("&"," and "));
+  const author=normalise((book.authors?.[0] || book.author || "").replaceAll(".",""));
   return title && author ? `${title}|${author}` : `volume:${book.googleBooksId}`;
 }
 export function validRecommendations(value, candidates, signals, requireEvidence = false) {
@@ -65,6 +65,6 @@ export function validRecommendations(value, candidates, signals, requireEvidence
 export function eligibleCandidates(books, filters, excluded = [], excludedWorks = []) {
   return [...new Map(books.filter(book => book.googleBooksId && book.title && !excluded.includes(book.googleBooksId) && !excludedWorks.includes(bookWorkKey(book))
     && (filters.length === "any" || (book.pageCount > 0 && book.pageCount < Number(filters.length)))
-    && (!filters.genre || (book.categories||[]).some(category => filters.genre === "Literary" ? /literary/i.test(category) : category.toLowerCase().includes(filters.genre.toLowerCase())) || (filters.genre==="Literary"&&/literary/i.test(book.description||""))))
+    && (!filters.genre || (book.categories||[]).some(category => filters.genre === "Literary" ? /literary/i.test(category) : category.toLowerCase().includes(filters.genre.toLowerCase())) || ({Fantasy:/\bfantasy\b/i,Romance:/\bromance\b/i,Literary:/\bliterary\b/i}[filters.genre]?.test(book.description||""))))
     .map(book => [bookWorkKey(book), book])).values()].slice(0, 30);
 }

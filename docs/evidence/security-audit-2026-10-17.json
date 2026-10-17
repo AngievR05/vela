@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-17",
+  "tests": 57,
+  "lint": "PASS",
+  "build": "PASS",
+  "nextVersion": "16.4.2",
+  "baselineRlsAssertions": 122,
+  "fullSchemaAuditAssertions": 142,
+  "privateTables": 10,
+  "destructiveScope": "Local PostgreSQL fixtures only; no hosted reset/deletion",
+  "ownerBillingConfirmation": "Owner confirmed Gemini Free Tier with no paid billing linked on 2026-10-17",
+  "billingLimitation": "Deployment attestation is not independent cloud billing verification; quota cooldown is process-local",
+  "secretScan": {
+    "date": "2026-10-17",
+    "trackedFiles": 377,
+    "publicBuildFiles": 50,
+    "configuredPrivateValuesChecked": [
+      "GEMINI_API_KEY",
+      "GOOGLE_BOOKS_API_KEY",
+      "VELA_TEST_PASSWORD"
+    ],
+    "findings": [],
+    "passed": true
+  },
+  "productionDependencies": {
+    "before": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 2,
+      "critical": 1,
+      "total": 3
+    },
+    "after": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    }
+  },
+  "developmentFindings": {
+    "counts": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 5,
+      "critical": 0,
+      "total": 5
+    },
+    "packages": [
+      "@next/eslint-plugin-next",
+      "braces",
+      "eslint-config-next",
+      "fast-glob",
+      "micromatch"
+    ],
+    "status": "OPEN: compatible upstream braces/tooling fix required; no forced major downgrade"
+  },
+  "fixed": [
+    "Quota fallback/retry amplification",
+    "Free-tier deployment gate and model allowlist",
+    "Learned DNF Stop/Reduce control retained after per-book consent withdrawal",
+    "Vulnerable production dependencies",
+    "Raw catalogue error logging"
+  ],
+  "limitations": [
+    "Hosted two-reader policy export/comparison not performed",
+    "No hosted reset or account deletion executed",
+    "No historical Git/log secret scan",
+    "No physical-device UI audit in this run"
+  ]
+}

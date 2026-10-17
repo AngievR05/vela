@@ -35,11 +35,10 @@ export async function GET(request) {
     );
 
     return Response.json({ books });
-  } catch (error) {
-    console.error("Google Books search failed:", error);
+  } catch {
 
     return Response.json(
-      { error: "Book search is temporarily unavailable." },
+      { error: "Book search is temporarily unavailable or its quota was reached. Wait a minute and retry, or add the book manually. Your Library is still available." },
       { status: 502 }
     );
   }

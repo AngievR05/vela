@@ -1,12 +1,17 @@
 import { z } from "zod";
+import {createQuotaGuard} from "./provider-policy.js";
+const quota=createQuotaGuard();
 
 // Bounded retries for direct REST requests; credentials never enter diagnostic errors.
-export async function requestGemini(schema, instruction, data, { apiKey, model = "gemini-3.5-flash-lite", fallbackModel = "gemini-3.1-flash-lite", fetcher = fetch, wait = ms => new Promise(resolve => setTimeout(resolve, ms)), timeoutMs = 12000, validate } = {}) {
+export async function requestGemini(schema, instruction, data, { apiKey, model = "gemini-3.5-flash-lite", fallbackModel = "gemini-3.1-flash-lite", fetcher = fetch, wait = ms => new Promise(resolve => setTimeout(resolve, ms)), timeoutMs = 12000, validate, quotaGuard=quota } = {}) {
+  if(!apiKey)throw new Error("AI suggestions are unavailable. Your Library and reading tracker still work.");
+  quotaGuard.check();
   const models = [model, fallbackModel || model, fallbackModel || model];
   for (const name of models) if (!/^[a-zA-Z0-9._-]+$/.test(name)) throw new Error("Invalid model configuration");
   let failure;
   for (let attempt = 0; attempt < models.length; attempt++) {
     if (attempt) await wait(600 * 2 ** (attempt - 1) + Math.floor(Math.random() * 200));
+    quotaGuard.check();
     const name = models[attempt];
     try {
       const response = await fetcher(`https://generativelanguage.googleapis.com/v1beta/models/${name}:generateContent`, {
@@ -18,8 +23,9 @@ export async function requestGemini(schema, instruction, data, { apiKey, model =
         }),
       });
       if (!response.ok) {
+        quotaGuard.observe(response.status);
         const error = new Error(`Gemini unavailable (${response.status})`);
-        error.retryable = response.status === 408 || response.status === 429 || response.status >= 500;
+        error.retryable = response.status === 408 || response.status >= 500;
         throw error;
       }
       const body = await response.json(), content = body.candidates?.[0];
