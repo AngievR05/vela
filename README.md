@@ -44,7 +44,7 @@ On Windows PowerShell:
 Copy-Item .env.example .env.local
 ```
 
-Add your Supabase public URL/key and server-only Gemini/Google Books keys to `.env.local`. Apply the checked-in migrations in filename order using [Supabase setup and verification](supabase/README.md), and configure allowed callback URLs. Start development:
+Add your Supabase public URL/key and server-only Gemini/Google Books keys to `.env.local`. Set `GEMINI_FREE_TIER_VERIFIED=true` only after confirming that key's project is Free Tier with no paid billing linked; generation otherwise stays paused. `GEMINI_ENABLED=false` pauses AI independently of Library tracking. Apply the checked-in migrations in filename order using [Supabase setup and verification](supabase/README.md), and configure allowed callback URLs. Start development:
 
 ```bash
 npm run dev
@@ -63,7 +63,7 @@ npm run build
 npm run start
 ```
 
-The latest run on 17 October passed **51 tests**, including **122 local PostgreSQL privacy assertions**, lint and the production build. The [17 October hosted recommendation/DNA evaluation](docs/recommendation-evaluation-2026-10-17.md) records consent, feedback and corrections, plus remaining strict-exclusion and provider limitations. The tests execute the checked-in migrations with PGlite; they do not establish that every hosted policy/configuration is current. Browser checks include isolated state fixtures and real hosted authentication, identified separately in the [testing log](docs/BUG_AND_TEST_LOG.md).
+The latest run on 18 October passed **57 tests**, including 122 baseline RLS assertions and 142 full-schema privacy/reset/deletion assertions. See the [quota/security audit](docs/security-quota-audit-2026-10-18.md) for production API checks, secrets, dependency findings and verification limits. The [17 October hosted recommendation/DNA evaluation](docs/recommendation-evaluation-2026-10-17.md) records consent, feedback and corrections, plus remaining strict-exclusion and provider limitations. The tests execute the checked-in migrations with PGlite; they do not establish that every hosted policy/configuration is current. Browser checks include isolated state fixtures and real hosted authentication, identified separately in the [testing log](docs/BUG_AND_TEST_LOG.md).
 
 On 14 October, **157 responsive browser checks** passed across 320–1920px, larger text, short-height dialogs, forms, dark mode and recommendation states. Desktop has branded side navigation, balanced Home cards, compact Library tools, a flexible grid and two-column Book Detail; phones keep bottom navigation and touch-friendly sheets. The **49-test suite**, lint and production build were rerun successfully after this refinement. See [responsive verification](docs/responsive-verification.md) for coverage and limits.
 
@@ -155,7 +155,7 @@ Home, Discover and Reading DNA share evidence/permission filtering. Only visible
 
 The automatic-reading-activity and reading-flow migrations refresh eligible DNA evidence when books are completed/rated or permitted reflections/reasons change; current permissions and reset cutoffs still apply. This is not unconditional learning from every update.
 
-Verification: the latest **51-test suite** includes PostgreSQL reader/anonymous isolation, duplicate retries, stale edits/Undo and preference-preserving reset. Hosted Reduce and Undo were saved and verified through the UI, restoring the original signal. Live reset was not executed on the reader's account. Mobile layouts and SVG assets were checked against the design; private caches clear at logout and reader changes.
+Verification: the latest **57-test suite** includes PostgreSQL reader/anonymous isolation, duplicate retries, stale edits/Undo and preference-preserving reset. Hosted Reduce and Undo were saved and verified through the UI, restoring the original signal. Live reset was not executed on the reader's account. Mobile layouts and SVG assets were checked against the design; private caches clear at logout and reader changes.
 
 ## Remaining service limitations
 

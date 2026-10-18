@@ -4,6 +4,8 @@ Prepared for the 14 October milestone and the plan through 28 October. Scope rem
 
 ## Current evidence
 
+18 October audit: [quota/security verification](security-quota-audit-2026-10-18.md) records 57 passing tests, 24 simulated-outage/private-API checks and a clean client secret scan. Production dependency advisories were patched; five high development-tool findings remain. Free Tier status is owner-confirmed, with a default-closed deployment gate; cloud billing must be rechecked if configuration changes. Full-schema local isolation/reset/deletion checks pass, but a fresh two-reader hosted policy comparison remains a release check. Earlier dated findings below are retained as historical evidence.
+
 17 October follow-up: **51 tests**, 122 PostgreSQL privacy assertions, lint and production build passed. [Hosted recommendation/DNA evaluation](recommendation-evaluation-2026-10-17.md) records 15 live requests, automatic finish/rating evidence, effective consent denial and before/after feedback corrections. Genre retrieval and edition/bundle handling were improved. Strict content exclusions/reading order remain unverified (REC-02), and one provider timeout recovered on retry (REC-04). These findings do not establish objective recommendation accuracy or change official deadlines. Earlier evidence below is retained at its stated date.
 
 49 automated tests and 122 local PostgreSQL privacy assertions passed; lint and the production build passed on 13 October. Real hosted authentication checks verified signup activation, login, reload persistence, logout and private route/API denial. The owner confirmed confirmation and reset emails arrived. The existing reader's Library and password were preserved. See the [testing log](BUG_AND_TEST_LOG.md) and [sanitized authentication evidence](evidence/auth-verification-2026-10-13.json).
@@ -25,7 +27,7 @@ Supabase documents its default mail service as restricted and unsuitable for pro
 
 ## Milestone update to present
 
-The core reading loop and account flows are implemented. The latest suite has 49 passing tests, with lint/build passing and live signup/login/session/logout checks completed. Both confirmation and reset emails reached the supplied inboxes. Remaining priorities are public SMTP, a full disposable recovery cycle, human usability, recommendation/DNA quality checks and final privacy/accessibility/production verification. Reminders work only with Vela open and browser permission; external catalogue/AI services can be unavailable or quota-limited. Existing Library tracking remains usable when AI is unavailable, provided Supabase is reachable.
+The core reading loop and account flows are implemented. The latest suite has 57 passing tests, with lint/build passing and live signup/login/session/logout checks completed. Both confirmation and reset emails reached the supplied inboxes. Remaining priorities are public SMTP, a full disposable recovery cycle, human usability, recommendation/DNA quality checks and final privacy/accessibility/production verification. Reminders work only with Vela open and browser permission; external catalogue/AI services can be unavailable or quota-limited. Existing Library tracking remains usable when AI is unavailable, provided Supabase is reachable.
 
 ## Linked plan
 

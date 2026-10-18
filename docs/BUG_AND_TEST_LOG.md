@@ -4,6 +4,8 @@ Milestone preparation for 14 October. Application revision checked: `fe16271`. F
 
 ## Latest verification
 
+**18 October quota/security audit:** 57 regression tests passed, including 122 baseline RLS assertions and 142 full-schema privacy/reset/deletion assertions. Twenty-four production API checks passed with simulated provider failures and the hosted disposable reader; core reading stayed available and its original Library was preserved. Fixed quota retry amplification and learned controls leaking after book-level consent withdrawal; added a default-closed Free Tier deployment gate and patched production dependencies. Client secret scan passed. Five development-only lint-chain findings and fresh hosted two-reader policy verification remain open. See [audit and evidence](security-quota-audit-2026-10-18.md).
+
 **17 October follow-up:** 51 tests (including 122 PostgreSQL privacy assertions), lint and production build passed. A hosted recommendation evaluation ran 15 requests and verified automatic finish/rating DNA, consent denial, ordinary feedback storage, Show less and before/after signal corrections. Fixed generic-genre retrieval and edition/bundle diversity. Strict exclusion/reading-order accuracy and provider timeouts remain open; generation confidence is not an accuracy score. See [evaluation, results and linked bugs](recommendation-evaluation-2026-10-17.md).
 
 | Check | Result and evidence |
