@@ -16,11 +16,15 @@ html[data-vela-theme="dark"] {
   --vela-surface-base:#24342e; --vela-beige:#3e3b2d; --vela-dna:#39344b;
   --vela-subtle-text:#d3cec5; --vela-link:#b4d5e4;
   --vela-match:#2d443b;
+  --vela-mauve-surface:#39344b; --vela-danger-surface:#452e2b; --vela-mauve-text:#c8bfe2;
+  --vela-mist-surface:#2d443b;
+  --vela-chart-green:#8fc6b3; --vela-chart-plum:#dfb6c8; --vela-chart-mauve:#c8bfe2;
+  --vela-chart-brass:#d3b77f; --vela-chart-ink:#ded8d0; --vela-chart-muted:#b6b0a9;
 }
 html[data-vela-density="compact"] { --vela-content-gap:8px; }
-html[data-vela-contrast="high"] { --colour-input-border:var(--colour-ink); --colour-mist:var(--colour-ink); }
+html[data-vela-contrast="high"] { --colour-input-border:var(--colour-ink); --colour-mist:var(--colour-ink); --vela-subtle-text:var(--colour-ink); }
 html[data-vela-contrast="high"] #main-content :is(button,input,textarea,select) { outline-offset:3px; border:1px solid var(--colour-ink); }
-html[data-vela-contrast="high"] #main-content :is(p,small,label) { opacity:1; color:var(--colour-ink); }
+html[data-vela-contrast="high"] #main-content :is(p,small,label) { opacity:1; }
 html[data-vela-motion="reduce"] *,html[data-vela-motion="reduce"] *::before,html[data-vela-motion="reduce"] *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
 html[data-vela-text="large"] #main-content :is(p,label,small,input,textarea,select,button) { font-size:1.05rem!important; line-height:1.6!important; }
 

@@ -1,7 +1,7 @@
 .screen { --font-body:var(--auth-font-body),Arial,sans-serif; --font-display:var(--auth-font-display),Georgia,serif; position:relative; isolation:isolate; width:min(100%,480px); min-height:100svh; margin:0 auto; overflow:clip; color:var(--colour-ink); background:var(--colour-parchment); font:400 14px/21px var(--font-body); }
 .screen h1,.screen h2,.screen h3,.screen p { margin:0; }
 
-.content { display:flex; flex-direction:column; gap:14px; padding:var(--vela-page-top) 16px calc(var(--vela-nav-clearance) + 16px); }
+.content { display:flex; flex-direction:column; gap:var(--vela-content-gap,14px); padding:var(--vela-page-top) 16px calc(var(--vela-nav-clearance) + 16px); }
 .header { display:flex; align-items:center; gap:8px; }
 .header h1 { flex:1; font:600 30px/34px var(--font-display); }
 .back { display:flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; border:1px solid var(--colour-evergreen); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); color:var(--colour-evergreen); font-size:22px; text-decoration:none; cursor:pointer; }
@@ -67,7 +67,7 @@
 /* Tablet and desktop layouts retain the mobile visual system. */
 @media (min-width:768px) {
  .screen { width:min(calc(100% - 48px),1120px); }
- .content { padding:40px 32px 128px; gap:20px; }
+ .content { padding:40px 32px 128px; gap:var(--vela-content-gap,20px); }
  .header h1 { font-size:36px; line-height:1.2; }
  .metrics { gap:20px; }
 }

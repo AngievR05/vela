@@ -2,11 +2,11 @@
 .screen h1,.screen h2,.screen h3,.screen p { margin:0; }
 
 .viewport { position:relative; margin:var(--vela-page-top) 16px 0; height:calc(100svh - var(--vela-page-top) - var(--vela-nav-clearance) - 128px); min-height:180px; overflow-y:auto; overflow-x:clip; scrollbar-width:thin; }
-.content { display:flex; flex-direction:column; align-items:stretch; gap:12px; padding-bottom:4px; }
+.content { display:flex; flex-direction:column; align-items:stretch; gap:var(--vela-content-gap,12px); padding-bottom:4px; }
 .compact { gap:8px; }
 .header { display:flex; align-items:center; gap:8px; }
 .header h1 { font:600 30px/34px var(--font-display); }
-.back { display:flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; border:1px solid var(--colour-evergreen); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); color:#183b34; text-decoration:none; font:500 22px/28px var(--font-body); cursor:pointer; }
+.back { display:flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; border:1px solid var(--colour-evergreen); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); color:var(--colour-evergreen,#183b34); text-decoration:none; font:500 22px/28px var(--font-body); cursor:pointer; }
 .subtitle,.muted { color:var(--vela-subtle-text,#5e5852); }
 .subtitle,.meta { font:400 14px/21px var(--font-body); }
 .title { font:600 32px/36px var(--font-display); }
@@ -29,7 +29,7 @@
 .screen .tertiary { min-height:44px; color:var(--colour-evergreen); background:transparent; border:0; box-shadow:none; }
 .screen .danger { background:#943c34; }
 .screen button:disabled { cursor:default; }
-.screen .primary:disabled { background:#d9e0d6; color:#183b34; box-shadow:none; }
+.screen .primary:disabled { background:#d9e0d6; color:var(--colour-evergreen,#183b34); box-shadow:none; }
 .actions { position:fixed; z-index:30; bottom:calc(var(--vela-nav-bottom) + 76px); left:50%; transform:translateX(-50%); width:min(calc(100% - 32px),448px); display:flex; flex-direction:column; gap:8px; }
 .skeleton { min-height:76px; animation:pulse 1.8s ease-in-out infinite; }
 .alert { font-size:14px; line-height:21px; }
@@ -42,7 +42,7 @@
 @media (min-width:768px) {
  .screen { width:min(calc(100% - 48px),960px); }
  .viewport { margin:40px 32px 0; height:auto; overflow:visible; }
- .content { padding-bottom:24px; gap:18px; }
+ .content { padding-bottom:24px; gap:var(--vela-content-gap,18px); }
  .actions { position:relative; left:auto; bottom:auto; transform:none; width:auto; max-width:640px; margin:16px auto 128px; padding-inline:16px; }
  .header h1 { font-size:36px; line-height:1.2; }
 }

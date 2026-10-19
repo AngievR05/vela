@@ -11,6 +11,18 @@ export const settingsMutationSchema = z.discriminatedUnion("kind", [
   z.object({kind:z.literal("reset"), confirmation:z.literal("RESET")}).strict(),
 ]);
 export function settingsCacheKey(userId) { return `vela:settings:v1:${userId}`; }
+export function readerPreferenceUpdate(userId,event) {
+  let value;
+  if(event.type==="storage"){
+    if(event.key!==settingsCacheKey(userId)||!event.newValue)return null;
+    try{value=JSON.parse(event.newValue);}catch{return null;}
+  }else{
+    if(event.detail?.userId!==userId)return null;
+    value=event.detail.preferences;
+  }
+  const parsed=readerPreferencesSchema.safeParse(value);
+  return parsed.success?parsed.data:null;
+}
 export function readerNotificationChoices(preferences,now) {
   const time=`${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
   const sunday=now.getDay()===0;
