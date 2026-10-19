@@ -43,3 +43,13 @@
 .stars button { display:grid; place-items:center; }
 .stars button[aria-pressed=true] { background:#dce8e4; }
 .stars button[aria-pressed=true] img { filter:none; }
+
+/* G02: keep the optional note visible beside the progress input. */
+.flowSubtitle { font:400 14px/21px var(--auth-font-body),sans-serif; color:var(--vela-subtle-text,#5e5852); margin:0!important; }
+.progressNote { margin-top:36px; }
+.segments button[aria-pressed=true] { background:#183b34; color:#fbf8f2; }
+.sheet:not(.statusSheet) .secondary { border:1px solid #766f68; background:var(--colour-paper); }
+
+.statusSheet .optional summary { list-style:none; }
+.statusSheet .optional summary::-webkit-details-marker { display:none; }
+.statusSheet .optional summary::after { content:"⌄"; margin-left:10px; }

@@ -5,7 +5,7 @@
 .screen button:focus-visible,.screen a:focus-visible { outline: 2px solid var(--colour-plum); outline-offset: 3px; }
 .addScreen { background: var(--colour-parchment); }
 
-.content { display: flex; flex-direction: column; gap: 10px; padding: 70px 16px 116px; }
+.content { display: flex; flex-direction: column; gap: 10px; padding: var(--vela-page-top) 16px var(--vela-nav-clearance); }
 .header { display: flex; align-items: center; min-height: 48px; }
 .libraryLogo{width:28px;height:27px;flex:none;margin-right:10px}.addLogo{width:44px;height:42px;flex:none;overflow:hidden}.addLogoAsset{width:44px;height:42px}
 .readingSuccess{background:var(--colour-mauve-soft,#e7e4ef)!important}

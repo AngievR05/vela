@@ -87,7 +87,7 @@
 .logo img { display: block; max-width: none; }
 .welcomeKicker { font-size: 11px; line-height: 16px; font-weight: 600; color: var(--colour-plum); }
 .welcomeHeading { margin: 0; font: 600 40px/43px var(--font-display); }
-.welcomeLogo { position: absolute; right: 25px; top: 62px; }
+.welcomeLogo { position:static; }
 .benefits { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .benefit { min-height: 188px; padding: 12px 11px; border-radius: 22px; display: flex; flex-direction: column; gap: 7px; background: var(--auth-soft-green); }
 .benefit:nth-child(2) { background: #e8e3f2; }
