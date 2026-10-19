@@ -6,7 +6,7 @@ import styles from "./Auth.module.css";
 
 export function BrandLogo({ size = 108, className = "", variant }) {
   const scale = size / 108;
-  if (variant) return <Image className={`${styles.logo} ${className}`} src={`/auth/final-${variant}.svg`} alt="Vela" width={size} height={size * 0.95899} style={{ width: size, height: "auto" }} priority unoptimized />;
+  if (variant) return <Image className={`${styles.logo} ${className}`} src={`/auth/final-${variant}.svg`} alt="Vela" width={size} height={Math.round(size * 0.95899)} style={{ width: size, height: Math.round(size * 0.95899) }} priority unoptimized />;
   return <span className={`${styles.logo} ${className}`} style={{ width: size, height: 104 * scale }}>
     <Image src="/brand/logo.svg" alt="Vela" width={108} height={104} priority unoptimized
       style={{ transform: `scale(${scale})`, transformOrigin: "top left" }} />

@@ -91,7 +91,7 @@
 .skeletonLines span:first-child { width:55%; }.skeletonLines span:last-child { width:80%; }
 .skeletonCard { animation:pulse 1.8s ease-in-out infinite; }
 @keyframes pulse {50%{opacity:.65}}
-.sheetBackdrop { background:#22201e!important; top:60px!important; bottom:34px!important; left:50%!important; transform:translateX(-50%); width:min(100%,480px); }
+.sheetBackdrop { background:#22201e!important; top:0!important; bottom:0!important; left:50%!important; transform:translateX(-50%); width:min(100%,480px); }
 .sheet { width:100%; max-height:100%; min-height:421px; padding:20px; gap:10px; border:0; border-radius:24px; background:#fcfaf6; font:400 13px/15.6px var(--font-body); box-shadow:none; }
 .sheet>div:first-child h2 { font:700 27px/32.4px var(--font-display); }.sheet>div:first-child { min-height:32px; }
 .sheet>div:first-child button { width:32px; height:32px; min-height:32px; }

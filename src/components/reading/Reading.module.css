@@ -39,3 +39,7 @@
 /* Desktop navigation leaves the content viewport clear. */
 @media(min-width:1024px){.screen{padding-bottom:48px}.overviewActions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.overviewActions > .row{display:contents}.overviewActions > .textButton{grid-column:1 / -1}.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.list > *{min-width:0}}
 @media(min-width:1024px){.savedNotice{left:calc(50% + 128px);bottom:24px;max-width:560px;width:calc(100% - 320px)}}
+
+.stars button { display:grid; place-items:center; }
+.stars button[aria-pressed=true] { background:#dce8e4; }
+.stars button[aria-pressed=true] img { filter:none; }
