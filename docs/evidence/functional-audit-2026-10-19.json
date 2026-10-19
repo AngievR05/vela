@@ -77,7 +77,95 @@
     {
       "name": "CSV retry preserves the existing book",
       "result": "PASS"
+    },
+    {
+      "name": "Hosted anonymous REST access cannot read the private test row",
+      "result": "PASS"
+    },
+    {
+      "name": "Original disposable Library records unchanged; QA additions soft-removed",
+      "result": "PASS"
+    },
+    {
+      "name": "Disposable logout and protected access",
+      "result": "PASS"
     }
   ],
-  "limitations": []
+  "limitations": [
+    {
+      "feature": "Live recommendation generation",
+      "status": 200,
+      "message": "no-match"
+    },
+    {
+      "feature": "Live Google Books search",
+      "status": 502,
+      "message": "Provider failure; manual entry and core tracking remain available."
+    }
+  ],
+  "providerDiagnostic": {
+    "provider": "Google Books",
+    "status": 200,
+    "reasons": [],
+    "message": "OK"
+  },
+  "automated": {
+    "passed": 61,
+    "tests": 61,
+    "fullSchemaPrivacyAssertions": 142,
+    "productionBuild": "PASS (36 pages)",
+    "baselineRlsAssertions": 122,
+    "failed": 0,
+    "lint": "PASS"
+  },
+  "browser": {
+    "layouts": [
+      "desktop",
+      "390px mobile"
+    ],
+    "readingRecovery": [
+      "finish rating retained after Keep editing",
+      "DNF reason retained after Keep editing",
+      "keyboard date change prompts before discard"
+    ],
+    "scope": "Representative screens and visible-text contrast checks, not exhaustive accessibility or physical-device certification",
+    "screens": [
+      "Home",
+      "Library",
+      "Add Book",
+      "Discover",
+      "Reading DNA",
+      "Stats",
+      "Settings",
+      "Current Reading",
+      "Reading setup"
+    ],
+    "appearance": [
+      "dark theme persists across navigation",
+      "theme sync between two tabs",
+      "larger text",
+      "higher contrast",
+      "compact density",
+      "original light/system text/comfortable/standard contrast restored and verified after reload"
+    ]
+  },
+  "providerRetests": [
+    {
+      "printType": "books",
+      "query": "intitle:Piranesi inauthor:Susanna Clarke",
+      "message": "Service temporarily unavailable.",
+      "reason": "backendFailed",
+      "maxResults": 10,
+      "status": 503
+    },
+    {
+      "printType": "books",
+      "query": "subject:fantasy",
+      "message": "Service temporarily unavailable.",
+      "reason": "backendFailed",
+      "maxResults": 10,
+      "status": 503
+    }
+  ],
+  "recommendationFix": "The live no-match result preceded the fix. Partial search failures with insufficient candidates now throw a retryable service error; regression test passes. Successful live recommendation generation remains unverified in this audit."
 }

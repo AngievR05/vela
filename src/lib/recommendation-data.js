@@ -68,12 +68,13 @@ export async function createRecommendations(supabase, userId, input, { search, l
   const avoid = context.personalisationEnabled ? preferenceRows.data.map(row => mapCandidate(row.recommendations.books)) : [];
   const excluded = [...context.books.filter(book => book.status !== "want_to_read").map(book => book.googleBooksId), ...avoid.map(book => book.googleBooksId)];
   const excludedWorks=[...context.books.filter(book=>book.status!=="want_to_read"),...avoid].map(bookWorkKey);
-  let books;
+  let books, catalogueIncomplete=false;
   if (input.filters.source === "tbr") books = context.books.filter(book => book.status === "want_to_read").map(book => ({ googleBooksId: book.googleBooksId, title: book.title, authors: book.author ? [book.author] : [],
     description: book.description, pageCount: book.pageCount, categories: book.categories, publishedDate: book.publishedDate, thumbnailUrl: book.coverSrc, isbn: book.isbn }));
   else {
     const seedQueries = (plan.seedBooks || []).map(book => `${book.title} ${book.author}`);
     const searches = await Promise.allSettled([...new Set([...seedQueries,...plan.queries])].map(query => search(query,40)));
+    catalogueIncomplete=searches.some(result=>result.status==="rejected");
     if (searches.every(result => result.status === "rejected")) throw new Error("Book catalogue unavailable");
     const pools=searches.filter(result=>result.status==="fulfilled").map(result=>result.value);
     // Interleave queries so one query cannot consume the entire candidate budget.
@@ -97,10 +98,14 @@ export async function createRecommendations(supabase, userId, input, { search, l
     // suitable books. Broaden the catalogue, then let the ranker assess fit.
     const genre = input.filters.genre || (/fantasy/i.test(input.request) ? "Fantasy" : /romance|romantic/i.test(input.request) ? "Romance" : "Fiction");
     const attempts = await Promise.allSettled([`subject:${genre === "Literary" ? "Literary Fiction" : genre}`, genre === "Literary" ? "literary fiction" : genre].map(query => search(query,40)));
+    catalogueIncomplete ||= attempts.some(result=>result.status==="rejected");
     const broader = attempts.filter(result=>result.status==="fulfilled").flatMap(result=>result.value);
     candidates = eligibleCandidates(clean([...books,...broader]),input.filters,excluded,excludedWorks);
   }
-  if (candidates.length < 3) return { state: "no-match" };
+  if (candidates.length < 3) {
+    if(catalogueIncomplete)throw new Error("Book catalogue temporarily incomplete; please retry");
+    return { state: "no-match" };
+  }
   if (lookup) candidates = await Promise.all(candidates.map(async (book,index) => { if (book.description || index >= 12 || book.googleBooksId.startsWith("manual:")) return book; try { const full = await lookup(book.googleBooksId); return full?.googleBooksId === book.googleBooksId ? {...book,...full} : book; } catch { return book; } }));
   const selected = await generate(recommendationResponseSchema,
     "Choose exactly three distinct works from supplied candidates, or an empty array if there are not three reasonable matches. Current request, exclusions and selected filters outrank past preferences. Read descriptions carefully: match requested tone, story elements, audience and pace only when supported; a genre alone is not evidence of a trope or pacing. Avoid guides, summaries, sequels requiring prior books and repeated editions unless requested. Treat signal weights as importance, not certainty; match only supplied signal IDs supported by actual book metadata. For EACH result include bookEvidence: 1-3 exact short quotes from the supplied description, categories or title that justify its fit. Quotes must be copied verbatim. Reasons should be concise, specific and describe a relevant tradeoff or uncertainty, without inventing plot, tropes, ending or reviews. Never claim a book has no romance/horror or is standalone merely because metadata omits those details. Say when exclusions or reading order cannot be confirmed from the supplied catalogue. Do not call a recurring-character or series entry standalone without explicit support. Missing metadata is uncertainty, never proof of absence. Strong match needs multiple supported aspects and substantive metadata; Good match is a plausible fit with limitations; Experimental must name its deliberate tradeoff and still satisfy explicit requirements. Reduce patterns in showLess. Respect Stop/Reduce controls: do not reconstruct stopped preferences from activity examples, and lower the importance of reduced traits. Explicit current requests take precedence. Higher ratings and lower ratings carry opposite directions; a finished book alone never implies liking. Compare against approvedActivity to understand the reader’s examples, but base all claims about candidates on their supplied metadata. Never use hidden history or private notes.",

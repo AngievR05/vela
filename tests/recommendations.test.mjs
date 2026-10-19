@@ -44,6 +44,15 @@ test("the server broadens empty catalogue searches and never sends opted-out sig
  }});
  assert.equal(calls,2);assert.equal(searches,3);assert.equal(output.session.recommendations.length,3);assert.equal(output.session.userId,a);
 });
+test("partial catalogue outages remain retryable instead of claiming there are no matches",async()=>{
+ const tables={profiles:[{id:a,display_name:"Reader"}],ai_settings:[{user_id:a,personalisation_enabled:false}],user_books:[],reading_dna_signals:[],recommendation_sessions:[],recommendation_feedback:[]};
+ const db={from(table){let one=false;const query={select(){return query},eq(){return query},order(){return query},limit(){return query},range(){return query},single(){one=true;return query},maybeSingle(){one=true;return query},then(resolve){return Promise.resolve({data:one?tables[table][0]||null:tables[table],error:null}).then(resolve)}};return query}};
+ const input={entryId:session,request:"Atmospheric fantasy",filters};
+ const generate=async()=>({needsContext:false,queries:["working empty query","failing query"]});
+ await assert.rejects(createRecommendations(db,a,input,{generate,search:async query=>{if(query==="failing query")throw new Error("Provider 503");return [];}}),/catalogue temporarily incomplete/);
+ assert.deepEqual(await createRecommendations(db,a,input,{generate,search:async()=>[]}),{state:"no-match"});
+});
+
 test("recommendation requests cannot supply reader identity, candidates or permitted evidence",()=>{
  const request={entryId:session,request:"Atmospheric fantasy",filters};
  assert.equal(recommendationRequestSchema.safeParse(request).success,true);
