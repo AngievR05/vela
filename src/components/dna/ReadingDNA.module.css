@@ -13,10 +13,10 @@
 .compact .title { font-size:30px; line-height:34px; }
 .subheading { font:600 24px/27px var(--font-display); }
 .meta { color:var(--colour-evergreen); }
-.signal { display:flex; flex-direction:column; align-items:stretch; gap:8px; padding:14px; border:0; border-radius:18px; text-align:left; color:#fbf8f2; background:#5d3648; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; cursor:pointer; }
+.signal { display:flex; flex-direction:column; align-items:stretch; gap:8px; padding:14px; border:0; border-radius:18px; text-align:left; color:#fbf8f2; background:#75465a; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; cursor:pointer; }
 .signal h3,.card h3 { font:600 24px/27px var(--font-display); }
 .signal p,.card p { font:400 14px/21px var(--font-body); }
-.strong { background:#183b34; }
+.strong { background:#2a6659; }
 .off { background:var(--vela-mauve-surface,#e7e4ef); color:var(--colour-ink); }
 .off p { color:var(--vela-subtle-text,#5e5852); }
 .card { display:flex; flex-direction:column; gap:8px; padding:14px; border:0; border-radius:22px; background:var(--vela-surface-base,#fbf8f2); color:var(--colour-ink); text-decoration:none; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }

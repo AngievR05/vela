@@ -99,7 +99,7 @@
 .screen { background:var(--colour-parchment); }
 .header p { font-size:12px; line-height:16px; }
 .screen .button { border-radius:18px; box-shadow:0 10px 22px #22201e1a,0 3px 6px #22201e1f; }
-.screen .current { background:#183b34; color:#fbf8f2; border-color:#d6c6a3; border-radius:20px; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
+.screen .current { background:#2a6659; color:#fbf8f2; border-color:#d6c6a3; border-radius:20px; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
 .current [data-part="cover"] { flex:none; width:74px; height:112px; }
 .current [data-part="cover"] > div { width:74px; height:112px; }
 .current [data-part="label"],.current [data-part="author"],.current [data-part="progress"] > div:first-child,.current [data-part="progress"] strong { color:#fbf8f2; }

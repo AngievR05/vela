@@ -162,7 +162,7 @@ export default function HomeScreen({ userId, initialAction }) {
         <Card className={`${styles.shelf} ${styles.brassSupport}`}><h2>Your shelf, your pace</h2><p>Your stats will appear as you finish books. Ratings and reflection are always optional.</p><Button className={styles.button} href="/library">Explore my Library</Button></Card>
       </>}
       {state === "populated" && <>
-        <div className={styles.readingGroup}>{readingCard}<Link className={styles.textAction} href="/library/reading">Current reading & finish book →</Link></div>
+        <div className={styles.readingGroup}>{readingCard}</div>
         <div className={styles.discoveryGroup}><h2>What fits your next chapter?</h2><p>Find three book suggestions shaped by your current mood and the preferences you allow.</p>{nextRead()}</div>
         <StatsMetrics stats={yearStats} home year={new Date().getFullYear()} />
         <section className={styles.activity}><h2>Your year in stories</h2><p>Finished books · January–{new Date().toLocaleDateString("en-GB", { month: "long" })} {new Date().getFullYear()}</p><CountBars items={yearStats.months} compact month onSelect={() => router.push("/stats?view=time")} /><p>{yearStats.total} finished. No streaks, no pressure.</p><Button className={styles.button} href="/stats">Explore my reading stats</Button></section>

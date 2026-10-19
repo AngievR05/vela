@@ -11,8 +11,8 @@
 .sectionTitle { font:600 32px/36px var(--font-display); }
 .copy { font:400 16px/24px var(--font-body); }
 .metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
-.metrics a,.metrics button { display:flex; flex-direction:column; gap:4px; min-height:102px; padding:12px 10px; border:0; border-radius:18px; background:#183b34; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; color:#fbf8f2; text-decoration:none; text-align:left; cursor:pointer; }
-.metrics > :nth-child(2) { background:#5d3648; }
+.metrics a,.metrics button { display:flex; flex-direction:column; gap:4px; min-height:102px; padding:12px 10px; border:0; border-radius:18px; background:#2a6659; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; color:#fbf8f2; text-decoration:none; text-align:left; cursor:pointer; }
+.metrics > :nth-child(2) { background:#75465a; }
 .metrics > :nth-child(3) { background:#665f84; }
 .metrics strong { font:600 30px/34px var(--font-display); overflow-wrap:anywhere; }
 .metrics p { font:400 13px/19px var(--font-body); }
