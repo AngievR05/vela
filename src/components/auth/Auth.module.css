@@ -120,7 +120,6 @@
 .flow { gap:8px; }
 .screen .fields { border-color:#d6c6a3; box-shadow:0 2px 4px #22201e0f,0 8px 20px #22201e14; }
 .field { gap:6px; padding-bottom:8px; }
-.field:not(:has(> p))::after { content:""; height:20px; }
 .field p { font-size:14px; line-height:20px; min-height:20px; }
 .field svg { width:20px; height:20px; }
 .privacyNote { padding:8px 14px; font-size:14px; line-height:20px; }

@@ -147,15 +147,15 @@ export default function AuthForm({ mode, next, initialError = "" }) {
     <form className={styles.flow} method="post" noValidate onSubmit={submit} aria-busy={pending}>
       <Card className={styles.fields}>
         {mode !== "reset" && <TextField className={styles.field} label="Email" name="email" type="email" autoComplete="email"
-          placeholder="Enter email" helperText=" " required maxLength={254} value={email} readOnly={pending} error={fieldErrors.email}
+          placeholder="Enter email" helperText={undefined} required maxLength={254} value={email} readOnly={pending} error={fieldErrors.email}
           onChange={(event) => change(setEmail, "email", event.target.value)} />}
         {mode !== "forgot" && <PasswordField designIcons className={styles.field} label={mode === "reset" ? "New password" : "Password"}
           name="password" placeholder={mode === "reset" ? "Enter new password" : "Enter password"} required
           autoComplete={mode === "login" ? "current-password" : "new-password"}
-          helperText={mode === "login" ? " " : "Use 8 or more characters."} error={fieldErrors.password}
+          helperText={mode === "login" ? "" : "Use 8 or more characters."} error={fieldErrors.password}
           value={password} readOnly={pending} onChange={(event) => change(setPassword, "password", event.target.value)} />}
         {mode === "reset" && <PasswordField designIcons className={styles.field} label="Confirm password" name="confirmation"
-          placeholder="Enter confirm password" autoComplete="new-password" helperText=" " error={fieldErrors.confirmation}
+          placeholder="Enter confirm password" autoComplete="new-password" helperText="" error={fieldErrors.confirmation}
           required value={confirmation} readOnly={pending} onChange={(event) => change(setConfirmation, "confirmation", event.target.value)} />}
       </Card>
       {mode === "signup" && <div className={styles.privacyNote}><p>By creating an account, you agree to the Terms.</p><div className={styles.legalLinks}><Button variant="tertiary" onClick={() => setLegal("terms")}>Terms</Button><Button variant="tertiary" onClick={() => setLegal("privacy")}>Privacy Notice</Button></div></div>}

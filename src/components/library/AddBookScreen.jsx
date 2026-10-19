@@ -97,7 +97,7 @@ export default function AddBookScreen({ userId }) {
     finally{busy.current=false;setSaving(false);}
   }
   const title=stage==="manual"?"Manual entry":stage==="preview"?"Book preview":"Add a book";
-  const subtitle=stage==="manual"?"Title and author are required":stage==="preview"?"Check before adding":stage==="success"?duplicate?"Already on your shelf":"Saved to your Library":phase==="loading"?"Searching books…":phase==="ready"?`${results.length} books found`:"Search your next read";
+  const subtitle=stage==="manual"?"Title and author are required":stage==="preview"?"Check before adding":stage==="success"?duplicate?"Already on your shelf":"Saved to your Library":phase==="loading"?"Searching books…":phase==="ready"?`${results.length} ${results.length===1?"book":"books"} found`:"Search your next read";
   const code=stage==="manual"?"E05":stage==="preview"?existing?"E09":"E06":stage==="success"?duplicate?"E09":saved?.status==="reading"?"E08":"E07":phase==="loading"?"E02":phase==="error"?"E10":phase==="ready"?results.length?"E03":"E04":"E01";
   return <LibraryShell kind="add" title={title} subtitle={subtitle} code={code} back="/library" onBack={stage!=="search"&&stage!=="success"?()=>{if(!busy.current){setStage("search");setError("");}}:undefined}>
     {notice&&<p role="status" className={styles.notice}>{notice}</p>}

@@ -50,7 +50,7 @@ function LibraryShelves({ userId, initialTab, onOfflineBook }) {
     <div className={styles.libraryToolbar}><SearchField label="Search your Library" placeholder="Search title or author" value={query} onChange={event=>setQuery(event.target.value)} maxLength={200} className={styles.search} />
     <div className={styles.tools}><Button variant="secondary" onClick={()=>{setDraft(filters);setModal("filter");}}>Filter{activeFilters ? ` (${activeFilters})` : ""}</Button>
       <Button variant="secondary" onClick={()=>setModal("sort")}>Sort: {sortLabels[sort]}</Button>
-      <span className={styles.resultCount}>{visible.length} books</span>
+      <span className={styles.resultCount}>{visible.length} {visible.length===1?"book":"books"}</span>
     </div>
     <Button variant={view==="shelf"?"secondary":"primary"} className={styles.viewButton} onClick={()=>setView(view === "shelf" ? "grid" : "shelf")}>{view === "shelf" ? "Switch to grid view  ›" : "Switch to shelves"}</Button></div>
     {offline && <InlineAlert type="info">You’re offline. Saved books are available here; progress changes will sync when you reconnect.</InlineAlert>}
@@ -73,7 +73,7 @@ function LibraryShelves({ userId, initialTab, onOfflineBook }) {
         {!genreChoices.length && <p>Genre filters become available when books have genre information.</p>}
         <Checkbox label="Under 400 pages" checked={draft.short} onChange={event=>setDraft({...draft,short:event.target.checked})} />
         <Checkbox label="Favourites only" checked={draft.favourites} onChange={event=>setDraft({...draft,favourites:event.target.checked})} />
-        <Button onClick={()=>{setFilters(draft);setModal(null);}}>Show {filterLibrary(books,{...draft,status:tab,query}).length} books</Button>
+        <Button onClick={()=>{setFilters(draft);setModal(null);}}>Show {filterLibrary(books,{...draft,status:tab,query}).length} {filterLibrary(books,{...draft,status:tab,query}).length===1?"book":"books"}</Button>
         <Button variant="tertiary" onClick={()=>setDraft({genres:[],short:false,favourites:false})}>Clear filters</Button>
         <Button variant="secondary" onClick={close}>Cancel</Button>
       </div>
