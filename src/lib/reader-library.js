@@ -101,6 +101,24 @@ export async function mutateReaderBook(supabase, userId, mutation) {
   return { book: mapLibraryBook(data) };
 }
 
+export async function saveManualLibraryBook(supabase, userId, value, cover = null) {
+  const result = await supabase.rpc("add_manual_book", {
+    entry_id: value.entryId, book_title: value.title, book_author: value.author,
+    book_isbn: value.isbn || null, total_pages: value.pageCount, cover_url: cover,
+  });
+  if (result.error) throw new Error("Manual save failed");
+  const book = await loadReaderBook(supabase, userId, result.data);
+  if (!book) throw new Error("Manual save unavailable");
+  // The RPC's stable entry ID deliberately returns the same row on retry.
+  // After Undo, restore that row instead of reporting a removed book as added.
+  if (book.isRemoved) {
+    const restored = await mutateReaderBook(supabase, userId, { kind: "restore", id: book.id });
+    if (restored.error || !restored.book || restored.book.isRemoved) throw new Error("Manual restore failed");
+    return { added: true, restored: true, book: restored.book };
+  }
+  return { added: true, book };
+}
+
 export async function saveLibraryBook(supabase, userId, googleBooksId, lookup, status = "want_to_read") {
   let { data: book, error } = await supabase.from("books").select("id").eq("google_books_id", googleBooksId).maybeSingle();
   if (error) throw new Error("Cache unavailable");

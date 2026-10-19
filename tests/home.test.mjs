@@ -2,11 +2,20 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { PGlite } from "@electric-sql/pglite";
-import { deriveHome, homeInsight, homeSnapshotSchema, parseHomeSnapshot, parseHomeQueue, homeCacheKey, homeQueueKey, queueMutation, applyBookMutation, bookMutationSchema, addBookSchema } from "../src/lib/home-data.js";
-import { loadHome, mutateReaderBook, saveLibraryBook } from "../src/lib/reader-library.js";
+import { deriveHome, homeInsight, homeSnapshotSchema, parseHomeSnapshot, parseHomeQueue, homeCacheKey, homeQueueKey, queueMutation, undoQueuedMutation, applyBookMutation, bookMutationSchema, addBookSchema } from "../src/lib/home-data.js";
+import { loadHome, mutateReaderBook, saveLibraryBook, saveManualLibraryBook } from "../src/lib/reader-library.js";
 const a = "abd563cb-fdcc-4208-9e62-e1457a9df95e";
 const b = "dce88169-75db-43ef-8682-21949d0ab369";
 const id = "08978c87-0a49-4382-9e32-801751323371";
+
+test("offline Undo preserves other books' later updates and rejects an obsolete update",()=>{
+ const earlier={id,kind:"progress",percent:10,operationId:"earlier"};
+ const saved={id,kind:"progress",percent:20,operationId:"saved"};
+ const other={id:a,kind:"progress",percent:30,operationId:"other"};
+ assert.deepEqual(undoQueuedMutation([saved,other],saved,[earlier]),[earlier,other]);
+ assert.deepEqual(undoQueuedMutation([saved,other],saved,[]),[other]);
+ assert.throws(()=>undoQueuedMutation([{...saved,operationId:"newer"},other],saved,[earlier]),/synced or changed/);
+});
 const makeBook = (overrides = {}) => ({ id, bookId:b, googleBooksId:"Example", title:"Example", author:"Author", pageCount:100, coverSrc:null, status:"reading", progressPercent:20, rating:null, dnfUse:false, startedAt:null, finishedAt:null, updatedAt:"2026-10-01T12:00:00Z", ...overrides });
 const snapshot = (books=[]) => ({version:1,userId:a,displayName:"Reader",fetchedAt:1,books,personalisationEnabled:true,signals:[]});
 
@@ -49,7 +58,11 @@ test("offline snapshots and update queues reject malformed and cross-reader data
 // A small PostgREST-shaped adapter executes the real data operations against
 // PostgreSQL with the checked-in migrations and authenticated/anon roles.
 function client(db){
- return {from(table){
+ return {async rpc(name,args){
+  assert.equal(name,"add_manual_book");
+  try{const result=await db.query("select public.add_manual_book($1,$2,$3,$4,$5,$6) as id",[args.entry_id,args.book_title,args.book_author,args.book_isbn,args.total_pages,args.cover_url]);return {data:result.rows[0].id,error:null};}
+  catch(error){return {data:null,error};}
+ },from(table){
   const q={table,filters:[],orders:[],offset:0,limit:null,operation:"read",columns:"*",one:false};
   const ident=s=>{assert.match(s,/^[a-z_]+$/);return '"'+s+'"';};
   const api={
@@ -145,10 +158,14 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:manualId,percent:100,page:525})).status,400);
   change=await mutateReaderBook(supabase,a,{kind:'remove',id:manualId});assert.equal(change.book.isRemoved,true);assert.equal((await loadHome(supabase,a)).books.some(book=>book.id===manualId),false);
   assert.equal((await mutateReaderBook(supabase,a,{kind:'review',id:manualId,rating:1,notes:'wrong',favourite:false})).status,409);
-  change=await mutateReaderBook(supabase,a,{kind:'restore',id:manualId});assert.equal(change.book.isRemoved,false);assert.equal(change.book.notes,'My private notes');
+  const manualInput={entryId:id,title:'Private diary',author:'Reader',isbn:'9780062678102',pageCount:526};
+  change=await saveManualLibraryBook(supabase,a,manualInput);assert.equal(change.restored,true);assert.equal(change.book.isRemoved,false);assert.equal(change.book.notes,'My private notes');assert.equal(change.book.currentPage,525);assert.equal(change.book.id,manualId);
+  const count=(await loadHome(supabase,a)).books.length;
+  const retried=await saveManualLibraryBook(supabase,a,manualInput);assert.equal(retried.book.id,manualId);assert.equal((await loadHome(supabase,a)).books.length,count);
   await role(b);assert.equal((await db.query("select id from public.books where id=$1",[manualBook.bookId])).rows.length,0);
   await assert.rejects(db.query("insert into public.user_books(user_id,book_id) values ($1,$2)",[b,manualBook.bookId]),error=>error.code==='42501');
   assert.equal((await mutateReaderBook(supabase,b,{kind:'remove',id:manualId})).status,404);
+  await assert.rejects(saveManualLibraryBook(supabase,b,manualInput));
   await assert.rejects(db.query("select public.add_manual_book($1,$2,$3,$4,$5,$6)",[id,'Stolen metadata','Other',null,null,null]),error=>error.code==='42501');
   await role(a);await assert.rejects(db.query("select public.add_manual_book($1,$2,$3,$4,$5,$6)",[a,'Bad cover','Reader',null,null,'https://example.com/track']),error=>error.code==='22023');
   await role(null,'anon');await assert.rejects(loadHome(supabase,a));assert.equal((await mutateReaderBook(supabase,a,{kind:'start',id:owned})).status,503);await assert.rejects(saveLibraryBook(supabase,a,'Example',lookup));

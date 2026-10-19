@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { applyBookMutation, bookMutationSchema, homeCacheKey, homeQueueKey, homeSnapshotSchema, libraryBookSchema, parseHomeQueue, parseHomeSnapshot, queueMutation } from "@/lib/home-data";
+import { applyBookMutation, bookMutationSchema, homeCacheKey, homeQueueKey, homeSnapshotSchema, libraryBookSchema, parseHomeQueue, parseHomeSnapshot, queueMutation, undoQueuedMutation } from "@/lib/home-data";
 import { notifyReadingActivity, activityEventKey } from "@/lib/reading-activity-events";
 
 export default function useHome(userId, { endpoint = "/api/home", cacheKey = homeCacheKey(userId), returnPath = "/home" } = {}) {
@@ -172,8 +172,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
     }
   }
   function undoQueued(mutation,result){
-    if(!state.current.queue.some(item=>item.operationId===mutation.operationId))throw new Error("This update has already synced. Refresh the book before Undo.");
-    keepQueue(result.previousQueue,true);
+    keepQueue(undoQueuedMutation(state.current.queue,mutation,result.previousQueue),true);
     state.current.revision+=1;
     const value=state.current.snapshot;
     if(value)publish({...value,books:value.books.map(book=>book.id===mutation.id?result.before:book)});

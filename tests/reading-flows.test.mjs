@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { PGlite } from "@electric-sql/pglite";
-import { progressValue, progressHasChanges, validReadingDate, checkReadingDates } from "../src/lib/reading-flow.js";
+import { progressValue, progressHasChanges, readingFlowHasChanges, validReadingDate, checkReadingDates } from "../src/lib/reading-flow.js";
 import { describeDNASignals } from "../src/lib/reading-dna.js";
 const a="11111111-1111-4111-8111-111111111111",b="22222222-2222-4222-8222-222222222222",catalogue="33333333-3333-4333-8333-333333333333";
 test("atomic reading updates preserve progress, privacy, consent, dates and guarded Undo",async()=>{
@@ -76,4 +76,15 @@ test("progress dismissal recognises meaningful edits in both formats and private
  assert.equal(progressHasChanges(book,"232","page","private thought"),true);
  assert.equal(progressHasChanges(book,"","page",""),true);
  assert.equal(progressHasChanges({...book,currentPage:null},"45","percent",""),false);
+});
+
+test("finish, DNF and date dismissal protects edits without treating an untouched form as dirty",()=>{
+ const book={status:"reading",startedAt:"2026-10-01",rating:null,notes:"Saved note",finishFeedback:["Characters"],dnfReasons:[],finishUse:false,dnfUse:false};
+ const draft={start:book.startedAt,end:"2026-10-19",rating:null,notes:book.notes,feedback:["Characters"],reasons:[],privateReason:"",learn:false};
+ for(const mode of ["finish","dnf","dates"])assert.equal(readingFlowHasChanges(book,mode,draft,draft.end),false);
+ for(const change of [{rating:4},{notes:"Unsaved note"},{feedback:["Atmosphere"]},{learn:true},{start:"2026-10-02"},{end:"2026-10-18"}])assert.equal(readingFlowHasChanges(book,"finish",{...draft,...change},draft.end),true);
+ for(const change of [{reasons:["Pacing too slow"]},{privateReason:"Private reason"},{learn:true},{end:"2026-10-18"}])assert.equal(readingFlowHasChanges(book,"dnf",{...draft,...change},draft.end),true);
+ assert.equal(readingFlowHasChanges(book,"dates",{...draft,start:""},draft.end),true);
+ assert.equal(readingFlowHasChanges({...book,status:"finished"},"dates",{...draft,end:"2026-10-18"},draft.end),true);
+ assert.equal(readingFlowHasChanges({...book,finishFeedback:["Characters","Atmosphere"]},"finish",{...draft,feedback:["Atmosphere","Characters"]},draft.end),false);
 });

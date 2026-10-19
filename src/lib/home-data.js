@@ -63,6 +63,15 @@ export function queueMutation(queue, mutation) {
   else next.push(mutation);
   return next;
 }
+export function undoQueuedMutation(queue, mutation, previousQueue) {
+  const index = queue.findIndex(item => item.operationId === mutation.operationId);
+  if (!mutation.operationId || index < 0) throw new Error("This update has already synced or changed. Refresh the book before Undo.");
+  // Undo this book's update without dropping updates queued for other books.
+  const earlier = previousQueue.filter(item => item.id === mutation.id);
+  const remaining = queue.filter(item => item.id !== mutation.id);
+  remaining.splice(Math.min(index, remaining.length), 0, ...earlier);
+  return remaining;
+}
 export function applyBookMutation(snapshot, mutation, date = localDate()) {
   if (["remove", "restore", "review", "status"].includes(mutation.kind)) return { ...snapshot, books: snapshot.books.map(book => book.id !== mutation.id ? book : {
     ...book, ...(mutation.kind === "remove" ? { isRemoved: true } : mutation.kind === "restore" ? { isRemoved: false }

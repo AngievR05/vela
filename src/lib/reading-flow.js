@@ -31,3 +31,14 @@ export function progressHasChanges(book,value,unit,note){
   return progress.percent!==book.progressPercent||page!==(book.currentPage??null);
  }catch{return String(value)!==String(unit==="page"?book.currentPage??"":book.progressPercent);}
 }
+
+export function readingFlowHasChanges(book, mode, draft, initialEnd) {
+ if(mode==="progress")return progressHasChanges(book,draft.value,draft.unit,draft.note);
+ if(mode==="restore")return false;
+ const datesChanged=draft.start!==(book.startedAt||"")||((mode!=="dates"||book.status!=="reading")&&draft.end!==initialEnd);
+ if(mode==="dates")return datesChanged;
+ const sameChoices=(a=[],b=[])=>a.length===b.length&&a.every(value=>b.includes(value));
+ if(mode==="finish")return datesChanged||draft.rating!==book.rating||draft.notes!==(book.notes||"")||!sameChoices(draft.feedback,book.finishFeedback)||draft.learn!==Boolean(book.finishUse);
+ if(mode==="dnf")return datesChanged||draft.privateReason!==(book.privateDnfNote||"")||!sameChoices(draft.reasons,book.dnfReasons)||draft.learn!==Boolean(book.dnfUse);
+ return false;
+}

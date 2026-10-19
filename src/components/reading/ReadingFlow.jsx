@@ -8,7 +8,7 @@ import ConfirmationDialog from "@/components/feedback/ConfirmationDialog";
 import { authBody, authDisplay } from "@/components/auth/fonts";
 import { createEntryId } from "@/lib/browser-id";
 import { localDate } from "@/lib/reading-calendar";
-import { checkReadingDates, dnfChoices, finishChoices, progressValue, progressHasChanges } from "@/lib/reading-flow";
+import { checkReadingDates, dnfChoices, finishChoices, progressValue, readingFlowHasChanges } from "@/lib/reading-flow";
 import styles from "./Reading.module.css";
 
 export function ReadingBookSummary({ book, green=false, compact=false }) {
@@ -27,8 +27,9 @@ export default function ReadingFlow({ book, mode: initialMode, home, onClose, on
   const [start,setStart]=useState(book.startedAt||""),[end,setEnd]=useState((initialMode==="dates"?(book.status==="dnf"?book.stoppedAt:book.finishedAt):initialMode==="dnf"?book.stoppedAt:book.finishedAt)||localDate());
   const [saved,setSaved]=useState(null),[current,setCurrent]=useState(book),[undone,setUndone]=useState(false);
   const busy=useRef(false), request=useRef(null), undoRequest=useRef(null), notice=useRef(null), dirty=useRef(false);
+  const initialEnd=useRef(end);
   const [discard,setDiscard]=useState(false);
-  useEffect(()=>{dirty.current=mode==="progress"&&!saved&&progressHasChanges(book,value,unit,note);},[book,mode,saved,value,unit,note]);
+  useEffect(()=>{dirty.current=!saved&&readingFlowHasChanges(book,mode,{value,unit,note,rating,notes,feedback,reasons,privateReason,start,end,learn},initialEnd.current);},[book,mode,saved,value,unit,note,rating,notes,feedback,reasons,privateReason,start,end,learn]);
   const close=useCallback(()=>{if(busy.current)return;if(dirty.current)setDiscard(true);else onClose();},[onClose]);
   const keepEditing=useCallback(()=>setDiscard(false),[]);
   useEffect(()=>{if(saved)notice.current?.focus();},[saved]);
@@ -95,5 +96,5 @@ export default function ReadingFlow({ book, mode: initialMode, home, onClose, on
       {error&&<p className={styles.error} role="alert">{error}</p>}{conflict&&<FlowAction label="Refresh book and keep entries" onClick={refreshBase} secondary disabled={pending}/>}
       <div className={styles.sheetActions}><button type="submit" className={styles.button} disabled={pending||(mode==="progress"&&Boolean(invalid))}>{pending?"Saving…":mode==="finish"?"Finish book":mode==="dnf"?"Set aside (DNF)":mode==="restore"?"Resume reading":mode==="dates"?"Save dates":"Save progress"}</button>{!statusFlow&&<FlowAction label="Cancel" onClick={close} secondary disabled={pending}/>}</div>
     </form>
-  </BottomSheet><ConfirmationDialog open={discard} title="Discard this update?" description={`Your saved progress remains at ${book.currentPage!=null&&book.pageCount?`${book.currentPage} of ${book.pageCount} pages`:`${book.progressPercent}%`}. This unsaved update and private note will be discarded.`} confirmLabel="Discard changes" cancelLabel="Keep editing" destructive confirmFirst onConfirm={onClose} onCancel={keepEditing} className={styles.discardDialog} backdropClassName={styles.discardBackdrop}/></div>;
+  </BottomSheet><ConfirmationDialog open={discard} title="Discard this update?" description={mode==="progress"?`Your saved progress remains at ${book.currentPage!=null&&book.pageCount?`${book.currentPage} of ${book.pageCount} pages`:`${book.progressPercent}%`}. This unsaved update and private note will be discarded.`:"These unsaved changes will be discarded. Your saved book and reading history will stay unchanged."} confirmLabel="Discard changes" cancelLabel="Keep editing" destructive confirmFirst onConfirm={onClose} onCancel={keepEditing} className={styles.discardDialog} backdropClassName={styles.discardBackdrop}/></div>;
 }

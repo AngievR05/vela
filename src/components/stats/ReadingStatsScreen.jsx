@@ -11,6 +11,7 @@ import BottomSheet from "@/components/feedback/BottomSheet";
 import BookCover from "@/components/books/BookCover";
 import { deriveReadingStats, booksForStats, statsCacheKey, primaryGenre, bookMoods, readingFormats, storyPaces, saveStatsRecordSchema } from "@/lib/reading-stats";
 import { localDate } from "@/lib/home-data";
+import { notifyReadingActivity } from "@/lib/reading-activity-events";
 import ReadingArtwork from "./ReadingArtwork";
 import { CountBars, CountDonut, StatsMetrics } from "./StatsCharts";
 import styles from "./ReadingStats.module.css";
@@ -53,7 +54,7 @@ export default function ReadingStatsScreen({ userId, initialView, initialBook })
       if (response.status === 401) { window.location.replace("/login?next=/stats"); return; }
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.saved) throw new Error(result.error || "We couldn’t confirm your saved record. Please try again.");
-      setRecord(null); setNotice("Reading record saved."); await home.refreshQuietly();
+      setRecord(null); setNotice("Reading record saved."); notifyReadingActivity(userId); await home.refreshQuietly();
     } catch (err) { setError(err.name === "TimeoutError" || err instanceof TypeError ? "We couldn’t connect. Your input is still here; please try again." : err.message); }
     finally { busy.current = false; setSaving(false); }
   }

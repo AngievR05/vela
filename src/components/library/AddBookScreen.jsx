@@ -59,7 +59,7 @@ export default function AddBookScreen({ userId }) {
   }, [query, stage, runSearch]);
   const existing = selected && home.snapshot?.books.find(book=>!book.isRemoved && book.googleBooksId === selected.googleBooksId);
   function selectBook(book) { setSelected(book); setStage("preview"); setError(""); }
-  function beginManual() { setStage("manual"); setError(""); if (!entryId) setEntryId(createEntryId()); }
+  function beginManual() { setSelected(null); setSaved(null); setDuplicate(false); setStage("manual"); setError(""); if (!entryId) setEntryId(createEntryId()); }
   function editManual(field, value) { setManual({...manual,[field]:value}); setFields({}); setError(""); setEntryId(createEntryId()); }
   async function save(status) {
     if (busy.current || !selected) return;
