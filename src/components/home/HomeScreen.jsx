@@ -133,7 +133,7 @@ export default function HomeScreen({ userId, initialAction }) {
   </Card>;
 
   return <section className={`${styles.screen} ${styles[tone]} ${authBody.variable} ${authDisplay.variable}`} aria-label="Reading Home" data-state={state}>
-    <ReadingArtwork home />
+    <ReadingArtwork />
     <div className={styles.content}>
       <AppHeader className={styles.header} title={title} subtitle={state === "populated" ? name ? `${name}’s reading home` : "Your reading home" : "YOUR READING HOME"} logo={<BrandLogo size={32} />} />
       {notice && <div className={styles.notice} role="status"><p>{notice}</p><button type="button" onClick={() => setNotice("")} aria-label="Dismiss message">×</button></div>}

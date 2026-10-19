@@ -8,12 +8,10 @@
 .loading { --home-accent: #d9ded7; }
 .offline { --home-accent: var(--vela-beige,#ece3d2); }
 .error { --home-accent: #ecdadf; }
-.art { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-.wash { position: absolute; left: calc(50% - 240px); top: 8px; }
-.arch { position: absolute; left: calc(50% - 165px); top: 62px; }
+
 .folio { position: absolute; right: 20px; top: 92px; width: 130px; opacity: .07; color: var(--home-accent); text-align: right; font: 600 68px/70px var(--font-display); }
-.spine { position: absolute; left: 0; top: 0; bottom: 0; width: 7px; background: var(--home-accent); }
-.content { display: flex; flex-direction: column; gap: 10px; padding: 70px 16px 116px; min-height: 100svh; }
+
+.content { display: flex; flex-direction: column; gap: 10px; padding: var(--vela-page-top) 16px calc(var(--vela-nav-clearance) + 16px); min-height: 100svh; }
 .header { display: flex; align-items: center; min-height: 54px; }
 .header > div { flex: 1; min-width: 0; }
 .header h1 { font: 600 27px/31px var(--font-display); overflow-wrap: anywhere; }
@@ -98,7 +96,7 @@
 @media (prefers-reduced-motion: reduce) { .screen * { transition-duration: 0ms; } }
 
 /* Completed C · Home visual treatment; page layout continues to scroll above the floating navigation. */
-.screen { background:linear-gradient(90deg,#eadfe4 0%,#fcfaf6 48%,#dce8e4 100%); }
+.screen { background:var(--colour-parchment); }
 .header p { font-size:12px; line-height:16px; }
 .screen .button { border-radius:18px; box-shadow:0 10px 22px #22201e1a,0 3px 6px #22201e1f; }
 .screen .current { background:#183b34; color:#fbf8f2; border-color:#d6c6a3; border-radius:20px; box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
@@ -130,7 +128,7 @@
 .offline .current { background:var(--vela-beige,#eee7d8); color:var(--colour-ink); }
 .offline .current [data-part="label"],.offline .current [data-part="author"],.offline .current [data-part="progress"] > div:first-child,.offline .current [data-part="progress"] strong { color:var(--colour-ink); }
 .offline .current [data-part="update"] { background:#183b34; color:#fbf8f2; }
-:global(html[data-vela-theme="dark"]) .screen { background:linear-gradient(90deg,#30242c,#211f1e 48%,#20332c); }
+:global(html[data-vela-theme="dark"]) .screen { background:var(--colour-parchment); }
 
 /* Tablet and desktop layouts retain the mobile visual system. */
 .readingGroup,.discoveryGroup { display:contents; }

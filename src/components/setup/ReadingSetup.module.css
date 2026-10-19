@@ -80,7 +80,7 @@
 @media (max-width: 350px) { .screen .chip > span { font-size: 12px; padding: 7px 5px; } .permission { flex-wrap: wrap; } }
 
 /* Completed Reading Setup surfaces; extra options remain scrollable. */
-.screen > div:last-child { padding-top:72px; padding-bottom:max(42px,env(safe-area-inset-bottom)); gap:10px; }
+.screen > div:last-child { padding-top:var(--vela-page-top); padding-bottom:max(16px,env(safe-area-inset-bottom,0px)); gap:10px; }
 .heading::before { display:none; }
 .kicker { font-size:12px; }
 .navigation p { font-size:12px; }

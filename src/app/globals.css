@@ -1,5 +1,11 @@
 @import "../styles/tokens.css";
 
+:root {
+  --vela-page-top: max(12px, env(safe-area-inset-top, 0px));
+  --vela-nav-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  --vela-nav-clearance: calc(88px + env(safe-area-inset-bottom, 0px));
+}
+
 html[data-vela-theme="dark"] {
   color-scheme: dark;
   --colour-parchment:#182420; --colour-paper:#24342e; --colour-ink:#f3eee5;

@@ -1,6 +1,7 @@
 "use client";
+import PageArtwork from "@/components/layout/PageArtwork";
+
 import {useRef,useState} from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {authBody,authDisplay} from "@/components/auth/fonts";
 import Button from "@/components/ui/Button";
@@ -9,6 +10,7 @@ import ReadingDNASignalCard from "./ReadingDNASignalCard";
 import ReadingDNAEvidenceRow from "./ReadingDNAEvidenceRow";
 import useReadingDNA from "./useReadingDNA";
 import {createEntryId} from "@/lib/browser-id";
+import BackIcon from "@/components/navigation/BackIcon";
 import styles from "./ReadingDNA.module.css";
 import {useNavigationGuard} from "@/components/navigation/NavigationGuard";
 
@@ -104,8 +106,8 @@ export default function ReadingDNAScreen({userId,initialView}){
     actions=forming?<>{(<DNAAction kind="primary" label={"See how signals are formed"} onClick={()=>move("explained")} disabled={pending}/>)}{(<DNAAction kind="tertiary" label={"Personalisation settings"} onClick={null} disabled={pending} {...{href:"/settings?view=ai"}}/>)}</>:<>{(<DNAAction kind="primary" label={"Manage my signals"} onClick={()=>move("manage")} disabled={pending}/>)}{(<DNAAction kind="tertiary" label={"How was this created?"} onClick={()=>move("explained")} disabled={pending}/>)}</>;
   }
   return <section className={`${styles.screen} ${authBody.variable} ${authDisplay.variable}`} aria-label="Reading DNA" aria-busy={pending||loading}>
-    <div className={styles.art} aria-hidden="true"><Image className={styles.arch} src="/reading-dna/blush-reading-arch.svg" width={330} height={420} alt="" unoptimized priority/><Image className={styles.mist} src="/reading-dna/mist-pool.svg" width={430} height={440} alt="" unoptimized/><Image className={styles.orbit} src="/reading-dna/brass-orbit.svg" width={300} height={350} alt="" unoptimized/><span className={styles.edge}/><span className={styles.rule}/></div>
-    <div className={styles.viewport} ref={panel}><div className={`${styles.content} ${compact?styles.compact:""}`}><header className={styles.header}>{view==="overview"?<Link href="/home" className={styles.back} aria-label="Back to Home">‹</Link>:<button className={styles.back} onClick={back} disabled={pending} aria-label="Back to Reading DNA">‹</button>}<h1>Reading DNA</h1></header><p className={styles.subtitle}>{subtitle}</p><h2 className={styles.title}>{title}</h2>{body}</div></div>
+    <PageArtwork />
+    <div className={styles.viewport} ref={panel}><div className={`${styles.content} ${compact?styles.compact:""}`}><header className={styles.header}>{view==="overview"?<Link href="/home" className={styles.back} aria-label="Back to Home"><BackIcon /></Link>:<button className={styles.back} onClick={back} disabled={pending} aria-label="Back to Reading DNA"><BackIcon /></button>}<h1>Reading DNA</h1></header><p className={styles.subtitle}>{subtitle}</p><h2 className={styles.title}>{title}</h2>{body}</div></div>
     <div className={styles.actions}>{actions}</div><BottomNavigation variant="home" assetDirectory="reading-dna" activePath="/dna" onNavigate={event=>{if(pending)event.preventDefault();}}/>
   </section>;
 }

@@ -38,15 +38,12 @@
 .plum { --auth-accent: var(--colour-plum); }
 .green { --auth-accent: var(--auth-soft-green); }
 .muted { --auth-accent: #ece3d2; }
-.art { position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
-.colourField { position: absolute; left: calc(50% - 237px); top: 14px; }
-.arch { position: absolute; left: calc(50% - 171px); top: 64px; }
-.spine { position: absolute; inset: 0 auto 0 0; width: 7px; background: var(--auth-accent); }
+
 .bookmark { position: absolute; right: 0; top: 196px; width: 13px; height: 88px; border-radius: 7px; background: var(--auth-brass); }
 .fold { position: absolute; right: 0; top: 0; }
 .spark { position: absolute; left: calc(50% + 133px); top: 58px; }
 .folio { position: absolute; right: 16px; top: 126px; width: 150px; font: 600 90px/90px var(--font-display); text-align: right; color: var(--auth-accent); opacity: .08; white-space: nowrap; }
-.content { position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 100svh; padding: 72px 16px max(42px, env(safe-area-inset-bottom)); }
+.content { position: relative; display: flex; flex-direction: column; gap: 10px; min-height: 100svh; padding:max(18px,env(safe-area-inset-top,0px)) 16px max(24px,env(safe-area-inset-bottom,0px)); }
 .navigation { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
 .navigation p { color: var(--colour-plum); font-size: 11px; font-weight: 600; line-height: 15px; text-align: right; }
 .back { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; }
@@ -114,13 +111,9 @@
 @media (prefers-reduced-motion: reduce) { .loadingTrack::after { animation: none; transform: none; } .screen *, .screen *::before, .screen *::after { transition: none; animation-duration: 0.01ms; animation-iteration-count: 1; } }
 
 /* Completed Entry and Authentication artwork and paper surfaces. */
-.screen { --auth-paper:#fcfaf6; --auth-muted:#5e5852; --auth-border:#d6c6a3; --auth-soft-green:#dce8e4; background:linear-gradient(90deg,#eadfe4 0%,#fcfaf6 48%,#dce8e4 100%); }
-.art .arch { left:calc(50% - 29px); top:-96px; width:330px; height:420px; }
-.art .colourField { left:calc(50% - 385px); top:485px; width:430px; height:440px; }
-.orbit { position:absolute; left:calc(50% + 3px); top:-40px; width:300px; height:350px; }
-.spine { width:4px; background:#d2bcc6; }
-.innerRule { position:absolute; left:7px; top:60px; bottom:34px; width:1px; background:#d6c6a3; }
-.content { gap:8px; padding:74px 16px max(50px,env(safe-area-inset-bottom)); }
+.screen { --auth-paper:#fcfaf6; --auth-muted:#5e5852; --auth-border:#d6c6a3; --auth-soft-green:#dce8e4; background:var(--colour-parchment); }
+
+.content { gap:8px; padding:max(18px,env(safe-area-inset-top,0px)) 16px max(24px,env(safe-area-inset-bottom,0px)); }
 .navigation p { font-size:14px; line-height:20px; }
 .headingGroup { gap:8px; }
 .highlight { background:none; }
@@ -137,7 +130,7 @@
 .screen .button { border-radius:18px; }
 .screen .button:disabled { background:#e9e1d5; color:#47423e; }
 .screen .button:not(:disabled):not(.textButton) { box-shadow:0 3px 6px #22201e1f,0 10px 22px #22201e1a; }
-.welcome .content { padding-top:78px; padding-bottom:58px; gap:12px; }
+.welcome .content { padding-top:max(18px,env(safe-area-inset-top,0px)); padding-bottom:max(24px,env(safe-area-inset-bottom,0px)); gap:12px; }
 .welcomeLogo { position:static; }
 .welcomeHeading { font-size:32px; line-height:38px; }
 .welcomeKicker { font-size:14px; line-height:20px; }
@@ -153,13 +146,13 @@
 .legalBody h2 { font:600 22px/27px var(--font-display); margin:0; }
 @media(max-width:360px) { .welcomeHeading { font-size:30px; line-height:36px; } }
 
-.centeredStatus .content { justify-content:center; padding-top:78px; padding-bottom:max(58px,env(safe-area-inset-bottom)); gap:12px; }
+.centeredStatus .content { justify-content:center; padding-top:max(18px,env(safe-area-inset-top,0px)); padding-bottom:max(24px,env(safe-area-inset-bottom,0px)); gap:12px; }
 .centeredStatus .statusBody { flex:0; gap:14px; }
 .centeredStatus .statusActions { padding-top:34px; gap:12px; }
 
-.roomy .content { padding-top:78px; padding-bottom:max(58px,env(safe-area-inset-bottom)); gap:12px; }
+.roomy .content { padding-top:max(18px,env(safe-area-inset-top,0px)); padding-bottom:max(24px,env(safe-area-inset-bottom,0px)); gap:12px; }
 .roomy .headingGroup,.roomy .flow,.roomy .actions { gap:12px; }
-.back { border:0; background:transparent; cursor:pointer; }
+.back { border:1px solid var(--colour-evergreen); border-radius:50%; background:var(--auth-paper); cursor:pointer; }
 
 /* Tablet and desktop layouts retain the mobile visual system. */
 /* Keep entry forms readable on wide screens and avoid mobile input zoom. */

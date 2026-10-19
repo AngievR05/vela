@@ -1,3 +1,4 @@
+import PageArtwork from "@/components/layout/PageArtwork";
 import Image from "next/image";
 import Link from "next/link";
 import { authBody, authDisplay } from "./fonts";
@@ -14,13 +15,7 @@ export function BrandLogo({ size = 108, className = "", variant }) {
 
 export default function AuthScreen({ children, tone = "brass", className = "" }) {
   return <main className={`${styles.screen} ${styles[tone] || ""} ${authBody.variable} ${authDisplay.variable} ${className}`}>
-    <div className={styles.art} aria-hidden="true">
-      <Image className={styles.arch} src="/reading-discover/blush-reading-arch.svg" alt="" width={330} height={420} loading="eager" unoptimized />
-      <Image className={styles.colourField} src="/reading-discover/mist-pool.svg" alt="" width={430} height={440} unoptimized />
-      <Image className={styles.orbit} src="/reading-discover/brass-orbit.svg" alt="" width={300} height={350} loading="eager" unoptimized />
-      <span className={styles.spine} />
-      <span className={styles.innerRule} />
-    </div>
+    <PageArtwork />
     <div className={styles.content}>{children}</div>
   </main>;
 }

@@ -1,0 +1,8 @@
+.edge {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: #d2bcc6;
+  pointer-events: none;
+  z-index: -1;
+}

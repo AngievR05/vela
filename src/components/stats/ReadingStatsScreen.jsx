@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import Link from "next/link";
-import { BrandLogo } from "@/components/auth/AuthScreen";
+import BackIcon from "@/components/navigation/BackIcon";
 import { authBody, authDisplay } from "@/components/auth/fonts";
 import useHome from "@/components/home/useHome";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
@@ -79,8 +79,8 @@ export default function ReadingStatsScreen({ userId, initialView, initialBook })
     <ReadingArtwork/>
     <div className={styles.content}>
       <header className={styles.header}>
-        {view === "overview" ? <Link className={styles.back} href="/home" aria-label="Back to Home">‹</Link> : <button className={styles.back} onClick={() => { setView(view === "period" || view === "books" ? previousView : "overview"); setFilter(null); }} aria-label="Back to stats">‹</button>}
-        <h1>Reading stats</h1><BrandLogo size={28}/>
+        {view === "overview" ? <Link className={styles.back} href="/home" aria-label="Back to Home"><BackIcon /></Link> : <button className={styles.back} onClick={() => { setView(view === "period" || view === "books" ? previousView : "overview"); setFilter(null); }} aria-label="Back to stats"><BackIcon /></button>}
+        <h1>Reading stats</h1>
       </header>
       <p className={styles.subtitle}>{offline ? "Offline · Last saved stats" : home.phase === "error" ? "Your Library is safe" : "A look at your reading history"}</p>
       {notice && <p role="status">{notice}</p>}
