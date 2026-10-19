@@ -2,7 +2,7 @@
   --auth-paper: var(--vela-surface-base,#fbf8f2);
   --auth-muted: #68625d;
   --auth-placeholder: #8a847d;
-  --auth-border: #b9b0a5;
+  --auth-border: var(--vela-control-border,#b9b0a5);
   --auth-brass: #d9ae4b;
   --auth-soft-green: #dce9e5;
   --auth-error: var(--colour-danger,#a4473f);

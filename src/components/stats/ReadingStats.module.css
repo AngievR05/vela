@@ -7,7 +7,7 @@
 .back { display:flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; border:1px solid var(--colour-evergreen); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); color:var(--colour-evergreen); font-size:22px; text-decoration:none; cursor:pointer; }
 .subtitle,.muted { color:var(--vela-subtle-text,#5e5852); }
 .screen .button { width:100%; min-height:52px; border-radius:18px; box-shadow:0 10px 22px #22201e1a,0 3px 6px #22201e1f; font:500 14px/21px var(--font-body); }
-.screen .period { min-height:44px; box-shadow:none; border-color:#766f68; border-radius:16px; }
+.screen .period { min-height:44px; box-shadow:none; border-color:var(--vela-control-border,#766f68); border-radius:16px; }
 .sectionTitle { font:600 32px/36px var(--font-display); }
 .copy { font:400 16px/24px var(--font-body); }
 .metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
@@ -45,7 +45,7 @@
 .legend i { width:10px; height:10px; flex:none; border-radius:50%; }
 .legend img { flex:none; }
 .monthLinks { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; }
-.monthLinks button { min-height:44px; border:1px solid #766f68; border-radius:16px; background:transparent; color:var(--colour-evergreen); cursor:pointer; }
+.monthLinks button { min-height:44px; border:1px solid var(--vela-control-border,#766f68); border-radius:16px; background:transparent; color:var(--colour-evergreen); cursor:pointer; }
 .bookTitle { color:inherit; text-decoration:none; }
 .bookTitle:hover { text-decoration:underline; }
 .bookTop { display:flex; align-items:flex-start; gap:12px; }
@@ -53,12 +53,12 @@
 .bookTop h3 { overflow-wrap:anywhere; margin-bottom:12px; }
 .form { display:flex; flex-direction:column; gap:14px; }
 .form label { display:flex; flex-direction:column; gap:6px; }
-.form input,.form select { width:100%; min-height:48px; border:1px solid #766f68; border-radius:12px; padding:10px; background:var(--vela-surface-base,#fbf8f2); color:var(--colour-ink); font:inherit; }
+.form input,.form select { width:100%; min-height:48px; border:1px solid var(--vela-control-border,#766f68); border-radius:12px; padding:10px; background:var(--vela-surface-base,#fbf8f2); color:var(--colour-ink); font:inherit; }
 .moods { border:0; padding:0; margin:0; display:flex; gap:8px; flex-wrap:wrap; }
 .moods legend { margin-bottom:8px; }
 .form .mood { display:flex; flex-direction:row; align-items:center; gap:6px; min-height:44px; }
 .mood input { width:20px; min-height:20px; }
-.skeleton { height:140px; background:#d9ded7; border-radius:22px; }
+.skeleton { height:140px; background:var(--colour-mist,#d9ded7); border-radius:22px; }
 .skeleton:first-of-type { height:102px; }
 .screen button:focus-visible,.screen a:focus-visible { outline:2px solid var(--colour-plum); outline-offset:3px; }
 :global(html[data-vela-theme="dark"]) .screen { background:var(--colour-parchment); }

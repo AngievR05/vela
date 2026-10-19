@@ -24,12 +24,12 @@
 .evidence p { color:var(--colour-ink); }
 .screen .primary,.screen .secondary,.screen .tertiary { width:100%; border-radius:18px; font:500 14px/21px var(--font-body); }
 .screen .primary { min-height:52px; background:#183b34; color:#fbf8f2; border:0; box-shadow:0 10px 22px #22201e1a,0 3px 6px #22201e1f; }
-.screen .secondary { min-height:44px; border:1px solid #766f68; background:transparent; color:var(--colour-evergreen); box-shadow:none; }
+.screen .secondary { min-height:44px; border:1px solid var(--vela-control-border,#766f68); background:transparent; color:var(--colour-evergreen); box-shadow:none; }
 .screen .tall { min-height:52px; }
 .screen .tertiary { min-height:44px; color:var(--colour-evergreen); background:transparent; border:0; box-shadow:none; }
 .screen .danger { background:#943c34; }
 .screen button:disabled { cursor:default; }
-.screen .primary:disabled { background:#d9e0d6; color:var(--colour-evergreen,#183b34); box-shadow:none; }
+.screen .primary:disabled { background:var(--vela-mist-surface,#d9e0d6); color:var(--colour-evergreen,#183b34); box-shadow:none; }
 .actions { position:fixed; z-index:30; bottom:calc(var(--vela-nav-bottom) + 76px); left:50%; transform:translateX(-50%); width:min(calc(100% - 32px),448px); display:flex; flex-direction:column; gap:8px; }
 .skeleton { min-height:76px; animation:pulse 1.8s ease-in-out infinite; }
 .alert { font-size:14px; line-height:21px; }

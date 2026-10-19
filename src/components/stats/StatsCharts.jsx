@@ -1,8 +1,6 @@
 "use client";
-import Image from "next/image";
 import styles from "./ReadingStats.module.css";
-const colors = ["#183b34", "#5d3648", "#665f84", "#8d733e", "#47423e", "#766f68"];
-const swatches = ["print", "ebook", "literary", "scifi"];
+const colors = ["var(--vela-chart-green,#183b34)", "var(--vela-chart-plum,#5d3648)", "var(--vela-chart-mauve,#665f84)", "var(--vela-chart-brass,#8d733e)", "var(--vela-chart-ink,#47423e)", "var(--vela-chart-muted,#766f68)"];
 export function StatsMetrics({ stats, home = false, year, onSelect }) {
   const labels = [home ? `finished in ${year}` : "books finished", "pages in finished books", `from ${stats.rated} ${home ? stats.rated===1?"rating":"ratings" : stats.rated===1?"rated book":"rated books"}`];
   return <><div className={`${styles.metrics} ${home ? styles.homeMetrics : ""}`}>
@@ -13,7 +11,7 @@ export function CountBars({ items, onSelect, compact = false, month = false }) {
   const max = Math.max(1, ...items.map(item => item.count));
   return <div className={`${styles.bars} ${compact ? styles.compactBars : ""} ${month ? styles.monthBars : ""}`} aria-label="Counts by category">
     {items.map((item, index) => <button key={item.key} type="button" disabled={!onSelect} onClick={() => onSelect?.(item)} aria-label={`${item.label}: ${item.count} ${item.count===1?"book":"books"}`}>
-      <span>{item.count}</span><i aria-hidden="true" style={{ height: item.count ? `${Math.min(compact ? 64 : 110, item.count * (compact ? 24 : 48), item.count / max * (compact ? 64 : 110))}px` : "3px", backgroundColor: item.count ? month ? compact && index === items.length - 1 ? "#75465a" : colors[0] : colors[index % colors.length] : "#d9ded7" }}/><small>{item.label}</small>
+      <span>{item.count}</span><i aria-hidden="true" style={{ height: item.count ? `${Math.min(compact ? 64 : 110, item.count * (compact ? 24 : 48), item.count / max * (compact ? 64 : 110))}px` : "3px", backgroundColor: item.count ? month ? compact && index === items.length - 1 ? "var(--colour-plum,#75465a)" : colors[0] : colors[index % colors.length] : "var(--colour-mist,#d9ded7)" }}/><small>{item.label}</small>
     </button>)}
   </div>;
 }
@@ -25,9 +23,9 @@ export function CountDonut({ items, total, onSelect }) {
     return `${colors[i % colors.length]} ${start}% ${end}%`;
   });
   return <div className={styles.donutRow}>
-    <div className={styles.donut} aria-hidden="true" style={{ background: segments.length ? `conic-gradient(${segments.join(",")})` : "#d9ded7" }}><strong>{total}</strong></div>
+    <div className={styles.donut} aria-hidden="true" style={{ background: segments.length ? `conic-gradient(${segments.join(",")})` : "var(--colour-mist,#d9ded7)" }}><strong>{total}</strong></div>
     <div className={styles.legend}>{items.filter(item => item.count > 0).map((item, i) => <button type="button" key={item.key} disabled={!onSelect} onClick={() => onSelect?.(item)}>
-      {i < 4 ? <Image src={`/reading-stats/swatch-${swatches[i]}.svg`} width={10} height={10} alt="" unoptimized/> : <i style={{ background: colors[i % colors.length] }}/>}<span>{item.label} · {item.count}</span>
+      <i style={{ background: colors[i % colors.length] }} aria-hidden="true"/><span>{item.label} · {item.count}</span>
     </button>)}</div>
   </div>;
 }

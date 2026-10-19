@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-19",
+  "mode": "Hosted Supabase through local Vela APIs; existing disposable reader; original reader records preserved",
+  "checks": [
+    {
+      "name": "Disposable account login",
+      "result": "PASS"
+    },
+    {
+      "name": "Authenticated Home and persistent cookie session",
+      "result": "PASS"
+    },
+    {
+      "name": "Signed-out private APIs deny access",
+      "result": "PASS"
+    },
+    {
+      "name": "Settings load saved preferences",
+      "result": "PASS"
+    },
+    {
+      "name": "Manual book adds to TBR",
+      "result": "PASS"
+    },
+    {
+      "name": "Manual retry does not duplicate",
+      "result": "PASS"
+    },
+    {
+      "name": "Manual add → Undo → re-add restores the same visible book",
+      "result": "PASS"
+    },
+    {
+      "name": "Start reading",
+      "result": "PASS"
+    },
+    {
+      "name": "Exact progress and private note save",
+      "result": "PASS"
+    },
+    {
+      "name": "Progress Undo restores prior record",
+      "result": "PASS"
+    },
+    {
+      "name": "Finish, rate and record dates without reflection learning",
+      "result": "PASS"
+    },
+    {
+      "name": "Finished book appears in Stats",
+      "result": "PASS"
+    },
+    {
+      "name": "Undo finish preserves prior progress",
+      "result": "PASS"
+    },
+    {
+      "name": "DNF preserves progress and denied learning",
+      "result": "PASS"
+    },
+    {
+      "name": "Undo DNF restores reading",
+      "result": "PASS"
+    },
+    {
+      "name": "Stale saves are rejected without overwriting newer dates",
+      "result": "PASS"
+    },
+    {
+      "name": "Invalid progress rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "CSV row imports finished status, rating and dates",
+      "result": "PASS"
+    },
+    {
+      "name": "CSV retry preserves the existing book",
+      "result": "PASS"
+    }
+  ],
+  "limitations": []
+}

@@ -137,3 +137,5 @@
  .safeArea { display:none; }
  .item[aria-disabled="true"] { opacity:.65; cursor:default; }
 }
+
+:global(html[data-vela-theme="dark"]) .desktopBrand img { background:#f3eee5; box-shadow:0 0 0 4px #f3eee5; border-radius:4px; }

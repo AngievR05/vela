@@ -3,8 +3,14 @@ import assert from "node:assert/strict";
 import {readFile} from "node:fs/promises";
 import {PGlite} from "@electric-sql/pglite";
 import {previewLibraryImport,importBatchSchema,importLibraryRows} from "../src/lib/library-import.js";
-import {readerPreferencesSchema,defaultReaderPreferences,settingsMutationSchema,readerNotificationChoices} from "../src/lib/reader-settings.js";
+import {readerPreferencesSchema,defaultReaderPreferences,settingsMutationSchema,readerNotificationChoices,readerPreferenceUpdate,settingsCacheKey} from "../src/lib/reader-settings.js";
 const a="abd563cb-fdcc-4208-9e62-e1457a9df95e",b="dce88169-75db-43ef-8682-21949d0ab369";
+test("appearance changes sync between this reader's tabs and reject malformed or other-reader events",()=>{
+ const preferences={...defaultReaderPreferences,theme:"dark",density:"compact",highContrast:true};
+ assert.deepEqual(readerPreferenceUpdate(a,{type:"vela:preferences",detail:{userId:a,preferences}}),preferences);
+ assert.deepEqual(readerPreferenceUpdate(a,{type:"storage",key:settingsCacheKey(a),newValue:JSON.stringify(preferences)}),preferences);
+ for(const event of [{type:"storage",key:settingsCacheKey(b),newValue:JSON.stringify(preferences)},{type:"storage",key:settingsCacheKey(a),newValue:"{"},{type:"storage",key:settingsCacheKey(a),newValue:JSON.stringify({theme:"dark"})},{type:"vela:preferences",detail:{userId:b,preferences}}])assert.equal(readerPreferenceUpdate(a,event),null);
+});
 test("Optional reminders follow the displayed daily and Sunday schedules",()=>{
  const preferences={...defaultReaderPreferences,reminders:true,digest:true,nudges:true,reminderTime:"20:00"};
  const active=date=>readerNotificationChoices(preferences,new Date(...date)).filter(choice=>choice.enabled).map(choice=>choice.key);
