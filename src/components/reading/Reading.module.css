@@ -58,6 +58,7 @@
 
 /* The scrollable body keeps every action reachable in landscape and with large text. */
 .sheet.sheet { min-height:0; }
+@media(min-width:600px) { .backdrop.backdrop { align-items:center; padding:12px; } }
 @media(max-height:600px) {
  .statusSheet form { min-height:0; }
  .discardDialog { min-height:0; }

@@ -1,5 +1,13 @@
 # Responsive verification — 14 October 2026
 
+## Entry-to-exit follow-up — 20 October 2026
+
+**208 browser layout checks passed** across entry and recovery states, legal pages, every reading-setup step, Home, Library, Add Book/manual entry, Book Detail, Discover and saved recommendations, explanations/correction controls, DNA, Stats, Settings/CSV/profile, progress/finish/DNF sheets, Library filters/sort, logout confirmation and exit screens. Checked widths include **320, 390, 768, 844 (short landscape), 1024, 1440 and 1920px**; the full primary-screen matrix ran at 320, 390, 768, 1024, 1440 and 1920px. Each matrix entry identifies its actual size in the [sanitized evidence](evidence/responsive-verification-2026-10-20.json).
+
+Kept desktop entry actions near their fields, expanded Home's shelf into a balanced row, and arranged desktop overview charts into two columns with a full-width timeline. Settings now uses normal document scrolling at all sizes. Tablet dialogs are centered with a full backdrop; Finish/DNF sheets shrink to short viewports and retain a scrollable body. Verified their final actions can receive keyboard focus within the viewport. App text fields use at least 16px text to avoid phone-browser focus zoom; setup review cards use the available tablet space.
+
+Page overflow, oversized controls, minimum editable-field text and dialog bounds passed for the recorded checks. Real signed-in pages were inspected without submitting changes to books, profile, permissions or accounts. Entry/reset/status and setup preference states used a temporary development preview of the real components; it was removed before building. Signed-out/account-deleted pages were checked as display states, without executing logout or deletion. **61 regression tests passed**, including 264 baseline/full-schema privacy assertions; lint and production build passed. Physical-device Safari/Android behavior and a complete accessibility audit remain separate checks. This layout audit does not establish email delivery or live recommendation accuracy.
+
 The app now uses distinct mobile and desktop layouts. Phones keep bottom navigation and touch-friendly sheets; desktop (1024px and wider) has branded side navigation, a clear content viewport and centred dialogs. Home balances current reading with Discover; Library has compact tools, paired shelves and a flexible grid; Book Detail uses a cover/metadata column beside reading controls and descriptions. Settings and recommendations adapt their columns to available space. Book covers keep portrait proportions, and entry/setup forms stay at readable widths.
 
 ## Persistent desktop navigation follow-up

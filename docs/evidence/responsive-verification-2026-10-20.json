@@ -1,0 +1,2131 @@
+{
+  "date": "2026-10-20",
+  "mode": "Browser layout and read-only interaction checks; real signed-in screens plus temporary real-component entry/setup previews. No book, profile, consent or account saves submitted.",
+  "count": 208,
+  "checks": [
+    {
+      "screen": "Entry/welcome",
+      "heading": "Your reading life, intelligently organised.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/login",
+      "heading": "Welcome back.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/signup",
+      "heading": "Create your reading space.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/forgot",
+      "heading": "Find your account.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/reset",
+      "heading": "Choose a new password.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/confirmation",
+      "heading": "Check your inbox.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/offline",
+      "heading": "You’re offline.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/success",
+      "heading": "Password updated.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/returning",
+      "heading": "Welcome back, Alex.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/terms",
+      "heading": "Terms",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/privacy",
+      "heading": "Privacy Notice",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/welcome",
+      "heading": "Your reading life, intelligently organised.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/login",
+      "heading": "Welcome back.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/signup",
+      "heading": "Create your reading space.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/forgot",
+      "heading": "Find your account.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/reset",
+      "heading": "Choose a new password.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/confirmation",
+      "heading": "Check your inbox.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/offline",
+      "heading": "You’re offline.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/success",
+      "heading": "Password updated.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/returning",
+      "heading": "Welcome back, Alex.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/terms",
+      "heading": "Terms",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/privacy",
+      "heading": "Privacy Notice",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/welcome",
+      "heading": "Your reading life, intelligently organised.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/login",
+      "heading": "Welcome back.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/signup",
+      "heading": "Create your reading space.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/forgot",
+      "heading": "Find your account.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/reset",
+      "heading": "Choose a new password.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/confirmation",
+      "heading": "Check your inbox.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/offline",
+      "heading": "You’re offline.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/success",
+      "heading": "Password updated.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/returning",
+      "heading": "Welcome back, Alex.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/terms",
+      "heading": "Terms",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/privacy",
+      "heading": "Privacy Notice",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/welcome",
+      "heading": "Your reading life, intelligently organised.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/login",
+      "heading": "Welcome back.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/signup",
+      "heading": "Create your reading space.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/forgot",
+      "heading": "Find your account.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/reset",
+      "heading": "Choose a new password.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/confirmation",
+      "heading": "Check your inbox.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/offline",
+      "heading": "You’re offline.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/success",
+      "heading": "Password updated.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/returning",
+      "heading": "Welcome back, Alex.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/terms",
+      "heading": "Terms",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/privacy",
+      "heading": "Privacy Notice",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/welcome",
+      "heading": "Your reading life, intelligently organised.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/login",
+      "heading": "Welcome back.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/signup",
+      "heading": "Create your reading space.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/forgot",
+      "heading": "Find your account.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/reset",
+      "heading": "Choose a new password.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/confirmation",
+      "heading": "Check your inbox.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/offline",
+      "heading": "You’re offline.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/success",
+      "heading": "Password updated.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/returning",
+      "heading": "Welcome back, Alex.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/terms",
+      "heading": "Terms",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Entry/privacy",
+      "heading": "Privacy Notice",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/home",
+      "heading": "Home greeting",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library",
+      "heading": "My Library",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/add",
+      "heading": "Add a book",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/[id]",
+      "heading": "Book detail",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/discover",
+      "heading": "Discover",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/dna",
+      "heading": "Reading DNA",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/stats",
+      "heading": "Reading stats",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/settings",
+      "heading": "Settings",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/setup",
+      "heading": "Review your reading starting point.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/reading",
+      "heading": "Current reading",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/graveyard",
+      "heading": "Graveyard",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/home",
+      "heading": "Home greeting",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library",
+      "heading": "My Library",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/add",
+      "heading": "Add a book",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/[id]",
+      "heading": "Book detail",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/discover",
+      "heading": "Discover",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/dna",
+      "heading": "Reading DNA",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/stats",
+      "heading": "Reading stats",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/settings",
+      "heading": "Settings",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 375,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/setup",
+      "heading": "Review your reading starting point.",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/reading",
+      "heading": "Current reading",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 375,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/graveyard",
+      "heading": "Graveyard",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 375,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/home",
+      "heading": "Home greeting",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library",
+      "heading": "My Library",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/add",
+      "heading": "Add a book",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/[id]",
+      "heading": "Book detail",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 753,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/discover",
+      "heading": "Discover",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/dna",
+      "heading": "Reading DNA",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/stats",
+      "heading": "Reading stats",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/settings",
+      "heading": "Settings",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/setup",
+      "heading": "Review your reading starting point.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/reading",
+      "heading": "Current reading",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/graveyard",
+      "heading": "Graveyard",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 753,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/home",
+      "heading": "Home greeting",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library",
+      "heading": "My Library",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/add",
+      "heading": "Add a book",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/[id]",
+      "heading": "Book detail",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1009,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/discover",
+      "heading": "Discover",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/dna",
+      "heading": "Reading DNA",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/stats",
+      "heading": "Reading stats",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/settings",
+      "heading": "Settings",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/setup",
+      "heading": "Review your reading starting point.",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/reading",
+      "heading": "Current reading",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1009,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/graveyard",
+      "heading": "Graveyard",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1009,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "/home",
+      "heading": "Home greeting",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library",
+      "heading": "My Library",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/add",
+      "heading": "Add a book",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/[id]",
+      "heading": "Book detail",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1425,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/discover",
+      "heading": "Discover",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/dna",
+      "heading": "Reading DNA",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/stats",
+      "heading": "Reading stats",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/settings",
+      "heading": "Settings",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/setup",
+      "heading": "Review your reading starting point.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/reading",
+      "heading": "Current reading",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/graveyard",
+      "heading": "Graveyard",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1425,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/home",
+      "heading": "Home greeting",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library",
+      "heading": "My Library",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/add",
+      "heading": "Add a book",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/[id]",
+      "heading": "Book detail",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1905,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/discover",
+      "heading": "Discover",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/dna",
+      "heading": "Reading DNA",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/stats",
+      "heading": "Reading stats",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/settings",
+      "heading": "Settings",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/setup",
+      "heading": "Review your reading starting point.",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/reading",
+      "heading": "Current reading",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "/library/graveyard",
+      "heading": "Graveyard",
+      "height": 1080,
+      "overflowingControls": [],
+      "pageWidth": 1920,
+      "smallFields": [],
+      "width": 1920,
+      "result": "PASS"
+    },
+    {
+      "screen": "Logout confirmation",
+      "bodyScroll": false,
+      "bottom": 704.5,
+      "height": 1024,
+      "left": 144,
+      "right": 624,
+      "top": 319.5,
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Discover filters",
+      "bodyScroll": false,
+      "bottom": 689.2000122070312,
+      "height": 1024,
+      "left": 104,
+      "right": 664,
+      "top": 334.8000183105469,
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendations results",
+      "heading": "Recommendations",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendations results",
+      "heading": "Recommendations",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendations results",
+      "heading": "Recommendations",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendations results",
+      "heading": "Recommendations",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation detail",
+      "heading": "Recommendation",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation detail",
+      "heading": "Recommendation",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation detail",
+      "heading": "Recommendation",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation detail",
+      "heading": "Recommendation",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation signal correction",
+      "heading": "Recommendation",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation signal correction",
+      "heading": "Recommendation",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation signal correction",
+      "heading": "Recommendation",
+      "height": 768,
+      "overflowingControls": [],
+      "pageWidth": 1024,
+      "smallFields": [],
+      "width": 1024,
+      "result": "PASS"
+    },
+    {
+      "screen": "Recommendation signal correction",
+      "heading": "Recommendation",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Manual book entry",
+      "heading": "Manual entry",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Manual book entry",
+      "heading": "Manual entry",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Manual book entry",
+      "heading": "Manual entry",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Update progress dialog",
+      "bodyScroll": true,
+      "bottom": 568,
+      "height": 568,
+      "left": 0,
+      "right": 304.8000183105469,
+      "top": 24,
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Put book aside dialog",
+      "bodyScroll": true,
+      "bottom": 568.1050815582275,
+      "height": 568,
+      "left": 0,
+      "right": 304.8000183105469,
+      "top": 24.10508155822754,
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Update progress dialog",
+      "bodyScroll": false,
+      "bottom": 827.8000335693359,
+      "height": 1024,
+      "left": 144,
+      "right": 624,
+      "top": 196.1999969482422,
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Mark as finished dialog",
+      "bodyScroll": false,
+      "bottom": 757.3000183105469,
+      "height": 1024,
+      "left": 144,
+      "right": 624,
+      "top": 266.70001220703125,
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Put book aside dialog",
+      "bodyScroll": false,
+      "bottom": 802.1000213623047,
+      "height": 1024,
+      "left": 144,
+      "right": 624,
+      "top": 221.90000915527344,
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Update progress dialog",
+      "bodyScroll": true,
+      "bottom": 378.3999938964844,
+      "height": 390,
+      "left": 174.40000915527344,
+      "right": 654.4000091552734,
+      "top": 12,
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Mark as finished dialog",
+      "bodyScroll": true,
+      "bottom": 378.47085762023926,
+      "height": 390,
+      "left": 174.40000915527344,
+      "right": 654.4000091552734,
+      "top": 12.070863723754885,
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Update progress dialog",
+      "bodyScroll": false,
+      "bottom": 765.8000335693359,
+      "height": 900,
+      "left": 608,
+      "right": 1088,
+      "top": 134.1999969482422,
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Mark as finished dialog",
+      "bodyScroll": false,
+      "bottom": 699.0511779785156,
+      "height": 900,
+      "left": 608,
+      "right": 1088,
+      "top": 208.451171875,
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Put book aside dialog",
+      "bodyScroll": false,
+      "bottom": 740.1000213623047,
+      "height": 900,
+      "left": 608,
+      "right": 1088,
+      "top": 159.90000915527344,
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Put book aside dialog",
+      "bodyScroll": true,
+      "bottom": 378.3999938964844,
+      "height": 390,
+      "left": 174.40000915527344,
+      "right": 654.4000091552734,
+      "top": 12,
+      "width": 844,
+      "action": {
+        "bottom": 361.8000183105469,
+        "focused": true,
+        "top": 309.8000183105469
+      },
+      "result": "PASS"
+    },
+    {
+      "screen": "Mark as finished dialog",
+      "bodyScroll": false,
+      "bottom": 568.0000152587891,
+      "height": 568,
+      "left": 0,
+      "right": 304.8000183105469,
+      "top": 67.80000305175781,
+      "width": 320,
+      "action": {
+        "bottom": 551.2000122070312,
+        "focused": true,
+        "top": 499.2000122070313
+      },
+      "result": "PASS"
+    },
+    {
+      "screen": "CSV import",
+      "heading": "Import Library",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "CSV import",
+      "heading": "Import Library",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "CSV import",
+      "heading": "Import Library",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Account profile form",
+      "heading": "Edit profile",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Account profile form",
+      "heading": "Edit profile",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Account profile form",
+      "heading": "Edit profile",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library filter dialog",
+      "bodyScroll": true,
+      "bottom": 568.0000114440918,
+      "height": 568,
+      "left": 0,
+      "right": 320,
+      "top": 56.79999923706055,
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library filter dialog",
+      "bodyScroll": true,
+      "bottom": 1004,
+      "height": 1024,
+      "left": 144,
+      "right": 624,
+      "top": 20,
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library filter dialog",
+      "bodyScroll": true,
+      "bottom": 876,
+      "height": 900,
+      "left": 608,
+      "right": 1088,
+      "top": 24,
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library sort dialog",
+      "bodyScroll": false,
+      "bottom": 568,
+      "height": 568,
+      "left": 0,
+      "right": 320,
+      "top": 246,
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library sort dialog",
+      "bodyScroll": false,
+      "bottom": 673,
+      "height": 1024,
+      "left": 144,
+      "right": 624,
+      "top": 351,
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Library sort dialog",
+      "bodyScroll": false,
+      "bottom": 611,
+      "height": 900,
+      "left": 608,
+      "right": 1088,
+      "top": 289,
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/signed-out (display only)",
+      "heading": "Signed out",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/signed-out (display only)",
+      "heading": "Signed out",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/signed-out (display only)",
+      "heading": "Signed out",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/signed-out (display only)",
+      "heading": "Signed out",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "/signed-out (display only)",
+      "heading": "Signed out",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "/account-deleted (display only)",
+      "heading": "Account deleted",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 320,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "/account-deleted (display only)",
+      "heading": "Account deleted",
+      "height": 844,
+      "overflowingControls": [],
+      "pageWidth": 390,
+      "smallFields": [],
+      "width": 390,
+      "result": "PASS"
+    },
+    {
+      "screen": "/account-deleted (display only)",
+      "heading": "Account deleted",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "/account-deleted (display only)",
+      "heading": "Account deleted",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "/account-deleted (display only)",
+      "heading": "Account deleted",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup introduction",
+      "heading": "Let’s start with what you already know you enjoy.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup introduction",
+      "heading": "Let’s start with what you already know you enjoy.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup introduction",
+      "heading": "Let’s start with what you already know you enjoy.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup introduction",
+      "heading": "Let’s start with what you already know you enjoy.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup defer",
+      "heading": "Continue without personalisation?",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup defer",
+      "heading": "Continue without personalisation?",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup defer",
+      "heading": "Continue without personalisation?",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup defer",
+      "heading": "Continue without personalisation?",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup genres expanded",
+      "heading": "Which shelves pull you in?",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup genres expanded",
+      "heading": "Which shelves pull you in?",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup genres expanded",
+      "heading": "Which shelves pull you in?",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup genres expanded",
+      "heading": "Which shelves pull you in?",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1425,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup story elements expanded",
+      "heading": "What makes a story stay with you?",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup story elements expanded",
+      "heading": "What makes a story stay with you?",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup story elements expanded",
+      "heading": "What makes a story stay with you?",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup story elements expanded",
+      "heading": "What makes a story stay with you?",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup pacing expanded",
+      "heading": "How should a book move?",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup pacing expanded",
+      "heading": "How should a book move?",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup pacing expanded",
+      "heading": "How should a book move?",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup pacing expanded",
+      "heading": "How should a book move?",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup reading mood expanded",
+      "heading": "How do you want reading to feel?",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup reading mood expanded",
+      "heading": "How do you want reading to feel?",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup reading mood expanded",
+      "heading": "How do you want reading to feel?",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup reading mood expanded",
+      "heading": "How do you want reading to feel?",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup AI explanation",
+      "heading": "How Vela personalises recommendations",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup AI explanation",
+      "heading": "How Vela personalises recommendations",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup AI explanation",
+      "heading": "How Vela personalises recommendations",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup AI explanation",
+      "heading": "How Vela personalises recommendations",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup permissions",
+      "heading": "Choose what Vela can learn from.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup permissions",
+      "heading": "Choose what Vela can learn from.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup permissions",
+      "heading": "Choose what Vela can learn from.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup permissions",
+      "heading": "Choose what Vela can learn from.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup final review",
+      "heading": "Review your reading starting point.",
+      "height": 568,
+      "overflowingControls": [],
+      "pageWidth": 305,
+      "smallFields": [],
+      "width": 320,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup final review",
+      "heading": "Review your reading starting point.",
+      "height": 1024,
+      "overflowingControls": [],
+      "pageWidth": 768,
+      "smallFields": [],
+      "width": 768,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup final review",
+      "heading": "Review your reading starting point.",
+      "height": 390,
+      "overflowingControls": [],
+      "pageWidth": 829,
+      "smallFields": [],
+      "width": 844,
+      "result": "PASS"
+    },
+    {
+      "screen": "Setup final review",
+      "heading": "Review your reading starting point.",
+      "height": 900,
+      "overflowingControls": [],
+      "pageWidth": 1440,
+      "smallFields": [],
+      "width": 1440,
+      "result": "PASS"
+    }
+  ],
+  "limits": [
+    "Chromium viewport testing; physical-device Safari and Android browsers not verified.",
+    "Exit screens were inspected without actually signing out or deleting the account.",
+    "Live recommendation relevance, email delivery and provider availability are outside this layout audit.",
+    "Temporary preview removed before production build."
+  ],
+  "validation": {
+    "regressionTests": {
+      "passed": 61,
+      "failed": 0
+    },
+    "lint": "PASS",
+    "productionBuild": "PASS; 36 pages; preview excluded"
+  }
+}
