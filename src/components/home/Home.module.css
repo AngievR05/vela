@@ -142,6 +142,8 @@
  .header h1 { font-size:36px; line-height:1.2; }
  .current [data-part="cover"],.current [data-part="cover"] > div { width:100px; height:150px; }
  .current [data-part="info"] { min-height:150px; }
+ .content > .shelf { grid-column:1 / -1; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .shelf > :is(h2,p,.button) { grid-column:1 / -1; }
 }
 
 @media (min-width:1024px) {

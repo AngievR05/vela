@@ -55,3 +55,11 @@
 .statusSheet .optional summary::after { content:"⌄"; margin-left:10px; }
 
 :global(html[data-vela-theme="dark"]) .stars button img { filter:brightness(0) invert(1); }
+
+/* The scrollable body keeps every action reachable in landscape and with large text. */
+.sheet.sheet { min-height:0; }
+@media(max-height:600px) {
+ .statusSheet form { min-height:0; }
+ .discardDialog { min-height:0; }
+ .progressNote { margin-top:16px; }
+}

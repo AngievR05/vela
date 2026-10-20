@@ -78,7 +78,7 @@ export default function ReadingStatsScreen({ userId, initialView, initialBook })
 
   return <section className={`${styles.screen} ${authBody.variable} ${authDisplay.variable}`} aria-label="Reading stats">
     <ReadingArtwork/>
-    <div className={styles.content}>
+    <div className={styles.content} data-view={view}>
       <header className={styles.header}>
         {view === "overview" ? <Link className={styles.back} href="/home" aria-label="Back to Home"><BackIcon /></Link> : <button className={styles.back} onClick={() => { setView(view === "period" || view === "books" ? previousView : "overview"); setFilter(null); }} aria-label="Back to stats"><BackIcon /></button>}
         <h1>Reading stats</h1>

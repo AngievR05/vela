@@ -158,5 +158,14 @@
 .screen input,.screen textarea,.screen select { font-size:16px; }
 @media (min-width:768px) { .screen { width:640px; } .content { padding:56px 48px 48px; } }
 
+@media (min-width:768px) {
+ .content { justify-content:center; gap:20px; }
+ .flow { flex:0; gap:16px; }
+ .flow .actions,.content > .actions { margin-top:20px; }
+ .content:has(.legalBody) { justify-content:flex-start; }
+ .heading { font-size:40px; line-height:1.15; }
+ .welcomeHeading { font-size:40px; line-height:1.15; }
+}
+
 :global(html[data-vela-theme="dark"]) .back img,:global(html[data-vela-theme="dark"]) .field button img { filter:brightness(0) invert(1); }
 :global(html[data-vela-theme="dark"]) .logo { background:#f3eee5; box-shadow:0 0 0 4px #f3eee5; border-radius:4px; }

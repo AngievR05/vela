@@ -73,3 +73,11 @@
 @keyframes sheetIn{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}@keyframes shimmer{to{transform:translateX(100%)}}
 @media(max-width:360px){.recommendationMain{flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.sheet{animation:none}.skeleton::after{display:none}}
+
+@media(min-width:600px) and (max-width:1023px) {
+ .sheetBackdrop { align-items:center; justify-content:center; padding:20px; }
+ .sheet { max-width:560px; max-height:calc(100dvh - 40px); border-radius:24px; }
+}
+.sheetHeader { flex-shrink:0; }
+.sheetHeader h2 { overflow-wrap:anywhere; }
+.sheetActions { flex-shrink:0; }

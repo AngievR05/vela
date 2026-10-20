@@ -1,0 +1,11 @@
+"use client";
+import {useState} from "react";
+import AuthForm from "@/components/auth/AuthForm";
+import AuthStatus from "@/components/auth/AuthStatus";
+import WelcomeScreen from "@/components/auth/WelcomeScreen";
+import LegalNotice from "@/components/auth/LegalNotice";
+import ReadingSetup from "@/components/setup/ReadingSetup";
+import Button from "@/components/ui/Button";
+import styles from "@/components/auth/Auth.module.css";
+const statuses={confirmation:["Check your inbox.","Confirm your email to open your private reading space. Use the link in your inbox in this browser."],offline:["You’re offline.","Reconnect to open your reading space. Your saved books and preferences won’t be changed."],success:["Password updated.","Your Library and reading choices are ready."],returning:["Welcome back, Alex.","Your reading space is ready where you left it."]};
+export default function Review(){const[view,setView]=useState("welcome");return <><details style={{position:"fixed",right:8,top:8,zIndex:500,fontSize:12,background:"#fcfaf6",padding:8}}><summary>Layout preview</summary><nav style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:4}}>{["welcome","login","signup","forgot","reset","confirmation","offline","success","returning","terms","privacy","setup"].map(value=><button key={value} onClick={e=>{setView(value);e.currentTarget.closest("details").open=false;}} aria-label={`Preview ${value}`}>{value}</button>)}</nav></details><div onSubmitCapture={e=>{e.preventDefault();e.stopPropagation();}}>{view==="welcome"?<WelcomeScreen/>:["login","signup","forgot","reset"].includes(view)?<AuthForm key={view} mode={view} initialError={view==="login"?"We couldn’t connect. Your input is still here; try again.":""}/>:statuses[view]?<AuthStatus title={statuses[view][0]} description={statuses[view][1]} warning={view==="offline"} message="Your saved reading data stays unchanged."><Button className={styles.button}>Continue</Button><Button variant="secondary" className={`${styles.button} ${styles.secondary}`}>Return to welcome</Button></AuthStatus>:view==="setup"?<ReadingSetup userId="11111111-1111-4111-8111-111111111111" initial={{completed:false,preferences:{genres:[],storyElements:[],pacing:"",moods:[]},permissions:{ratings:false,dnf:false,history:false},enabled:false}}/>:<LegalNotice kind={view}/>}</div></>}

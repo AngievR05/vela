@@ -119,6 +119,9 @@
  .screen { width:720px; }
  .choices { max-width:none; grid-template-columns:repeat(3,minmax(0,1fr)); }
  .heading { font-size:38px; line-height:1.2; }
+ .screen .actions { margin-top:16px; }
+ .review { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .permissionReview { flex-wrap:wrap; padding-left:0; }
 }
 
 :global(html[data-vela-theme="dark"]) .back img { filter:brightness(0) invert(1); }

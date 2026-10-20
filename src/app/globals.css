@@ -51,6 +51,8 @@ body {
 #main-content { min-width: 0; }
 #main-content :is(h1, h2, h3, p) { overflow-wrap: anywhere; }
 #main-content :is(input, textarea, select) { max-width: 100%; }
+/* Keep editable text legible without triggering phone-browser focus zoom. */
+#main-content :is(input:not([type="checkbox"]):not([type="radio"]), textarea, select) { font-size:max(16px,1rem); }
 
 button,
 input,

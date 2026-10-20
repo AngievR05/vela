@@ -74,3 +74,10 @@
 
 /* Desktop navigation leaves the content viewport clear. */
 @media(min-width:1024px){.content{padding-bottom:48px}.metrics a{padding:24px}.metrics strong{font-size:36px}.copy{max-width:760px}.monthLinks{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}}
+
+@media(min-width:1280px) {
+ .content[data-view="overview"] { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; }
+ .content[data-view="overview"] > * { min-width:0; grid-column:1 / -1; }
+ .content[data-view="overview"] > .card { grid-column:span 1; height:100%; }
+ .content[data-view="overview"] > .card:first-of-type { grid-column:1 / -1; }
+}
