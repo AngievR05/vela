@@ -26,7 +26,7 @@ export default function CsvLibraryImport({userId}){
     finally{running.current=false;setPending(false);}}
   const added=results.filter(row=>row.state==="added"),duplicates=results.filter(row=>row.state==="duplicate"),failed=results.filter(row=>row.state==="failed");
   return <>
-    <Card className={styles.panel}><h2>Bring your books with you.</h2><p>Upload a Goodreads, StoryGraph or Vela CSV. Preview the rows, then add them to Reading, TBR, DNF and Finished.</p><p className={styles.small}>Up to 2,000 rows · 2 MB. Existing books, ratings, notes and progress stay intact. Imported data follows your current personalisation permissions.</p></Card>
+    <Card className={styles.panel}><h2>Bring your books with you.</h2><p>Upload a Goodreads, StoryGraph or Vela CSV. Preview the rows, then add them to Reading, TBR, DNF and Finished.</p><p className={styles.small}>Up to 2,000 rows · 2 MB. Existing books, ratings, notes and progress stay intact. Imported data follows your current personalisation permissions.</p><p className={styles.small}>Covers: Google Books. If an ISBN is missing, the title and author may be matched with Open Library. Private notes and ratings are never sent for cover lookup.</p></Card>
     <label htmlFor="library-csv">Library CSV</label><input className={styles.file} id="library-csv" type="file" accept=".csv,text/csv" onChange={choose} disabled={pending}/>
     <Button variant="tertiary" href="/library-import-template.csv" download>Download CSV template</Button>
     {error&&<InlineAlert type="error">{error}</InlineAlert>}
@@ -38,6 +38,7 @@ export default function CsvLibraryImport({userId}){
     {(pending||results.length>0)&&<p role="status">{added.length} added · {duplicates.length} already in Library · {failed.length} need retry{pending?" · Importing…":""}</p>}
     {pending?<Button variant="secondary" onClick={()=>{stop.current=true;setError("Stopping after the current batch. Completed rows stay saved.");}}>Stop after this batch</Button>:!done&&<Button className={styles.primary} disabled={!preview.rows.length} onClick={run}>{results.length?"Retry remaining rows":"Import books"}</Button>}
     {done&&<Button className={styles.primary} href="/library">Open Library</Button>}
+    {done&&<p className={styles.small}>Covers come from Google Books. Missing covers are looked up as you open your Library, including books imported earlier. If Google Books is unavailable, refresh the Library later; your saved reading records stay unchanged.</p>}
     {!!results.length&&<ul className={styles.importList}>{results.filter(row=>row.state==="failed").concat(results.filter(row=>row.state!=="failed").slice(0,8)).map(row=><li key={row.row}>{row.title} · {row.state==="duplicate"?"Already in Library; preserved":row.state==="added"?"Added":"Needs retry"}{row.id&&<> · <Link href={`/library/${row.id}`}>View book</Link></>}</li>)}</ul>}
     {!!preview.issues.length&&<details><summary>Review {preview.issues.length} skipped rows</summary><ul className={styles.importList}>{preview.issues.map(issue=><li key={issue.row}>Row {issue.row}: {issue.message}</li>)}</ul></details>}
     {!!preview.warnings.length&&<details><summary>Review import warnings</summary><ul className={styles.importList}>{preview.warnings.map((warning,index)=><li key={`${warning.row}-${index}`}>Row {warning.row}: {warning.message}</li>)}</ul></details>}

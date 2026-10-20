@@ -70,7 +70,7 @@ export async function createRecommendations(supabase, userId, input, { search, l
   const excludedWorks=[...context.books.filter(book=>book.status!=="want_to_read"),...avoid].map(bookWorkKey);
   let books, catalogueIncomplete=false;
   if (input.filters.source === "tbr") books = context.books.filter(book => book.status === "want_to_read").map(book => ({ googleBooksId: book.googleBooksId, title: book.title, authors: book.author ? [book.author] : [],
-    description: book.description, pageCount: book.pageCount, categories: book.categories, publishedDate: book.publishedDate, thumbnailUrl: book.coverSrc, isbn: book.isbn }));
+    description: book.description, pageCount: book.pageCount, categories: book.categories, publishedDate: book.publishedDate, thumbnailUrl: book.coverSrc?.startsWith("https://")?book.coverSrc:null, isbn: book.isbn }));
   else {
     const seedQueries = (plan.seedBooks || []).map(book => `${book.title} ${book.author}`);
     const searches = await Promise.allSettled([...new Set([...seedQueries,...plan.queries])].map(query => search(query,40)));

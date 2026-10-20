@@ -11,6 +11,7 @@ export default function LegalNotice({ kind, onBack }) {
     <article className={styles.legalBody}>{privacy ? <>
       <section><h2>Your account</h2><p>Your email supports login and password recovery.</p></section>
       <section><h2>Your reading space</h2><p>Books and progress support your Library. Only reading signals you allow should influence personalised suggestions.</p></section>
+      <section><h2>Book covers</h2><p>Google Books supplies cover images. A book’s title, author and ISBN may be sent to Google Books to match its cover. When matching needs help, the title and author may also be checked with Open Library. Private notes, ratings and account details are not sent for cover matching.</p></section>
       <section><h2>Your control</h2><p>Reading DNA is editable. Personalisation can be turned off while Library tracking remains available. Private notes stay separate from approved learning.</p></section>
       <p>Review AI and data controls in Settings.</p>
     </> : <>

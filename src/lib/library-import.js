@@ -62,14 +62,31 @@ export function previewLibraryImport(text) {
   return {rows,issues,warnings,total:records.length};
 }
 export function exactImportMatch(row,book) {
-  return row.isbn ? book.isbns?.includes(row.isbn) : normalise(row.title)===normalise(book.title)&&book.authors.some(author=>normalise(author)===normalise(row.author));
+  return row.isbn ? isbnVariants(row.isbn).some(isbn=>book.isbns?.some(value=>value.replace(/[\s-]/g,"").toUpperCase()===isbn)) : sameImportWork(row,book);
+}
+export function isbnVariants(isbn) {
+  if(!validIsbn(isbn||""))return [];
+  if(isbn.length===10){const base="978"+isbn.slice(0,9);return[isbn,base+((10-[...base].reduce((sum,c,i)=>sum+Number(c)*(i%2?3:1),0)%10)%10)];}
+  if(!isbn.startsWith("978"))return[isbn];
+  const base=isbn.slice(3,12),digit=(11-[...base].reduce((sum,c,i)=>sum+Number(c)*(10-i),0)%11)%11;
+  return[isbn,base+(digit===10?"X":digit)];
+}
+export function importWorkTitle(title) {return title.replace(/\s*\([^)]*(?:#\s*\d|\bbook\s+\d|\bedition\b)[^)]*\)\s*$/i,"").trim();}
+export function sameImportWork(row,book) {
+  const authors=book.authors||[],name=normalise(row.author);
+  return normalise(importWorkTitle(row.title))===normalise(importWorkTitle(book.title))&&(authors.some(author=>normalise(author)===name)||normalise(authors.join(", "))===name);
+}
+export async function findImportMetadata(row,search) {
+  const queries=row.isbn?isbnVariants(row.isbn).map(isbn=>`isbn:${isbn}`):[`intitle:"${importWorkTitle(row.title).replaceAll('"',"")}" inauthor:"${row.author.replaceAll('"',"")}"`];
+  for(const query of queries){const matches=(await search(query,10)).filter(book=>exactImportMatch(row,book));if(matches.length)return matches.find(book=>book.thumbnailUrl)||matches[0];}
+  return null;
 }
 export async function importLibraryRows(supabase, rows, search) {
   const results=[];
   for(const row of rows){
     try{
       let metadata=null;
-      try{const books=await search(row.isbn?`isbn:${row.isbn}`:`intitle:${row.title} inauthor:${row.author}`,5);metadata=books.find(book=>exactImportMatch(row,book))||null;}catch{/* CSV books remain importable when catalogue lookup fails. */}
+      try{metadata=await findImportMetadata(row,search);}catch{/* Covers can resolve separately when the catalogue recovers. */}
       const {data,error}=await supabase.rpc("import_library_row",{entry:row,metadata});
       if(error)throw new Error("Row save could not be confirmed. Retry this row.");
       results.push({row:row.row,title:row.title,...data});

@@ -1,5 +1,8 @@
 import {createQuotaGuard} from "./provider-policy.js";
+import {googleCoverUrl} from "./book-cover-url.js";
+import {validIsbn} from "./library-data.js";
 const sharedQuota=createQuotaGuard();
+const sharedCoverQuota=createQuotaGuard();
 
 const GOOGLE_BOOKS_URL = "https://www.googleapis.com/books/v1/volumes";
 
@@ -57,6 +60,21 @@ export async function getGoogleBookRequest(id, {apiKey,fetcher=fetch,quotaGuard=
 }
 
 function normaliseImageUrl(url) {
-  if (!url) return null;
-  return url.replace(/^http:/, "https:");
+  return googleCoverUrl(url);
+}
+
+// Read only the documented thumbnail field; never execute Google's JSONP response.
+export async function getGoogleIsbnCoverRequest(isbn,{fetcher=fetch,quotaGuard=sharedCoverQuota}={}) {
+  if(!validIsbn(isbn||""))return null;
+  quotaGuard.check();
+  const url=new URL("https://books.google.com/books");
+  url.searchParams.set("bibkeys",`ISBN:${isbn}`);url.searchParams.set("jscmd","viewapi");url.searchParams.set("callback","velaCover");
+  const response=await fetcher(url,{signal:AbortSignal.timeout(10000),next:{revalidate:3600}});
+  quotaGuard.observe(response.status);
+  if(!response.ok)throw new Error("ISBN cover lookup unavailable");
+  const text=await response.text();if(text.length>100000)throw new Error("Invalid ISBN cover response");
+  const match=text.trim().match(/^velaCover\(([\s\S]*)\);?$/);if(!match)throw new Error("Invalid ISBN cover response");
+  let data;try{data=JSON.parse(match[1]);}catch{throw new Error("Invalid ISBN cover response");}
+  const result=data?.[`ISBN:${isbn}`]||data?.books?.[`ISBN:${isbn}`];
+  return result?.bib_key===`ISBN:${isbn}`?googleCoverUrl(result.thumbnail_url):null;
 }

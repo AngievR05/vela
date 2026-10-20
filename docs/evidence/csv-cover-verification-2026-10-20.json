@@ -1,0 +1,56 @@
+{
+  "date": "2026-10-20",
+  "mode": "Hosted disposable reader through local Vela APIs; no existing reading records changed",
+  "checks": [
+    {
+      "name": "ISBN-less CSV row imports or preserves an existing record",
+      "result": "PASS"
+    },
+    {
+      "name": "Authenticated cover recovery returns a verified Google Books image",
+      "result": "PASS"
+    },
+    {
+      "name": "Recovered cover image downloads successfully",
+      "result": "PASS"
+    },
+    {
+      "name": "Signed-out cover access is denied",
+      "result": "PASS"
+    },
+    {
+      "name": "Cover lookup preserves the complete reading record",
+      "result": "PASS"
+    },
+    {
+      "name": "Re-import does not duplicate or overwrite the book",
+      "result": "PASS"
+    },
+    {
+      "name": "Original disposable Library unchanged; QA addition soft-removed",
+      "result": "PASS"
+    }
+  ],
+  "validation": {
+    "failed": 0,
+    "tests": 68,
+    "lint": "PASS",
+    "productionBuild": "PASS",
+    "passed": 68
+  },
+  "browser": {
+    "libraryCountPreserved": 455,
+    "loadedImageWidth": 128,
+    "searchRestored": true,
+    "proof": ".temp/csv-cover-proof/recovered-import-cover.png",
+    "previouslyImported": [
+      "A Discovery of Witches",
+      "Back in a Spell"
+    ]
+  },
+  "limitations": [
+    "No image is fabricated when an exact ISBN or verified work match has no Google Books cover.",
+    "The Google Books catalogue returned 503 during testing; Google ISBN cover lookup plus verified Open Library ISBN matching succeeded.",
+    "A matched work can use another edition cover when the CSV has no resolvable edition ISBN."
+  ]
+}

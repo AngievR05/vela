@@ -1,4 +1,5 @@
 import { describeDNASignals } from "./reading-dna.js";
+import {googleCoverUrl} from "./book-cover-url.js";
 // Reader data operations accept an authenticated, RLS-scoped client; no service credentials.
 
 export async function allReaderRows(supabase, table, columns, userId, filter = {}) {
@@ -18,7 +19,7 @@ export function mapLibraryBook(row) {
   const book = row.books;
   return {
     id: row.id, bookId: row.book_id, googleBooksId: book.google_books_id, title: book.title, author: (book.authors || []).join(", "),
-    pageCount: book.page_count > 0 ? book.page_count : null, coverSrc: book.thumbnail_url || null,
+    pageCount: book.page_count > 0 ? book.page_count : null, coverSrc: googleCoverUrl(book.thumbnail_url) || `/api/library/${row.id}/cover`,
     status: row.status, progressPercent: row.progress_percent, rating: row.rating,
     stoppedAt: row.stopped_at || null, finishFeedback: row.finish_feedback || [], finishUse: row.finish_use_for_learning || false, ratingUse: row.rating_use_for_learning ?? true, historyUse: row.history_use_for_learning ?? true, dnfReasons: row.dnf_reasons || [], privateDnfNote: row.private_dnf_note || "",
     dnfUse: row.dnf_use_for_learning, startedAt: row.started_at, finishedAt: row.finished_at, updatedAt: row.updated_at,

@@ -1,4 +1,5 @@
 import test from "node:test";
+import {readerCover} from "../src/lib/cover-resolution.js";
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { PGlite } from "@electric-sql/pglite";
@@ -115,6 +116,8 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
   await role(a);assert.equal((await saveLibraryBook(supabase,a,'Example',lookup)).added,true);
   let home=await loadHome(supabase,a);assert.equal(homeSnapshotSchema.safeParse(home).success,true);assert.equal(home.books.length,1);assert.equal(home.books[0].status,'want_to_read');
   const owned=home.books[0].id;
+  assert.equal(home.books[0].coverSrc,`/api/library/${owned}/cover`);
+  assert.equal(await readerCover(supabase,a,owned,async()=>"owned-cover"),"owned-cover");
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:50})).status,409);
   let result=await mutateReaderBook(supabase,a,{kind:'start',id:owned});assert.equal(result.book.status,'reading');const startDate=result.book.startedAt;
   result=await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:70});assert.equal(result.book.progressPercent,70);assert.equal(result.book.startedAt,startDate);
@@ -124,6 +127,9 @@ test("Home and Library operations use real RLS, enforce reading transitions, ded
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:99})).status,409);
   assert.equal((await mutateReaderBook(supabase,a,{kind:'start',id:owned})).status,409);
   await role(b);assert.equal((await loadHome(supabase,b)).books.length,0);
+  const forbiddenCover=()=>{throw new Error("Another reader's cover lookup must not run");};
+  assert.equal(await readerCover(supabase,b,owned,forbiddenCover),null);
+  assert.equal(await readerCover(supabase,a,owned,forbiddenCover),null);
   assert.equal((await mutateReaderBook(supabase,b,{kind:'progress',id:owned,percent:10})).status,404);
   // RLS still denies the other reader if a data helper receives a spoofed userId.
   assert.equal((await mutateReaderBook(supabase,a,{kind:'progress',id:owned,percent:10})).status,404);

@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import {googleCoverUrl} from "@/lib/book-cover-url";
 import styles from "@/components/design-system/DesignSystem.module.css";
 
 const SIZE_CLASS = {
@@ -39,10 +40,7 @@ function initials(title = "") {
 function normaliseImageUrl(src) {
   if (!src) return null;
   if (src.startsWith("/") && !src.startsWith("//")) return src;
-  try {
-    const url = new URL(src.replace(/^http:\/\//i, "https://"));
-    return url.protocol === "https:" && ["books.google.com", "books.googleusercontent.com"].includes(url.hostname) ? url.href : null;
-  } catch { return null; }
+  return googleCoverUrl(src);
 }
 
 export default function BookCover({
@@ -55,14 +53,32 @@ export default function BookCover({
   placeholderType = "initials",
 }) {
   const [failedSrc, setFailedSrc] = useState(null);
+  const [visible,setVisible]=useState(false);
+  const frame=useRef(null);
+  const retried=useRef(new Set());
+  useEffect(()=>{
+    if(!failedSrc?.startsWith("/api/library/")||retried.current.has(failedSrc))return;
+    retried.current.add(failedSrc);
+    const timer=setTimeout(()=>setFailedSrc(current=>current===failedSrc?null:current),65000);
+    return()=>clearTimeout(timer);
+  },[failedSrc]);
   const alt = decorative
     ? ""
     : `${title || "Book"}${author ? ` by ${author}` : ""}`;
 
   const imageUrl = normaliseImageUrl(src);
+  const lookup=imageUrl?.startsWith("/api/library/");
+  useEffect(()=>{
+    if(!lookup)return;
+    if(typeof IntersectionObserver==="undefined"){const timer=setTimeout(()=>setVisible(true),0);return()=>clearTimeout(timer);}
+    const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){setVisible(true);observer.disconnect();}},{rootMargin:"100px"});
+    if(frame.current)observer.observe(frame.current);
+    return()=>observer.disconnect();
+  },[lookup,imageUrl]);
 
   return (
     <div
+      ref={frame}
       className={[
         styles.cover,
         SIZE_CLASS[size] ?? styles.coverCard,
@@ -71,7 +87,7 @@ export default function BookCover({
         .filter(Boolean)
         .join(" ")}
     >
-      {imageUrl && imageUrl !== failedSrc ? (
+      {imageUrl && imageUrl !== failedSrc && (!lookup||visible) ? (
         <Image
           src={imageUrl}
           alt={alt}
