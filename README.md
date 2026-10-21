@@ -2,7 +2,7 @@
 
 **Your reading life, intelligently organised.**
 
-Latest checks (20 October 2026): **68 passing tests**, lint/build passed, 22 hosted functional API checks passed, and dark-mode/appearance and reading-edit recovery were checked in the browser. Live Google Books availability remains intermittent; public SMTP delivery is still a setup item. Earlier authentication checks verified signup activation/login/session/logout and confirmation/reset-email receipt for controlled test inboxes. See the [bug and testing log](docs/BUG_AND_TEST_LOG.md), [test-account guide](docs/authentication-test-accounts.md) and [risks update](docs/RISKS_UPDATE.md) for evidence and remaining checks.
+Latest checks (21 October 2026): **71 passing tests**, updated prototype flows checked in the browser at 320–1440px, and lint/build passed. The earlier functional run passed 22 hosted API checks and verified dark-mode/appearance and reading-edit recovery. Live Google Books availability remains intermittent; public SMTP delivery is still a setup item. Earlier authentication checks verified signup activation/login/session/logout and confirmation/reset-email receipt for controlled test inboxes. See the [bug and testing log](docs/BUG_AND_TEST_LOG.md), [test-account guide](docs/authentication-test-accounts.md) and [risks update](docs/RISKS_UPDATE.md) for evidence and remaining checks.
 
 Vela is a mobile-first responsive reading companion for self-directed readers. The MVP centres on the loop:
 
@@ -63,7 +63,7 @@ npm run build
 npm run start
 ```
 
-The latest run on 20 October passed **68 tests**, including 122 baseline RLS assertions and 142 full-schema privacy/reset/deletion assertions. See the [functional evidence](docs/evidence/functional-audit-2026-10-19.json) and [quota/security audit](docs/security-quota-audit-2026-10-18.md) for hosted API checks, secrets, dependency findings and verification limits. The [17 October hosted recommendation/DNA evaluation](docs/recommendation-evaluation-2026-10-17.md) records consent, feedback and corrections, plus remaining strict-exclusion and provider limitations. The tests execute the checked-in migrations with PGlite; they do not establish that every hosted policy/configuration is current. Browser checks include isolated state fixtures and real hosted authentication, identified separately in the [testing log](docs/BUG_AND_TEST_LOG.md).
+The latest run on 21 October passed **71 tests**, including 122 baseline RLS assertions and 142 full-schema privacy/reset/deletion assertions. See the [functional evidence](docs/evidence/functional-audit-2026-10-19.json) and [quota/security audit](docs/security-quota-audit-2026-10-18.md) for hosted API checks, secrets, dependency findings and verification limits. The [17 October hosted recommendation/DNA evaluation](docs/recommendation-evaluation-2026-10-17.md) records consent, feedback and corrections, plus remaining strict-exclusion and provider limitations. The tests execute the checked-in migrations with PGlite; they do not establish that every hosted policy/configuration is current. Browser checks include isolated state fixtures and real hosted authentication, identified separately in the [testing log](docs/BUG_AND_TEST_LOG.md).
 
 On 14 October, **157 responsive browser checks** passed across 320–1920px, larger text, short-height dialogs, forms, dark mode and recommendation states. Desktop has branded side navigation, balanced Home cards, compact Library tools, a flexible grid and two-column Book Detail; phones keep bottom navigation and touch-friendly sheets. The **49-test suite**, lint and production build were rerun successfully after this refinement. See [responsive verification](docs/responsive-verification.md) for coverage and limits.
 
@@ -155,7 +155,7 @@ Home, Discover and Reading DNA share evidence/permission filtering. Only visible
 
 The automatic-reading-activity and reading-flow migrations refresh eligible DNA evidence when books are completed/rated or permitted reflections/reasons change; current permissions and reset cutoffs still apply. This is not unconditional learning from every update.
 
-Verification: the latest **68-test suite** includes PostgreSQL reader/anonymous isolation, duplicate retries, stale edits/Undo and preference-preserving reset. Hosted Reduce and Undo were saved and verified through the UI, restoring the original signal. Live reset was not executed on the reader's account. Mobile layouts and SVG assets were checked against the design; private caches clear at logout and reader changes.
+Verification: the latest **71-test suite** includes PostgreSQL reader/anonymous isolation, duplicate retries, stale edits/Undo and preference-preserving reset. Hosted Reduce and Undo were saved and verified through the UI, restoring the original signal. Live reset was not executed on the reader's account. Mobile layouts and SVG assets were checked against the design; private caches clear at logout and reader changes.
 
 ## Remaining service limitations
 

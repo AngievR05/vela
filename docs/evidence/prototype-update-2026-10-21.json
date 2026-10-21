@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-21",
+  "reference": "https://www.figma.com/design/KUdyt409wRaPTCSRdfeEH5/Vela?node-id=1-10",
+  "figmaModified": false,
+  "prototypeAudit": {
+    "sectionScreenAndStateFrames": 257,
+    "navigationActionReferences": 1855,
+    "missingDestinations": 0,
+    "flowStartingPoints": 8,
+    "newExploreFrames": [
+      "958:8934",
+      "958:9008",
+      "958:9096"
+    ]
+  },
+  "validation": {
+    "testsPassed": 71,
+    "testsFailed": 0,
+    "baselineRlsAssertions": 122,
+    "fullSchemaPrivacyAssertions": 142,
+    "build": "passed; 36 generated pages; no prototype-review route",
+    "lint": "passed"
+  },
+  "liveReadOnlyChecks": [
+    "Saved results opened three distinct books with their own titles and authors.",
+    "Explore opened Spark of Defiance, Google Books identity wFI_DwAAQBAJ, with a loaded actual cover.",
+    "Explore explanation opened expanded, kept that book visible and returned to results.",
+    "Selected Fantasy evidence opened its own correction control; Back returned to that evidence without saving.",
+    "Strong-match result opened its own title and current-request subtitle.",
+    "Full catalogue description expanded and collapsed without truncation."
+  ],
+  "responsiveChecks": {
+    "screens": [
+      "Explore detail",
+      "Explore explanation"
+    ],
+    "widths": [
+      320,
+      390,
+      768,
+      1024,
+      1440
+    ],
+    "horizontalOverflow": false,
+    "visiblePrimaryNavigationsAtEachWidth": 1,
+    "desktopSidebarPresent": true
+  },
+  "isolatedComponentChecks": [
+    "Explore Save posted the selected Google Books identity.",
+    "Save success retained the same book and linked to /library?tab=want_to_read.",
+    "Undo removed only the saved test record and returned to the selected recommendation.",
+    "Show less and Undo posted feedback for the selected recommendation ID.",
+    "A simulated save 503 after feedback Undo stayed on the book-save recovery path; retry succeeded.",
+    "Back from saved Explore returned to results.",
+    "Experimental explanation opened expanded and Back returned to its detail.",
+    "Review assumption exposed Browse other signals at /dna?view=manage; Back returned to results.",
+    "Offline state disabled feedback writes and kept the saved Library link available."
+  ],
+  "limits": [
+    "Save, Undo and feedback UI checks used an isolated in-memory transport; no owner Library or DNA writes were performed.",
+    "The temporary development review route and its source were removed before final verification.",
+    "This checks the updated recommendation flow and the prototype graph; it is not a pixel-diff test of all 257 conditional frames.",
+    "No new live recommendation generation or public email-delivery evaluation was performed.",
+    "Existing Google Books/Gemini availability and SMTP limitations remain. No schema migration is needed."
+  ]
+}

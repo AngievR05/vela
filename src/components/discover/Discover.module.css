@@ -62,16 +62,21 @@
 .hero p { color:var(--colour-plum,#75465a); font:600 12px/14.4px var(--font-body); overflow-wrap:anywhere; }
 .hero small { color:var(--vela-mauve-text,#665f84); font:400 11px/13.2px var(--font-body); }
 .hero .pill { padding-inline:20px; }
-.screen .heroCover { width:88px; min-width:88px; height:130px; border-radius:12px; }
+.hero .recommendationBadge { border:1px solid var(--colour-evergreen,#183b34); text-align:center; }
+.screen .heroCover { width:88px; min-width:88px; height:130px; border-radius:4px; }
 .hero a { display:block; }
 .screen .facts { display:flex; flex-direction:column; gap:6px; padding:16px; border:0; border-radius:16px; background:var(--vela-beige,#eee7d8); font:400 12px/14.4px var(--font-body); box-shadow:0 8px 20px #22201e14,0 2px 4px #22201e0f; }
 .facts h2 { font:700 20px/24px var(--font-display); color:var(--colour-evergreen,#183b34); }
 .facts ul { padding-left:18px; margin:0; display:flex; flex-direction:column; gap:10px; }
 .facts .pill { background:var(--vela-surface-base,#fbf8f2); }
 .facts button { text-align:left; }
+.description summary { display:list-item; cursor:pointer; padding-block:14px; font-weight:600; color:var(--colour-evergreen,#183b34); }
+.description p { overflow-wrap:anywhere; }
+.description summary:focus-visible { outline:2px solid var(--colour-plum); outline-offset:3px; }
 .screen .dna { background:var(--vela-mauve-surface,#e7e4ef); }
 .dna button { border:0; padding:0; background:transparent; color:var(--colour-ink); font:500 12px/14.4px var(--font-body); cursor:pointer; min-height:30px; }
 .dna .dnaHeading { font:700 18px/21.6px var(--font-display); color:var(--colour-plum,#75465a); }
+.dna .evidencePill { align-self:flex-start; padding:8px 13px; min-height:32px; border-radius:16px; background:var(--vela-surface-base,#fcfaf6); font:600 11px/13.2px var(--font-body); }
 .evidence { display:flex; flex-direction:column; gap:12px; }
 .evidence h2 { font:700 18px/21.6px var(--font-display); }
 .evidence a { display:flex; flex-direction:column; gap:4px; padding:14px; border-radius:22px; background:var(--vela-surface-base,#fbf8f2); font:600 16px/19.2px var(--font-display); }
