@@ -2,6 +2,10 @@
 
 Reviewed 21 October 2026. [README](../README.md) · [API contracts](API.md) · [deployment acceptance](DEPLOYMENT.md#production-smoke-test).
 
+Current deployment verification: **78 tests passed**, lint/build passed, and [Vercel production](https://vela-sepia-nine.vercel.app) passed public/authorization and controlled-reader login/reload/logout checks. Sixteen authenticated page/viewport combinations passed at 390/1440px; Google Books recovered after a transient upstream failure and the production Gemini book-clue check succeeded. See [deployment evidence and remaining acceptance limits](evidence/production-deployment-2026-10-21.json). Production email delivery and new hosted write/RLS tests are not implied by these read-only checks.
+
+The later [expanded production QA](PRODUCTION_QA_2026-10-21.md) adds real disposable-reader saves/Undo, CSV cover import, preferences, stats/export, recommendation feedback, opt-out, direct read isolation across ten private tables, and owner-confirmed production reset-email receipt. It also fixes and rechecks the obsolete-reading-update timeout. New non-team signup/confirmation and a complete password-change cycle remain unverified; existing hosted readers were not deleted or irreversibly reset.
+
 ## Repeatable commands
 
 Install the locked dependencies with `npm ci`. Then run:

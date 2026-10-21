@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-21T15:51:24.441Z",
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "checks": [
+    {
+      "name": "Verified controlled disposable reader and login",
+      "passed": true
+    },
+    {
+      "name": "DNF UI, denied learning, restore and stale-write protection recheck",
+      "passed": false,
+      "error": "locator.click: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: 'Pacing too slow', exact: true })\u001b[22m\n"
+    },
+    {
+      "name": "100 percent remains Reading; Finish UI saves rating/dates and Undo",
+      "passed": false,
+      "error": "locator.fill: Timeout 20000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('End date', { exact: true })\u001b[22m\n"
+    },
+    {
+      "name": "Stats reading record saves format/genre/mood/pace",
+      "passed": true
+    },
+    {
+      "name": "Saved recommendation feedback, Show less and Undo keep ordinary DNA unchanged",
+      "passed": true
+    },
+    {
+      "name": "Personalisation off excludes active DNA and saved matched signals",
+      "passed": true
+    },
+    {
+      "name": "Setup loads saved choices; large text and high contrast remain responsive",
+      "passed": true
+    },
+    {
+      "name": "Hosted RLS filters all private tables without an ownership query filter",
+      "passed": true,
+      "privateTables": 10
+    },
+    {
+      "name": "Logout denies protected API",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "cleanup": [
+    {
+      "kind": "created test entry hidden",
+      "passed": true
+    },
+    {
+      "kind": "preferences restored",
+      "passed": true
+    },
+    {
+      "kind": "permissions restored",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "No new public signup/reset inbox delivery or account deletion performed."
+  ],
+  "passed": false
+}

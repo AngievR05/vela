@@ -1,6 +1,31 @@
 # Deployment runbook
 
-MVP 1.0.0 · reviewed 21 October 2026. This is a repeatable deployment guide, not evidence that a public production deployment has been completed. [Setup/environment variables](../README.md#environment-variables) · [testing](TESTING.md) · [release limits](RELEASE_MILESTONES.md).
+MVP 1.0.0 · deployed 21 October 2026 to [Vela production](https://vela-sepia-nine.vercel.app) on Vercel Hobby. [Hosted verification](evidence/production-smoke-2026-10-21.json) · [browser verification](evidence/production-browser-2026-10-21.json) · [Setup/environment variables](../README.md#environment-variables) · [testing](TESTING.md) · [release limits](RELEASE_MILESTONES.md).
+
+## Current production configuration
+
+The expanded [production QA review](PRODUCTION_QA_2026-10-21.md) subsequently exercised controlled disposable-reader writes, confirmed reset-email receipt, and deployed the stale-update conflict fix. Its final reading recheck passed; current automated coverage is 78 passing tests. These results supplement the initial read-only deployment evidence below.
+
+- Project: `241077-6607/vela`; Next.js framework, Node 24, `npm ci`, `npm run build`, default Next.js output. The checked-in `vercel.json` makes framework/build detection explicit.
+- Production has all eight documented app variables. Provider keys are Vercel secrets; only the Supabase URL and publishable key are browser configuration. Existing keys use the owner's previously verified free-tier project; no paid plan, AI Gateway or paid billing fallback was enabled.
+- `.vercelignore` excludes local environment files, disposable-account credentials, temporary evidence, tests and documentation from source uploads. `.vercel/` stays out of Git.
+- The owner confirmed setting Supabase Site URL to the production origin and adding `https://vela-sepia-nine.vercel.app/auth/callback**`, while preserving local callbacks. This is owner-confirmed configuration; production confirmation/reset inbox delivery still needs separate acceptance. Custom SMTP and arbitrary public email delivery remain outstanding.
+- Public routes, private-route redirects, API denial, login/reload/logout and mobile/desktop authenticated pages were exercised on the deployed app. These checks did not change Library records or settings. Provider availability and untested write/email flows are recorded separately in the evidence; a deployment is not a claim that every external service is always available.
+- Google Books initially returned an upstream 503, then recovered on a bounded hosted retry (three results). A deployed Gemini book-clue request succeeded. The production-only dependency audit reported zero vulnerabilities; hosted installation also reported development-tool advisories. [Deployment record](evidence/production-deployment-2026-10-21.json) · [provider checks](evidence/production-providers-2026-10-21.json) · [browser configuration/secret scan](evidence/production-client-config-2026-10-21.json).
+
+Actual production screenshots from the controlled disposable account:
+
+![Desktop Library with persistent navigation and real book covers](images/production-library-desktop.png)
+
+<img src="images/production-discover-mobile.png" alt="Production Discover at 390px with filled filter pills and bottom navigation" width="300" />
+
+Repeat the read-only public checks with:
+
+```bash
+node scripts/smoke-production.mjs https://vela-sepia-nine.vercel.app
+```
+
+This release was deployed from the local workspace using Vercel CLI, including the approved UI fixes. Git-triggered automatic deployments have not been connected. For later releases, deploy from the intended clean revision using `npx vercel deploy --prod`; verify the alias and hosted behaviour again. Do not move the existing milestone tags.
 
 ## Deployment shape
 

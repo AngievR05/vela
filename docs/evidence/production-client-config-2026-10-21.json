@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-21",
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "browserAssetsChecked": 14,
+  "publicConfiguration": [
+    {
+      "name": "NEXT_PUBLIC_SUPABASE_URL",
+      "matchesConfiguredValue": true
+    },
+    {
+      "name": "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+      "matchesConfiguredValue": true
+    }
+  ],
+  "serverSecretsChecked": [
+    "GOOGLE_BOOKS_API_KEY",
+    "GEMINI_API_KEY"
+  ],
+  "findings": [],
+  "passed": true
+}

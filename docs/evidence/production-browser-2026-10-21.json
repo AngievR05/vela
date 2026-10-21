@@ -1,0 +1,142 @@
+{
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "method": "Headless Edge; existing controlled disposable reader; read-only pages, login, reload and local-scope logout; no Library or settings writes",
+  "checks": [
+    {
+      "check": "production login",
+      "passed": true
+    },
+    {
+      "check": "session persists after reload",
+      "passed": true
+    },
+    {
+      "check": "/api/home",
+      "status": 200
+    },
+    {
+      "check": "/api/settings",
+      "status": 200
+    },
+    {
+      "check": "/api/dna",
+      "status": 200
+    },
+    {
+      "check": "/api/stats",
+      "status": 200
+    },
+    {
+      "check": "/home",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/library",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/discover",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/dna",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/stats",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/settings",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/library/add",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/library/[id]",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/home",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/library",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/discover",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/dna",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/stats",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/settings",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/library/add",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "/library/[id]",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "check": "Google Books production search",
+      "status": 502,
+      "returnedBooks": 0
+    },
+    {
+      "check": "logout clears protected access",
+      "status": 401
+    }
+  ],
+  "pageErrors": [],
+  "passed": true,
+  "corePassed": true,
+  "initialCatalogueSearchPassed": false,
+  "notes": [
+    "Initial catalogue request returned 502; direct Google check returned 503 backendFailed. A later single bounded hosted retry returned 200 with three books. See production-providers-2026-10-21.json."
+  ]
+}

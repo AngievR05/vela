@@ -1,0 +1,51 @@
+{
+  "date": "2026-10-21T15:54:30.753Z",
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "checks": [
+    {
+      "name": "Verified controlled disposable reader and login",
+      "passed": true
+    },
+    {
+      "name": "DNF UI, denied learning, restore and stale-write protection recheck",
+      "passed": false,
+      "error": "apiRequestContext.fetch: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - → PATCH https://vela-sepia-nine.vercel.app/api/library/3b2f48fe-e2cc-4a6e-84d5-fe6594905ce1\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b["
+    },
+    {
+      "name": "100 percent remains Reading; Finish UI saves rating/dates and Undo",
+      "passed": true
+    },
+    {
+      "name": "Real ISBN CSV import resolves the correct Google cover",
+      "passed": true,
+      "imageVerified": true
+    },
+    {
+      "name": "Logout denies protected API",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "cleanup": [
+    {
+      "kind": "created test entry hidden",
+      "passed": true
+    },
+    {
+      "kind": "created test entry hidden",
+      "passed": true
+    },
+    {
+      "kind": "preferences restored",
+      "passed": true
+    },
+    {
+      "kind": "permissions restored",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "No new public signup/reset inbox delivery or account deletion performed."
+  ],
+  "passed": false
+}

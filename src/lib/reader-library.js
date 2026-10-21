@@ -58,6 +58,15 @@ export async function mutateReaderBook(supabase, userId, mutation) {
   if (readError) return { status: 503, error: "We couldn’t load this book. Please try again." };
   if (!row) return { status: 404, error: "This book is no longer in your Library." };
   if (["finish","dnf","reading_dates","restore_reading","undo_reading"].includes(mutation.kind) || (mutation.kind === "progress" && mutation.operationId)) {
+    // Reject an already-obsolete edit before opening a write transaction. Saved
+    // operation retries still go through the RPC's identity/payload validation.
+    // The RPC remains responsible for races after this read and atomic Undo.
+    if (mutation.expectedUpdatedAt && Date.parse(mutation.expectedUpdatedAt) !== Date.parse(row.updated_at)) {
+      const replay = await supabase.from("reader_book_updates").select("id")
+        .eq("id", mutation.operationId).eq("user_id", userId).eq("user_book_id", mutation.id).maybeSingle();
+      if (replay.error) return { status: 503, error: "We couldn’t confirm your earlier update. Your entries are still here; please try again." };
+      if (!replay.data) return { status: 409, error: "This book changed. Your entries are still here. Refresh the book before trying again." };
+    }
     const { data, error } = await supabase.rpc("save_reader_update", { book_entry: mutation.id, changes: mutation });
     if (error) return { status: error.code === "40001" ? 409 : error.code === "42501" ? 403 : ["22023","23514"].includes(error.code) ? 400 : 503,
       error: error.code === "40001" ? "This book changed. Your entries are still here. Refresh the book before trying again." : error.code === "22023" ? error.message : "Your update wasn’t saved. Your entries are still here; please try again." };

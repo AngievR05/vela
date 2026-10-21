@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-21T16:07:00.510Z",
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "checks": [
+    {
+      "name": "Verified controlled disposable reader and login",
+      "passed": true
+    },
+    {
+      "name": "Native browser stale-version response",
+      "passed": true,
+      "milliseconds": 1031
+    },
+    {
+      "name": "Logout denies protected API",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "cleanup": [
+    {
+      "kind": "created test entry hidden",
+      "passed": true
+    },
+    {
+      "kind": "preferences restored",
+      "passed": true
+    },
+    {
+      "kind": "permissions restored",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "No new public signup/reset inbox delivery or account deletion performed."
+  ],
+  "passed": true
+}

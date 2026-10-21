@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-21",
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "deployment": {
+    "id": "dpl_4jtT2bVdhHz1euoUYcWNrBv5iwty",
+    "url": "https://vela-dsqe7pipb-241077-6607.vercel.app",
+    "productionUrl": "https://vela-sepia-nine.vercel.app",
+    "inspectorUrl": "https://vercel.com/241077-6607/vela/4jtT2bVdhHz1euoUYcWNrBv5iwty",
+    "readyState": "READY",
+    "target": "production",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_4jtT2bVdhHz1euoUYcWNrBv5iwty",
+    "buildMachine": {
+      "cores": 2,
+      "memory": 8192,
+      "machine": "basic",
+      "selectionType": "fixed",
+      "selectionSource": "plan-default"
+    },
+    "deploymentProtection": [
+      "vercel_authentication"
+    ]
+  },
+  "local": {
+    "tests": 78,
+    "failed": 0,
+    "lint": "passed",
+    "build": "passed"
+  },
+  "resolvedBug": {
+    "id": "QA-PROD-001",
+    "problem": "An obsolete reading update did not return a conflict within the browser timeout on the hosted app.",
+    "change": "Check the loaded book version before opening a write RPC. If a matching reader/book operation already exists, keep the RPC identity/payload validation and replay behaviour. SQL still guards atomic races.",
+    "regressionTests": 3,
+    "hostedFinalValidation": "passed",
+    "nativeBrowserAfterFix": {
+      "status": 409,
+      "milliseconds": 1031
+    }
+  },
+  "verified": [
+    "Manual save/idempotence and remove/restore",
+    "Progress validation, retained note/input after simulated 503, offline single-sync",
+    "DNF UI, no-learning consent, restore and stale conflict",
+    "100% remains Reading; finish/rating/dates and Undo",
+    "Automatic permitted DNA evidence; Reduce and Undo",
+    "CSV UI import/duplicate preservation and real ISBN Google cover response",
+    "Dark preference persistence, narrow large-text/high-contrast screens",
+    "Stats metadata saving and private data export",
+    "Live recommendation generation, Helpful/rejection, Show less/Undo",
+    "Personalisation-off removes active DNA and saved matched signals",
+    "Direct hosted read isolation across ten private tables, plus known other-reader detail denied",
+    "36 signed-out viewport/error checks; no account creation or mail in the simulated Auth tests",
+    "Production reset request returned 200 with the production callback; owner confirmed receipt; password unchanged",
+    "Post-fix public/private route smoke checks and final reading tests passed"
+  ],
+  "cleanup": "All newly created test books soft-removed; disposable account preferences/permissions restored; test sessions signed out. Owner Library/password untouched. A test recommendation session and soft-removed test history remain only in the disposable account.",
+  "limits": [
+    "New-account confirmation and a complete password-change cycle at a controlled non-team inbox remain unverified. Supplied email was an existing account.",
+    "Account deletion and irreversible DNA reset were verified in local PostgreSQL tests, not executed against an existing hosted reader.",
+    "Hosted RLS checks are read probes across all private tables, not destructive cross-reader write/delete attempts.",
+    "Browser checks use headless Edge; physical-device coverage and a complete accessibility audit are not claimed.",
+    "Provider availability/quota and closed-app notification limitations remain. Recommendation confidence is not objective accuracy."
+  ],
+  "rawEvidence": [
+    "production-functional-2026-10-21.json",
+    "production-functional-recheck-2026-10-21.json",
+    "production-ui-confirmation-2026-10-21.json",
+    "production-final-validation-2026-10-21.json",
+    "production-public-auth-2026-10-21.json",
+    "production-reset-delivery-2026-10-21.json",
+    "production-smoke-after-fix-2026-10-21.json",
+    "production-stale-after-fix-2026-10-21.json"
+  ],
+  "triage": "Earlier failures remain recorded: the stale-update timeout is resolved by the deployed fix; selector-only failures were corrected to match actual selected-state names and the Finished reading label."
+}

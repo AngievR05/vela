@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-21T16:04:05.834Z",
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "checks": [
+    {
+      "name": "Verified controlled disposable reader and login",
+      "passed": true
+    },
+    {
+      "name": "DNF UI, denied learning, restore and stale-write protection recheck",
+      "passed": true
+    },
+    {
+      "name": "100 percent remains Reading; Finish UI saves rating/dates and Undo",
+      "passed": true
+    },
+    {
+      "name": "Saved operation retry after a newer save remains idempotent",
+      "passed": true
+    },
+    {
+      "name": "Logout denies protected API",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "cleanup": [
+    {
+      "kind": "created test entry hidden",
+      "passed": true
+    },
+    {
+      "kind": "preferences restored",
+      "passed": true
+    },
+    {
+      "kind": "permissions restored",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "No new public signup/reset inbox delivery or account deletion performed."
+  ],
+  "passed": true
+}

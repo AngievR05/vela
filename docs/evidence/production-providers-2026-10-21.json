@@ -1,0 +1,46 @@
+{
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "method": "Headless Edge; existing controlled disposable reader; bounded catalogue retry and one public-book description analysis, login, reload and local-scope logout; no Library or settings writes",
+  "checks": [
+    {
+      "check": "production login",
+      "passed": true
+    },
+    {
+      "check": "session persists after reload",
+      "passed": true
+    },
+    {
+      "check": "/api/home",
+      "status": 200
+    },
+    {
+      "check": "/api/settings",
+      "status": 200
+    },
+    {
+      "check": "/api/dna",
+      "status": 200
+    },
+    {
+      "check": "/api/stats",
+      "status": 200
+    },
+    {
+      "check": "Google Books production search",
+      "status": 200,
+      "returnedBooks": 3
+    },
+    {
+      "check": "Gemini production book clues",
+      "status": 200
+    },
+    {
+      "check": "logout clears protected access",
+      "status": 401
+    }
+  ],
+  "pageErrors": [],
+  "providersAvailable": true,
+  "passed": true
+}

@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-21",
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "deployment": {
+    "id": "dpl_6dkRHeYt3V6DS43TrzReiA4DGZXj",
+    "url": "https://vela-cd9zg0rc9-241077-6607.vercel.app",
+    "productionUrl": "https://vela-sepia-nine.vercel.app",
+    "inspectorUrl": "https://vercel.com/241077-6607/vela/6dkRHeYt3V6DS43TrzReiA4DGZXj",
+    "readyState": "READY",
+    "target": "production",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_6dkRHeYt3V6DS43TrzReiA4DGZXj",
+    "buildMachine": {
+      "cores": 2,
+      "memory": 8192,
+      "machine": "basic",
+      "selectionType": "fixed",
+      "selectionSource": "plan-default"
+    },
+    "deploymentProtection": [
+      "vercel_authentication"
+    ]
+  },
+  "project": "241077-6607/vela",
+  "plan": "hobby",
+  "framework": "nextjs",
+  "nodeVersion": "24.x",
+  "install": "npm ci",
+  "build": "npm run build",
+  "source": "Manual CLI source upload from the local workspace, including approved UI fixes. Not a Git-triggered deployment or a moved milestone tag.",
+  "upload": {
+    "files": 379,
+    "bytes": 1629266,
+    "excludedLocalCredentials": true
+  },
+  "environment": {
+    "keys": [
+      "NEXT_PUBLIC_SUPABASE_URL",
+      "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
+      "GOOGLE_BOOKS_API_KEY",
+      "GEMINI_API_KEY",
+      "GEMINI_FREE_TIER_VERIFIED",
+      "GEMINI_ENABLED",
+      "GEMINI_MODEL",
+      "GEMINI_FALLBACK_MODEL"
+    ],
+    "serverSecrets": [
+      "GOOGLE_BOOKS_API_KEY",
+      "GEMINI_API_KEY"
+    ],
+    "source": "Existing owner configuration; same verified free-tier Gemini project",
+    "valuesLogged": false
+  },
+  "verification": {
+    "testsPassed": 75,
+    "testsFailed": 0,
+    "lint": "passed",
+    "localBuild": "passed",
+    "hostedBuild": "passed",
+    "publicHttpChecks": 22,
+    "authenticatedResponsivePageChecks": 16,
+    "loginReloadLogout": "passed on controlled disposable reader",
+    "googleBooks": "200, 3 results on bounded retry after transient Google 503",
+    "gemini": "200, supported book-description clue response",
+    "browserBundleConfig": "Both public Supabase values match; no provider secrets found in 14 browser assets",
+    "productionDependencyVulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "supabaseUrls": "Owner confirmed production Site URL and scoped auth/callback redirect added"
+  },
+  "limits": [
+    "Public signup/confirmation/reset inbox delivery on the production URL is not verified; prior controlled local delivery is not that acceptance.",
+    "Hosted data-mutating flows, fresh two-reader hosted RLS audit and full recommendation accuracy evaluation were not repeated. Existing PostgreSQL regression/privacy tests passed.",
+    "A free-tier provider can still be unavailable or quota-limited. No paid service was enabled.",
+    "Git-triggered continuous deployment has not been connected.",
+    "Hosted install reported development-tool dependency advisories; the separate production-only audit reported zero."
+  ],
+  "evidence": [
+    "production-smoke-2026-10-21.json",
+    "production-browser-2026-10-21.json",
+    "production-providers-2026-10-21.json",
+    "production-client-config-2026-10-21.json"
+  ]
+}

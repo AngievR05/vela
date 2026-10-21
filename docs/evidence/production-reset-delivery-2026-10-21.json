@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-21T16:00:14.463Z",
+  "recipient": "Owner-supplied controlled existing inbox",
+  "status": 200,
+  "callbackOrigin": "https://vela-sepia-nine.vercel.app",
+  "callbackPath": "/auth/callback",
+  "passwordChanged": false,
+  "inboxReceipt": "Owner confirmed receipt on 21 October 2026",
+  "publicNonTeamSignup": "not established"
+}

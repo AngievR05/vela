@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-21T15:45:28.783Z",
+  "origin": "https://vela-sepia-nine.vercel.app",
+  "checks": [
+    {
+      "name": "Verified controlled disposable reader and login",
+      "passed": true
+    },
+    {
+      "name": "Manual add and idempotent retry",
+      "passed": true
+    },
+    {
+      "name": "Shared progress modal, invalid pages and retained form after 503",
+      "passed": true
+    },
+    {
+      "name": "Offline progress synchronises once on reconnect",
+      "passed": true
+    },
+    {
+      "name": "Finish/rate/dates, automatic permitted DNA, correction and Undo",
+      "passed": true
+    },
+    {
+      "name": "DNF denies learning, restore preserves progress, stale changes rejected",
+      "passed": false,
+      "error": "apiRequestContext.fetch: read ECONNRESET\nCall log:\n\u001b[2m  - → PATCH https://vela-sepia-nine.vercel.app/api/library/3b2f48fe-e2cc-4a6e-84d5-fe6594905ce1\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - co"
+    },
+    {
+      "name": "Rating, private notes, favourite, remove and restore",
+      "passed": true
+    },
+    {
+      "name": "CSV upload/import and duplicate preservation",
+      "passed": true
+    },
+    {
+      "name": "Dark mode saves, persists on reload and works on desktop",
+      "passed": true
+    },
+    {
+      "name": "Export contains only current reader and retained Library",
+      "passed": true
+    },
+    {
+      "name": "Known other-reader Book Detail is denied",
+      "passed": true
+    },
+    {
+      "name": "Unavailable recommendations retain request and recover to editor",
+      "passed": true
+    },
+    {
+      "name": "Live recommendation generation returns real catalogue identities",
+      "passed": true
+    },
+    {
+      "name": "Logout denies protected API",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "cleanup": [
+    {
+      "kind": "created test entry hidden",
+      "passed": true
+    },
+    {
+      "kind": "created test entry hidden",
+      "passed": true
+    },
+    {
+      "kind": "preferences restored",
+      "passed": true
+    },
+    {
+      "kind": "permissions restored",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "No new public signup/reset inbox delivery or account deletion performed."
+  ],
+  "passed": false
+}

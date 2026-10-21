@@ -11,6 +11,8 @@
 </p>
 
 <p align="center">
+  <a href="https://vela-sepia-nine.vercel.app"><strong>Live App</strong></a>
+  &nbsp;•&nbsp;
   <a href="https://github.com/AngievR05/vela"><strong>GitHub Repository</strong></a>
   &nbsp;•&nbsp;
   <a href="https://www.figma.com/design/KUdyt409wRaPTCSRdfeEH5/Vela?node-id=1-8"><strong>Figma Designs</strong></a>
@@ -74,7 +76,7 @@ The application combines:
 - Reading statistics and account/data controls.
 - Responsive desktop/mobile layouts, themes and accessibility preferences.
 
-The current application version is **1.0.0**. The final cleanup run on **21 October 2026** passed **71 tests**, lint and the production build. This identifies the tested MVP implementation; public deployment and email delivery have separate acceptance requirements.
+The current application version is **1.0.0**, deployed on **21 October 2026** at [vela-sepia-nine.vercel.app](https://vela-sepia-nine.vercel.app). Latest verification passed **78 tests**, lint and the production build. Hosted checks cover login, persistent sessions, logout and mobile/desktop pages. Public email delivery and external provider availability have separate acceptance requirements.
 
 ---
 
@@ -666,9 +668,9 @@ npm run lint
 npm run build
 ```
 
-The final cleanup run on **21 October 2026** passed:
+The latest verification on **21 October 2026** passed:
 
-- **71 tests**, with no failures.
+- **78 tests**, with no failures.
 - **122 baseline RLS assertions** inside the test suite.
 - **142 full-schema privacy/reset/deletion assertions** inside the test suite.
 - Lint and production build, with **36 generated pages**.
@@ -677,7 +679,7 @@ Assertion totals are not additional test cases. Tests use Node, PGlite, syntheti
 
 Separate browser/hosted records document real signed-in flows, controlled email receipt, imported cover recovery, responsive layouts and isolated error/Undo states. The Figma images in this README are design references, not evidence that a feature passed a hosted test.
 
-See [Testing](docs/TESTING.md), the [Bug and Testing Log](docs/BUG_AND_TEST_LOG.md), and [release evidence](docs/evidence/release-cleanup-2026-10-21.json). These commands were not rerun for this README-only update.
+See [Testing](docs/TESTING.md), the [Bug and Testing Log](docs/BUG_AND_TEST_LOG.md), historical [release evidence](docs/evidence/release-cleanup-2026-10-21.json), [production route checks](docs/evidence/production-smoke-2026-10-21.json) and [production browser checks](docs/evidence/production-browser-2026-10-21.json). The tagged cleanup previously had 71 tests; four loading-recovery tests and three stale-update regression tests bring the current total to 78. The hosted browser report separates core functionality from catalogue service availability.
 
 ---
 
@@ -691,7 +693,7 @@ Vela requires a Node-capable Next.js deployment such as Vercel or a self-hosted 
 | `v0.9-validated-beta` | Responsive/theme recovery and CSV covers |
 | `v1.0-mvp` | Tested final cleanup and package version 1.0.0 |
 
-Tags identify committed code, not deployments. The README/documentation can advance after the tagged implementation; existing tags are not moved. No public production URL is asserted here.
+Tags identify committed code, not deployments. The README/documentation can advance after the tagged implementation; existing tags are not moved. The current [production app](https://vela-sepia-nine.vercel.app) runs on Vercel Hobby; its hosted checks and limitations are recorded in the deployment runbook.
 
 Follow the [Deployment Runbook](docs/DEPLOYMENT.md) and [Release Milestones](docs/RELEASE_MILESTONES.md) for smoke tests, rollback and remaining acceptance work.
 
