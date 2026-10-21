@@ -1,0 +1,13 @@
+# Source deployments receive credentials through Vercel environment settings.
+.env
+.env.*
+.temp/
+.codex/
+.agents/
+.git/
+.next/
+node_modules/
+docs/
+tests/
+coverage/
+*.log

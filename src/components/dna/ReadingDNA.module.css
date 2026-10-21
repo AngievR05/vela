@@ -6,7 +6,7 @@
 .compact { gap:8px; }
 .header { display:flex; align-items:center; gap:8px; }
 .header h1 { font:600 30px/34px var(--font-display); }
-.back { display:flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; border:1px solid var(--colour-evergreen); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); color:var(--colour-evergreen,#183b34); text-decoration:none; font:500 22px/28px var(--font-body); cursor:pointer; }
+.back { composes:control from "../navigation/BackIcon.module.css"; display:flex; align-items:center; justify-content:center; flex:none; width:44px; height:44px; border:1px solid var(--colour-evergreen); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); color:var(--colour-evergreen,#183b34); text-decoration:none; font:500 22px/28px var(--font-body); cursor:pointer; }
 .subtitle,.muted { color:var(--vela-subtle-text,#5e5852); }
 .subtitle,.meta { font:400 14px/21px var(--font-body); }
 .title { font:600 32px/36px var(--font-display); }

@@ -12,7 +12,7 @@
 .header>div { flex:1; min-width:0; }
 .header h1 { font:700 28px/33.6px var(--font-display); overflow-wrap:anywhere; }
 .header p { margin-top:4px; color:var(--colour-plum,#75465a); font:500 11px/13.2px var(--font-body); }
-.back { display:grid; place-items:center; width:44px; min-width:44px; height:44px; border:1px solid var(--colour-evergreen,#183b34); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); color:var(--colour-evergreen,#183b34); font-size:22px; cursor:pointer; }
+.back { composes:control from "../navigation/BackIcon.module.css"; display:grid; place-items:center; width:44px; min-width:44px; height:44px; border:1px solid var(--colour-evergreen,#183b34); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); color:var(--colour-evergreen,#183b34); font-size:22px; cursor:pointer; }
 .screen .intro { font:700 34px/40.8px var(--font-display); color:var(--colour-evergreen,#183b34); }
 .screen .resultsIntro { font-size:29px; line-height:34.8px; }
 .form { display:flex; flex-direction:column; gap:12px; }
@@ -23,8 +23,9 @@
 .request>p { color:var(--colour-ink); font:400 10px/12px var(--font-body); }
 .request:focus-within { border-color:#75465a; box-shadow:0 0 0 1px #75465a; }
 .filters { display:flex; gap:8px; flex-wrap:wrap; }
-.screen .chip { min-height:44px; }
-.chip>span { min-height:44px; min-width:82px; border:1px solid var(--colour-evergreen,#183b34); border-radius:50%; background:var(--vela-surface-base,#fcfaf6); font:600 11px/13.2px var(--font-body); padding:7px 12px; }
+.screen .chip { min-height:44px; padding:0; }
+.chip>span { justify-content:center; min-height:44px; min-width:82px; border:0; border-radius:16px; background:var(--vela-beige,#e9e1d5); color:var(--colour-evergreen,#183b34); font:600 11px/13.2px var(--font-body); padding:0 12px; }
+.filters .chip:first-child>span { min-width:101px; }
 .chip svg { display:none; }
 .chip[aria-pressed="true"]>span { background:#183b34; color:#fbf8f2; }
 .screen .primary { width:100%; min-height:52px; border-radius:18px; font:600 15px/18px var(--font-body); background:#183b34; color:#fbf8f2; border:0; box-shadow:0 10px 22px #22201e1a,0 3px 6px #22201e1f; }

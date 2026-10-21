@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-21",
+  "scope": "Browser annotations: Discover filter shapes and shared back-arrow centring",
+  "figma": {
+    "fileKey": "KUdyt409wRaPTCSRdfeEH5",
+    "discover": "333:354",
+    "dna": "327:325",
+    "backAsset": "768:21928",
+    "changed": false
+  },
+  "changes": [
+    "Discover default filters use 16px corners, beige fill and 44px height from final UI; labels are centred.",
+    "Shared 44px back controls remove browser padding and prevent SVG shrinking.",
+    "Local 24px SVG replaced with the exact centred asset exported from the current DNA frame.",
+    "Entry, legal and setup use the same BackIcon as Library, reading, Discover, DNA, stats and settings."
+  ],
+  "asset": {
+    "path": "public/auth/final-back.svg",
+    "sha256": "21d344413ae42393cc89adbced903897836560f8dd0d10ce0a00955d20009488",
+    "width": 24,
+    "height": 24
+  },
+  "verification": {
+    "lint": "passed",
+    "productionBuild": "passed",
+    "method": "Isolated controls rendered in headless Edge using actual production CSS-module exports and CSS, with font fallbacks. Both button and link variants; no account or backend data involved.",
+    "combinations": [
+      {
+        "width": 320,
+        "theme": "light",
+        "overflow": false
+      },
+      {
+        "width": 320,
+        "theme": "dark",
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "theme": "light",
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "theme": "dark",
+        "overflow": false
+      },
+      {
+        "width": 495,
+        "theme": "light",
+        "overflow": false
+      },
+      {
+        "width": 495,
+        "theme": "dark",
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "theme": "light",
+        "overflow": false
+      },
+      {
+        "width": 1440,
+        "theme": "dark",
+        "overflow": false
+      }
+    ],
+    "backControlMeasurements": 128,
+    "maxIconCentreDeltaPx": 0,
+    "pillMeasurements": 24,
+    "pillHeight": 44,
+    "pillRadius": 16
+  },
+  "limitations": [
+    "These are isolated control geometry checks, not a complete authenticated-screen visual audit.",
+    "Runtime reader data and responsive desktop layouts intentionally vary from static mobile design examples."
+  ]
+}

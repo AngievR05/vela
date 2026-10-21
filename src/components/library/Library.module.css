@@ -16,7 +16,7 @@
 .subHeader { gap: 10px; min-height: 64px; }
 .subHeader p { font: 500 11px/15px var(--font-body); }
 .screen .addButton { flex: 0 0 82px; min-height: 44px; border-radius: 14px; padding: 8px 4px; font: 600 12px/16px var(--font-body); color: var(--vela-surface-base,#fbf8f2); }
-.back { display: flex; align-items: center; justify-content: center; flex: 0 0 44px; width: 44px; min-height: 44px; padding: 0; background: var(--vela-surface-base,#fbf8f2); border: 1px solid rgb(24 59 52 / .18); border-radius: 22px; font: 400 22px/26px var(--font-body); color: var(--colour-evergreen); cursor: pointer; }
+.back { composes:control from "../navigation/BackIcon.module.css"; display: flex; align-items: center; justify-content: center; flex: 0 0 44px; width: 44px; min-height: 44px; padding: 0; background: var(--vela-surface-base,#fbf8f2); border: 1px solid rgb(24 59 52 / .18); border-radius: 22px; font: 400 22px/26px var(--font-body); color: var(--colour-evergreen); cursor: pointer; }
 .tabs { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 3px; padding: 0; background: transparent; border: 0; }
 .tabs>button { min-width: 0; min-height: 44px; padding: 6px 2px; border: 1px solid rgb(185 176 165 / .7); border-radius: 18px; font: 500 11px/14px var(--font-body); background: var(--vela-surface-base,#fbf8f2); }
 .tabs>button[aria-selected="true"] { background: var(--colour-evergreen); color: var(--vela-surface-base,#fbf8f2); border-color: var(--colour-evergreen); }

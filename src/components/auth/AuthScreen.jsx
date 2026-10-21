@@ -1,3 +1,4 @@
+import BackIcon from "@/components/navigation/BackIcon";
 import PageArtwork from "@/components/layout/PageArtwork";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,7 +24,7 @@ export default function AuthScreen({ children, tone = "brass", className = "" })
 export function AuthNavigation({ label, href = "/welcome", backLabel = "Back to welcome" }) {
   return <nav className={styles.navigation} aria-label="Account navigation">
     <Link href={href} className={styles.back} aria-label={backLabel}>
-      <Image src="/auth/final-back.svg" alt="" width={24} height={24} unoptimized />
+      <BackIcon />
     </Link>
     <p>{label}</p>
   </nav>;

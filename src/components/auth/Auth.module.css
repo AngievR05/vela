@@ -46,7 +46,7 @@
 .content { position: relative; display: flex; flex-direction: column; gap: var(--vela-content-gap,10px); min-height: 100svh; padding:max(18px,env(safe-area-inset-top,0px)) 16px max(24px,env(safe-area-inset-bottom,0px)); }
 .navigation { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
 .navigation p { color: var(--colour-plum); font-size: 11px; font-weight: 600; line-height: 15px; text-align: right; }
-.back { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; }
+.back { composes:control from "../navigation/BackIcon.module.css"; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; }
 .headingGroup { display: flex; flex-direction: column; gap: 10px; }
 .kicker { font-size: 11px; line-height: 15px; font-weight: 600; color: var(--auth-brass); }
 .heading { position: relative; margin: 0; font: 600 34px/38px var(--font-display); }

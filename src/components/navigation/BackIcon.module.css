@@ -1,1 +1,14 @@
+.control {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  flex:none;
+  width:44px;
+  min-width:44px;
+  height:44px;
+  padding:0;
+  line-height:0;
+}
+.icon { display:block; flex:none; margin:0; }
 :global(html[data-vela-theme="dark"]) .icon { filter:brightness(0) invert(1); }

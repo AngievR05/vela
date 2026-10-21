@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import BackIcon from "@/components/navigation/BackIcon";
 import { useEffect, useRef, useState } from "react";
 import AuthScreen, { BrandLogo } from "@/components/auth/AuthScreen";
 import Button from "@/components/ui/Button";
@@ -133,7 +133,7 @@ export default function ReadingSetup({ userId, initial }) {
   return <AuthScreen tone={tone} folio={folio} artDirectory="reading-setup" decoration="spark" className={`${styles.screen} ${styles[tone]}`}>
     {stage !== "intro" && <nav className={styles.navigation} aria-label="Reading setup navigation">
       {stage !== "created" ? <button type="button" className={styles.back} aria-label="Back" onClick={back} disabled={disabled}>
-        <Image src="/auth/final-back.svg" width={24} height={24} alt="" unoptimized />
+        <BackIcon />
       </button> : <span />}
       <p>{chapter}</p>
     </nav>}

@@ -1,12 +1,12 @@
 import AuthScreen, { AuthNavigation } from "./AuthScreen";
 import Button from "@/components/ui/Button";
-import Image from "next/image";
+import BackIcon from "@/components/navigation/BackIcon";
 import styles from "./Auth.module.css";
 
 export default function LegalNotice({ kind, onBack }) {
   const privacy = kind === "privacy";
   return <AuthScreen>
-    {onBack ? <nav className={styles.navigation} aria-label="Account navigation"><button type="button" className={styles.back} onClick={onBack} aria-label="Back to account"><Image src="/auth/final-back.svg" width={24} height={24} alt="" unoptimized /></button><p>{privacy ? "PRIVACY NOTICE" : "TERMS"}</p></nav> : <AuthNavigation label={privacy ? "PRIVACY NOTICE" : "TERMS"} href="/signup" backLabel="Back to account" />}
+    {onBack ? <nav className={styles.navigation} aria-label="Account navigation"><button type="button" className={styles.back} onClick={onBack} aria-label="Back to account"><BackIcon /></button><p>{privacy ? "PRIVACY NOTICE" : "TERMS"}</p></nav> : <AuthNavigation label={privacy ? "PRIVACY NOTICE" : "TERMS"} href="/signup" backLabel="Back to account" />}
     <h1 className={styles.heading}>{privacy ? "Privacy Notice" : "Terms"}</h1>
     <article className={styles.legalBody}>{privacy ? <>
       <section><h2>Your account</h2><p>Your email supports login and password recovery.</p></section>

@@ -6,7 +6,7 @@
 .screen h1, .screen h2, .screen p { margin: 0; }
 .navigation { display: flex; align-items: center; justify-content: space-between; min-height: 44px; }
 .navigation p { font: 600 11px/15px var(--font-body); color: var(--colour-plum,#75465a); text-align: right; }
-.back { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--colour-evergreen,#183b34); background: var(--vela-surface-base,#fcfaf6); border-radius: 50%; cursor: pointer; }
+.back { composes:control from "../navigation/BackIcon.module.css"; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--colour-evergreen,#183b34); background: var(--vela-surface-base,#fcfaf6); border-radius: 50%; cursor: pointer; }
 .heading { position: relative; font: 600 33px/37px var(--font-display); outline: none; }
 .heading::before { content: ""; position: absolute; z-index: -1; right: 30px; top: 24px; width: 150px; height: 13px; border-radius: 2px; background: #d9ae4b; }
 .description { font: 400 15px/22px var(--font-body); color: var(--vela-subtle-text,#68625d); }

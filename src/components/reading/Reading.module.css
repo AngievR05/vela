@@ -64,3 +64,4 @@
  .discardDialog { min-height:0; }
  .progressNote { margin-top:16px; }
 }
+.back { composes:control from "../navigation/BackIcon.module.css"; }
