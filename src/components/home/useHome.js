@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { applyBookMutation, bookMutationSchema, homeCacheKey, homeQueueKey, homeSnapshotSchema, libraryBookSchema, parseHomeQueue, parseHomeSnapshot, queueMutation, undoQueuedMutation } from "@/lib/home-data";
+import { applyBookMutation, bookMutationSchema, homeCacheKey, homeQueueKey, homeSnapshotSchema, libraryBookSchema, queueMutation, undoQueuedMutation } from "@/lib/home-data";
+import {restoreHomeState} from "@/lib/home-recovery";
 import { notifyReadingActivity, activityEventKey } from "@/lib/reading-activity-events";
 
 export default function useHome(userId, { endpoint = "/api/home", cacheKey = homeCacheKey(userId), returnPath = "/home" } = {}) {
@@ -79,7 +80,7 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
       if (!navigator.onLine) { setOnline(false); setPhase("offline"); return; }
       loading = true;
       setOnline(true);
-      if (showLoading || !current.snapshot) setPhase("loading");
+      if (!current.snapshot) setPhase("loading");
       try {
         await sync(showLoading);
         if (!live || !current.active) return;
@@ -94,20 +95,26 @@ export default function useHome(userId, { endpoint = "/api/home", cacheKey = hom
         if (revision !== current.revision) { setPhase(navigator.onLine ? "ready" : "offline"); return; }
         const merged = current.queue.reduce((value, mutation) => applyBookMutation(value, mutation), parsed.data);
         publish(merged);
+        if(!current.queue.length)setSyncError("");
         setPhase(navigator.onLine ? "ready" : "offline");
       } catch {
-        if (live && current.active) setPhase(navigator.onLine ? "error" : "offline");
+        if (live && current.active) {
+          setPhase(navigator.onLine ? (current.snapshot?"ready":"error") : "offline");
+          if(current.snapshot&&!current.queue.length)setSyncError("Your Library could not refresh. Showing saved data; please retry.");
+        }
       } finally { loading = false; if (reloadPending) { reloadPending = false; load(); } }
     }
     loadRef.current = load;
     async function init() {
       if (!live) return;
       try {
-        const saved = parseHomeSnapshot(localStorage.getItem(cacheKey), userId);
-        current.queue = parseHomeQueue(localStorage.getItem(homeQueueKey(userId)));
+        const restored=restoreHomeState({rawSnapshot:localStorage.getItem(cacheKey),rawQueue:localStorage.getItem(homeQueueKey(userId)),rawActivity:localStorage.getItem(activityEventKey(userId)),userId,online:navigator.onLine});
+        current.queue = restored.queue;
         if (!live || !current.active) return;
         setQueue(current.queue);
-        if (saved) publish(saved);
+        setOnline(navigator.onLine);setPhase(restored.phase);
+        if (restored.snapshot) publish(restored.snapshot);
+        if(!restored.revalidate)return;
       } catch { /* Restricted storage is optional for online use. */ }
       await load();
     }

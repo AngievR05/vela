@@ -60,12 +60,7 @@ function LibraryShelves({ userId, initialTab, onOfflineBook }) {
         : !visible.length ? <Card className={styles.empty}><h2>{query ? "No books found" : books.length ? "This shelf is waiting." : "Your Library starts here."}</h2>
           <p>{query || activeFilters ? "Try another search or clear your filters." : "Add a book and give your next chapter a place."}</p>
           {query || activeFilters ? <Button variant="secondary" onClick={()=>{setQuery("");setFilters({genres:[],short:false,favourites:false});}}>Clear search and filters</Button> : <Button href="/library/add" disabled={offline}>Add a book</Button>}
-        </Card> : view === "grid" ? <div className={styles.grid}>{visible.map(cover)}</div> : <div className={styles.shelves}>{libraryStatuses.filter(item=>tab === "all" || item.value === tab).map(item=>{
-          const shelf = visible.filter(book=>book.status === item.value);
-          return <section key={item.value} className={styles.shelf}><div className={styles.shelfHeading}><h2>{item.heading}</h2><p>{shelf.length} {shelf.length === 1 ? "book" : "books"}</p></div>
-            {shelf.length ? <div className={styles.shelfBooks}>{shelf.map(cover)}</div> : <div className={styles.emptyShelf}>No books on this shelf yet.</div>}
-          </section>;
-        })}</div>}
+        </Card> : <LibraryResults key={JSON.stringify([tab,query,sort,view,filters])} visible={visible} tab={tab} view={view} cover={cover} />}
     </div>
     {tab==="reading"&&<Button href="/library/reading" variant="tertiary">Current reading & progress</Button>}{tab==="dnf"&&<Button href="/library/graveyard" variant="tertiary">Open Graveyard</Button>}
     <BottomSheet className={styles.sheet} backdropClassName={styles.backdrop} open={modal === "filter"} title="Filter Library" onClose={close}>
@@ -82,4 +77,17 @@ function LibraryShelves({ userId, initialTab, onOfflineBook }) {
       <div className={styles.form}>{Object.entries(sortLabels).map(([value,label])=><label key={value} className={styles.choice}><input type="radio" name="library-sort" checked={sort === value} onChange={()=>{setSort(value);setModal(null);}} />{value === "recent" ? "Recently updated" : label}</label>)}</div>
     </BottomSheet>
   </LibraryShell>;
+}
+
+// Window only the covers; search and filtering still include the entire Library.
+function LibraryResults({visible,tab,view,cover}) {
+  const [limits,setLimits]=useState({grid:48});
+  function more(key,step){setLimits(previous=>({...previous,[key]:(previous[key]??12)+step}));}
+  if(view==="grid")return <><div className={styles.grid}>{visible.slice(0,limits.grid).map(cover)}</div>{visible.length>limits.grid&&<Button variant="secondary" onClick={()=>more("grid",48)}>Show more books ({visible.length-limits.grid} remaining)</Button>}</>;
+  return <div className={styles.shelves}>{libraryStatuses.filter(item=>tab==="all"||item.value===tab).map(item=>{
+    const shelf=visible.filter(book=>book.status===item.value),limit=limits[item.value]??12;
+    return <section key={item.value} className={styles.shelf}><div className={styles.shelfHeading}><h2>{item.heading}</h2><p>{shelf.length} {shelf.length===1?"book":"books"}</p></div>
+      {shelf.length?<><div className={styles.shelfBooks}>{shelf.slice(0,limit).map(cover)}</div>{shelf.length>limit&&<Button variant="tertiary" onClick={()=>more(item.value,12)}>Show more {item.label.toLowerCase()} books ({shelf.length-limit} remaining)</Button>}</>:<div className={styles.emptyShelf}>No books on this shelf yet.</div>}
+    </section>;
+  })}</div>;
 }

@@ -11,6 +11,11 @@ export const settingsMutationSchema = z.discriminatedUnion("kind", [
   z.object({kind:z.literal("reset"), confirmation:z.literal("RESET")}).strict(),
 ]);
 export function settingsCacheKey(userId) { return `vela:settings:v1:${userId}`; }
+export function readerPreferencesResponse(userId,body) {
+  if(body?.userId!==userId)return null;
+  const parsed=readerPreferencesSchema.safeParse(body.preferences);
+  return parsed.success?parsed.data:null;
+}
 export function readerPreferenceUpdate(userId,event) {
   let value;
   if(event.type==="storage"){

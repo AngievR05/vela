@@ -1,0 +1,231 @@
+{
+  "date": "2026-10-21",
+  "method": "Three sequential complete HTTP responses per route, production build, same read-only disposable two-book reader. Includes Supabase/network variation; not browser paint measurements.",
+  "summary": [
+    {
+      "route": "/home",
+      "beforeMedianMs": 715,
+      "afterMedianMs": 571,
+      "improvementPercent": 20
+    },
+    {
+      "route": "/library",
+      "beforeMedianMs": 979,
+      "afterMedianMs": 539,
+      "improvementPercent": 45
+    },
+    {
+      "route": "/library/[id]",
+      "beforeMedianMs": 1370,
+      "afterMedianMs": 759,
+      "improvementPercent": 45
+    },
+    {
+      "route": "/api/home",
+      "beforeMedianMs": 753,
+      "afterMedianMs": 786,
+      "improvementPercent": -4
+    }
+  ],
+  "samples": [
+    {
+      "label": "before",
+      "libraryBooks": 2,
+      "results": [
+        {
+          "route": "/home",
+          "run": 1,
+          "headerMs": 1919,
+          "completeMs": 5661,
+          "bytes": 21329
+        },
+        {
+          "route": "/library",
+          "run": 1,
+          "headerMs": 828,
+          "completeMs": 10227,
+          "bytes": 31088
+        },
+        {
+          "route": "/library/[id]",
+          "run": 1,
+          "headerMs": 867,
+          "completeMs": 1370,
+          "bytes": 37201
+        },
+        {
+          "route": "/api/home",
+          "run": 1,
+          "headerMs": 750,
+          "completeMs": 753,
+          "bytes": 5770
+        },
+        {
+          "route": "/home",
+          "run": 2,
+          "headerMs": 280,
+          "completeMs": 715,
+          "bytes": 21329
+        },
+        {
+          "route": "/library",
+          "run": 2,
+          "headerMs": 247,
+          "completeMs": 979,
+          "bytes": 31088
+        },
+        {
+          "route": "/library/[id]",
+          "run": 2,
+          "headerMs": 1200,
+          "completeMs": 1669,
+          "bytes": 36873
+        },
+        {
+          "route": "/api/home",
+          "run": 2,
+          "headerMs": 1012,
+          "completeMs": 1014,
+          "bytes": 5770
+        },
+        {
+          "route": "/home",
+          "run": 3,
+          "headerMs": 258,
+          "completeMs": 695,
+          "bytes": 21329
+        },
+        {
+          "route": "/library",
+          "run": 3,
+          "headerMs": 278,
+          "completeMs": 692,
+          "bytes": 31088
+        },
+        {
+          "route": "/library/[id]",
+          "run": 3,
+          "headerMs": 229,
+          "completeMs": 649,
+          "bytes": 36873
+        },
+        {
+          "route": "/api/home",
+          "run": 3,
+          "headerMs": 655,
+          "completeMs": 656,
+          "bytes": 5770
+        }
+      ]
+    },
+    {
+      "label": "after",
+      "libraryBooks": 2,
+      "results": [
+        {
+          "route": "/home",
+          "run": 1,
+          "headerMs": 1974,
+          "completeMs": 2248,
+          "bytes": 20805
+        },
+        {
+          "route": "/library",
+          "run": 1,
+          "headerMs": 297,
+          "completeMs": 545,
+          "bytes": 30812
+        },
+        {
+          "route": "/library/[id]",
+          "run": 1,
+          "headerMs": 837,
+          "completeMs": 1338,
+          "bytes": 36968
+        },
+        {
+          "route": "/api/home",
+          "run": 1,
+          "headerMs": 714,
+          "completeMs": 715,
+          "bytes": 5770
+        },
+        {
+          "route": "/home",
+          "run": 2,
+          "headerMs": 271,
+          "completeMs": 498,
+          "bytes": 20805
+        },
+        {
+          "route": "/library",
+          "run": 2,
+          "headerMs": 257,
+          "completeMs": 539,
+          "bytes": 30812
+        },
+        {
+          "route": "/library/[id]",
+          "run": 2,
+          "headerMs": 257,
+          "completeMs": 696,
+          "bytes": 36968
+        },
+        {
+          "route": "/api/home",
+          "run": 2,
+          "headerMs": 1855,
+          "completeMs": 1855,
+          "bytes": 5770
+        },
+        {
+          "route": "/home",
+          "run": 3,
+          "headerMs": 339,
+          "completeMs": 571,
+          "bytes": 20805
+        },
+        {
+          "route": "/library",
+          "run": 3,
+          "headerMs": 257,
+          "completeMs": 490,
+          "bytes": 30812
+        },
+        {
+          "route": "/library/[id]",
+          "run": 3,
+          "headerMs": 275,
+          "completeMs": 759,
+          "bytes": 36968
+        },
+        {
+          "route": "/api/home",
+          "run": 3,
+          "headerMs": 785,
+          "completeMs": 786,
+          "bytes": 5770
+        }
+      ]
+    }
+  ],
+  "clientChanges": {
+    "freshSnapshotReuseMs": 30000,
+    "initialCoversPerShelf": 12,
+    "initialGridCovers": 48,
+    "search": "Full Library before windowing",
+    "invalidation": "Reading activity, pending mutations, expiry, reconnect and manual refresh"
+  },
+  "verification": {
+    "tests": 75,
+    "failed": 0,
+    "lint": "passed",
+    "productionBuild": "passed, including final offline-safe rebuild"
+  },
+  "limits": [
+    "No new browser paint or visual measurements in this run.",
+    "Large-library cover reduction follows the rendering bound; HTTP reader has two books.",
+    "Final source keeps offline detail statically bundled; timing sample used a lazy offline detail import, which was removed to preserve cold offline access. Server blocking-settings removal and cache changes are identical.",
+    "An additional final timing rerun was stopped after an extended wait without producing samples; no extra timing result is claimed."
+  ]
+}
