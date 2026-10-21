@@ -1,188 +1,777 @@
 # Vela
 
-**Your reading life, intelligently organised.**
+<p align="center">
+  <img src="./docs/images/figma/cover.png" alt="Vela Figma cover — your reading life, intelligently organised" width="100%" />
+</p>
 
-Latest checks (21 October 2026): **71 passing tests**, updated prototype flows checked in the browser at 320–1440px, and lint/build passed. The earlier functional run passed 22 hosted API checks and verified dark-mode/appearance and reading-edit recovery. Live Google Books availability remains intermittent; public SMTP delivery is still a setup item. Earlier authentication checks verified signup activation/login/session/logout and confirmation/reset-email receipt for controlled test inboxes. See the [bug and testing log](docs/BUG_AND_TEST_LOG.md), [test-account guide](docs/authentication-test-accounts.md) and [risks update](docs/RISKS_UPDATE.md) for evidence and remaining checks.
+<p align="center"><strong>Your reading life, intelligently organised.</strong></p>
 
-Vela is a mobile-first responsive reading companion for self-directed readers. The MVP centres on the loop:
+<p align="center">
+  A responsive reading companion built with Next.js, React, Supabase, Google Books and Gemini, centred on transparent personalisation and reader control.
+</p>
 
-**Track → Reflect → Learn → Recommend → Correct → Read**
+<p align="center">
+  <a href="https://github.com/AngievR05/vela"><strong>GitHub Repository</strong></a>
+  &nbsp;•&nbsp;
+  <a href="https://www.figma.com/design/KUdyt409wRaPTCSRdfeEH5/Vela?node-id=1-8"><strong>Figma Designs</strong></a>
+  &nbsp;•&nbsp;
+  <a href="https://www.figma.com/design/KUdyt409wRaPTCSRdfeEH5/Vela?node-id=1-10"><strong>Interactive Prototype</strong></a>
+</p>
 
-The application uses transparent, reader-controlled personalisation. Readers manage their library, build an editable Reading DNA, request three focused book recommendations, inspect why a book was suggested, and correct the signals that influenced the result.
+---
 
-## Stack
+## Table of Contents
 
-- Next.js + React
-- JavaScript
-- Plain CSS + CSS Modules
-- Supabase Free for PostgreSQL, authentication and Row Level Security
-- Google Books API for book metadata and candidate search
-- Google Gemini API for structured recommendation interpretation
-- Zod for validation
-- React Hook Form for forms
-- Lucide React for interface icons
-- Vercel Hobby for deployment
-- GitHub for version control and issues
+- [Project Overview](#project-overview)
+- [Project Brief](#project-brief)
+- [Problem and Concept](#problem-and-concept)
+- [Core Experience](#core-experience)
+- [Wireframes](#wireframes)
+- [Key Features](#key-features)
+- [User Flow](#user-flow)
+- [Technology Stack](#technology-stack)
+- [Application Architecture](#application-architecture)
+- [Supabase Data Model](#supabase-data-model)
+- [CRUD Operations](#crud-operations)
+- [Recommendations and Reading DNA](#recommendations-and-reading-dna)
+- [CSV Import and Book Covers](#csv-import-and-book-covers)
+- [Responsive Interface and Accessibility](#responsive-interface-and-accessibility)
+- [Design System](#design-system)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Environment Configuration](#environment-configuration)
+- [Installation](#installation)
+- [Running Vela](#running-vela)
+- [How to Use Vela](#how-to-use-vela)
+- [Supabase Setup](#supabase-setup)
+- [APIs and Technical Documentation](#apis-and-technical-documentation)
+- [Testing and Verification](#testing-and-verification)
+- [Deployment and Version Milestones](#deployment-and-version-milestones)
+- [Known Limitations](#known-limitations)
+- [Future Improvements](#future-improvements)
+- [Project Information](#project-information)
+- [Acknowledgements](#acknowledgements)
+- [Licence](#licence)
+- [Project Statement](#project-statement)
 
-## Start the project
+---
 
-Use Node.js 20.19 or later. Clone/open the repository, then install the dependencies from its checked-in lockfile:
+## Project Overview
+
+**Vela** is a reading companion for self-directed readers who want to organise their books, understand their reading preferences and decide what to read next.
+
+Readers can track their Library, record progress and reflection, request focused recommendations, inspect the evidence behind suggestions, and correct the assumptions that shape their **Reading DNA**.
+
+The application combines:
+
+- Supabase authentication and reader-private PostgreSQL data.
+- Reading, TBR, Finished and Set aside shelves.
+- Google Books metadata, search and real book covers.
+- CSV Library import and private manual entries.
+- Shared progress, finish and DNF flows.
+- Gemini-assisted, evidence-checked recommendations.
+- Editable Reading DNA and explicit learning permissions.
+- Reading statistics and account/data controls.
+- Responsive desktop/mobile layouts, themes and accessibility preferences.
+
+The current application version is **1.0.0**. The final cleanup run on **21 October 2026** passed **71 tests**, lint and the production build. This identifies the tested MVP implementation; public deployment and email delivery have separate acceptance requirements.
+
+---
+
+## Project Brief
+
+Vela explores how a reading companion can provide useful personalisation while keeping its assumptions visible and editable.
+
+The Figma cover frames the design work as **UX 300 — Manifesto in Motion**. The implemented application carries that direction into a working reading experience:
+
+| Project focus | Vela response |
+| --- | --- |
+| Transparent personalisation | Separate book facts from permitted Reading DNA evidence |
+| Reader control | Optional setup, independent permissions and explicit signal corrections |
+| Practical reading support | Library shelves, progress, dates, ratings, notes and CSV import |
+| Focused discovery | Three suitable verified suggestions when the catalogue supports them |
+| Privacy | Reader-scoped sessions, Row Level Security and private-field exclusions |
+| Responsive interaction | Touch-friendly phone flows and a persistent desktop sidebar |
+
+The [Figma designs](https://www.figma.com/design/KUdyt409wRaPTCSRdfeEH5/Vela?node-id=1-8) document the visual system; the [prototype](https://www.figma.com/design/KUdyt409wRaPTCSRdfeEH5/Vela?node-id=1-10) documents the journeys and conditional states.
+
+---
+
+## Problem and Concept
+
+A saved Library can show what someone has read without explaining what they want to read now. Recommendations can also become difficult to trust when the preferences behind them remain hidden or cannot be corrected.
+
+Vela connects tracking and discovery through an editable preference model. A reader can ask for a particular mood or kind of story, see what influenced a suggestion, and decide which signals should matter in future.
+
+The core loop is:
+
+> **Track → Reflect → Learn → Recommend → Correct → Read**
+
+Personalisation remains optional. A reader can use the Library and reading tracker without allowing their ratings, history or DNF reasons to shape suggestions.
+
+---
+
+## Core Experience
+
+### Track
+
+Build a Library through Google Books search, manual entry or CSV import. Organise books by shelf and update exact-page or percentage progress from the same shared editor.
+
+### Reflect
+
+Finish a book with an optional rating, structured reflection, dates and private notes. Set a book aside with optional reasons and a separate learning choice. Reaching 100% progress does not automatically mark it Finished.
+
+### Learn
+
+Reading DNA refreshes from currently permitted activity. Global permissions, per-book choices, stopped/reduced signals and reset cutoffs determine what can contribute. Private notes are not used in AI payloads.
+
+### Recommend
+
+Describe the next read and refine source, genre, mood or length. Vela retrieves actual Google Books candidates and validates Gemini's structured suggestions against those facts.
+
+### Correct
+
+Inspect why a book was suggested. Record feedback, ask for less of a pattern, or explicitly Keep, Reduce or Stop a signal. Ordinary Helpful/rejection does not silently rewrite DNA.
+
+---
+
+## Wireframes
+
+The images below are **original exports from my Figma file**, including the cover and representative screens from **➔ A. Final UI (PNGs)**. They are stored locally in `docs/images/figma/` so the README does not depend on expiring asset URLs.
+
+These are design references, not browser screenshots. Sample names, books and counts illustrate the states. Device status bars, home indicators and presentation keyboards belong to the wireframes and are not duplicated in the web application. Some frames show states of the same flow rather than additional navigation steps.
+
+### Entry and Authentication
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="./docs/images/figma/splash.png" alt="Vela Figma splash screen" width="260" /><br /><strong>Splash</strong></td>
+    <td align="center" width="50%"><img src="./docs/images/figma/welcome.png" alt="Vela Figma welcome screen" width="260" /><br /><strong>Welcome</strong></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src="./docs/images/figma/signup.png" alt="Vela Figma sign-up screen" width="260" /><br /><strong>Sign up</strong></td>
+    <td align="center" width="50%"><img src="./docs/images/figma/login.png" alt="Vela Figma login screen" width="260" /><br /><strong>Log in</strong></td>
+  </tr>
+</table>
+
+### Reading Setup and Permissions
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="./docs/images/figma/setup.png" alt="Vela Figma reading setup introduction" width="260" /><br /><strong>Reading setup</strong></td>
+    <td align="center" width="50%"><img src="./docs/images/figma/permissions.png" alt="Vela Figma independent learning permissions" width="260" /><br /><strong>Learning permissions</strong></td>
+  </tr>
+</table>
+
+### Home, Library and Add Book
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="./docs/images/figma/home.png" alt="Vela Figma populated Home screen" width="220" /><br /><strong>Home</strong></td>
+    <td align="center" width="33%"><img src="./docs/images/figma/library.png" alt="Vela Figma Library shelves" width="220" /><br /><strong>Library</strong></td>
+    <td align="center" width="33%"><img src="./docs/images/figma/add-book.png" alt="Vela Figma Add Book search results" width="220" /><br /><strong>Add book</strong></td>
+  </tr>
+</table>
+
+### Book Detail, Progress and Finish
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="./docs/images/figma/book-detail.png" alt="Vela Figma reading book detail" width="220" /><br /><strong>Book detail</strong></td>
+    <td align="center" width="33%"><img src="./docs/images/figma/progress.png" alt="Vela Figma shared progress sheet" width="220" /><br /><strong>Update progress</strong></td>
+    <td align="center" width="33%"><img src="./docs/images/figma/finish.png" alt="Vela Figma finish book sheet" width="220" /><br /><strong>Finish book</strong></td>
+  </tr>
+</table>
+
+### Set Aside, Discover and Recommendations
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="./docs/images/figma/dnf.png" alt="Vela Figma DNF and learning choice sheet" width="220" /><br /><strong>Set aside / DNF</strong></td>
+    <td align="center" width="33%"><img src="./docs/images/figma/discover.png" alt="Vela Figma Discover request screen" width="220" /><br /><strong>Discover</strong></td>
+    <td align="center" width="33%"><img src="./docs/images/figma/recommendations.png" alt="Vela Figma three recommendation results" width="220" /><br /><strong>Recommendations</strong></td>
+  </tr>
+</table>
+
+### Reading DNA, Stats and Settings
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="./docs/images/figma/dna.png" alt="Vela Figma Reading DNA overview" width="220" /><br /><strong>Reading DNA</strong></td>
+    <td align="center" width="33%"><img src="./docs/images/figma/stats.png" alt="Vela Figma Reading Stats overview" width="220" /><br /><strong>Reading stats</strong></td>
+    <td align="center" width="33%"><img src="./docs/images/figma/settings.png" alt="Vela Figma Settings and Account root" width="220" /><br /><strong>Settings</strong></td>
+  </tr>
+</table>
+
+Frame names and node IDs are recorded in the [Figma export manifest](docs/images/figma/README.md). Separate [browser captures](docs/images/README.md) document the running implementation.
+
+---
+
+## Key Features
+
+### Authentication
+
+Email/password registration, confirmation, login, logout, password recovery/reset, persistent cookie-backed sessions and protected routes. Recoverable errors retain form input. Account entry requires only email and password.
+
+### Reading Setup
+
+Optional genre, story-element, pacing and mood choices; independent ratings/history/DNF permissions; editable review and a skip-personalisation path. Saved settings reload from Supabase, and unsaved drafts are reader-scoped.
+
+### Library and Book Detail
+
+Reading, TBR, Finished and Set aside shelves with search, filters, sorting, shelves/grid views and clickable real covers. Detail includes catalogue facts, description, progress, notes, favourites, dates and supported descriptive clues. Duplicate saves preserve existing history.
+
+### Reading Progress, Finish and DNF
+
+A shared modal opens from the relevant screens. Page/percentage validation, optional notes, start/end dates, whole-star ratings, structured reflection, DNF reasons, learning choices, retained retry and Undo are supported. Dirty edits prompt before dismissal.
+
+### Discover and Recommendations
+
+Current requests and filters guide catalogue retrieval. Three distinct verified works are saved atomically when suitable matches exist. Explanations separate facts from permitted preferences; service errors and insufficient matches have explicit recovery paths.
+
+### Reading DNA
+
+Review strong/emerging/not-used signals and their evidence. Keep, Reduce, Stop and Undo change the intended signal. Reset preserves the Library, explicit setup and privacy choices, and excludes old inferred activity through a cutoff.
+
+### Reading Statistics
+
+Year/all-time reading activity, genres, moods, pace, edition length and ratings link back to the relevant reading records. Missing facts remain unrecorded; unrated books do not inflate rating denominators.
+
+### Settings, Account and Data
+
+Theme, spacing, text size, reduced motion, contrast and optional reminder preferences persist. Readers can edit profile details, change email through verification, export private JSON, reset DNA and perform guarded account deletion.
+
+### CSV Import
+
+Preview Goodreads/StoryGraph-style files, validate rows and import safely without overwriting saved progress/notes. Both new and older imported books can resolve missing verified covers without re-importing.
+
+Further behaviour and historical verification are documented in [Features](docs/FEATURES.md).
+
+---
+
+## User Flow
+
+```mermaid
+flowchart TD
+    A[Open Vela] --> B{Verified session?}
+    B -->|No| C[Welcome / Sign up / Log in]
+    C --> D[Confirm email when required]
+    D --> E[Optional reading setup and permissions]
+    B -->|Yes| F[Home]
+    E --> F
+    F --> G[Library / Add or import books]
+    G --> H[Book detail / Start reading]
+    H --> I[Shared progress editor]
+    I --> J{Next reading action}
+    J -->|Continue| I
+    J -->|Finish| K[Rating / reflection / learning choice]
+    J -->|Set aside| L[DNF reasons / learning choice]
+    K --> M[Refresh permitted Reading DNA]
+    L --> M
+    F --> N[Discover request and filters]
+    N --> O[Verified recommendations]
+    O --> P[Inspect facts and permitted evidence]
+    P --> G
+    P --> Q[Feedback / explicit correction]
+    Q --> M
+    F --> R[Stats / Settings / Account]
+```
+
+The diagram summarizes the main journey. Actual callbacks, unavailable states, retry/Undo and permission checks are described in the [technical guide](docs/TECHNICAL.md) and [API reference](docs/API.md).
+
+---
+
+<a id="packages"></a>
+
+## Technology Stack
+
+### Application
+
+| Technology | Version | Purpose |
+| --- | --- | --- |
+| `next` | 16.4.2 | App Router, server rendering, Proxy and Route Handlers |
+| `react`, `react-dom` | 19.3.0 | Interactive screens and reusable components |
+| JavaScript | — | Application and domain logic |
+| CSS / CSS Modules | — | Component styles and shared design tokens |
+| `zod` | 4.6.5 | Inputs, restored state and generated-output validation |
+| `lucide-react` | 1.47.0 | Icons alongside local Figma SVG assets |
+
+### Backend and Services
+
+| Technology | Version / role | Purpose |
+| --- | --- | --- |
+| `@supabase/ssr` | 0.12.7 | Cookie-aware browser/server clients |
+| `@supabase/supabase-js` | 2.116.0 | Auth, database access and RPCs |
+| Supabase PostgreSQL | Managed database | Reader-private tables, RLS, triggers and atomic operations |
+| Google Books | External catalogue | Search, canonical metadata and covers |
+| Gemini | External model | Structured recommendation and book-clue interpretation |
+| Open Library | ISBN fallback | Verified public title/author matching for cover recovery |
+
+### Development
+
+| Technology | Version / role | Purpose |
+| --- | --- | --- |
+| Node.js / npm | Node >=20.19.0 | Runtime, scripts and locked installation |
+| `@electric-sql/pglite` | 0.5.8 | Local PostgreSQL migration/privacy tests |
+| `eslint` | 9.39.5 | Code checks |
+| `eslint-config-next` | 16.4.2 | Framework lint rules |
+| `supabase` | 2.117.0 | Database tooling |
+| Git / GitHub | Version control | Repository and milestone tags |
+| Figma | Design | Final UI and interactive prototype |
+
+Forms use controlled native inputs and reusable semantic controls. React Hook Form and its resolver package were removed as unused dependencies. Exact versions are pinned in `package.json` and `package-lock.json`.
+
+---
+
+## Application Architecture
+
+Vela uses one Next.js application with Supabase as its backend service. Interactive React screens call authenticated Route Handlers; server layouts and Proxy also verify sessions. There is no separate Express service.
+
+<p align="center">
+  <img src="./docs/images/architecture.svg" alt="Vela browser, Next.js server, Supabase and provider data boundaries" width="100%" />
+</p>
+
+The server validates inputs, derives the reader from the session and loads data through reader-scoped clients. PostgreSQL enforces ownership with RLS and atomic operations. Provider keys remain server-side. Browser recovery state is scoped to the reader and cleared on sign-out/reader changes.
+
+See [Technical Architecture](docs/TECHNICAL.md) for the folder map, state/concurrency behaviour, authentication and provider payload boundaries.
+
+---
+
+## Supabase Data Model
+
+The final migrated schema has **11 application tables**, plus Supabase-managed Auth tables.
+
+| Table | Responsibility |
+| --- | --- |
+| `profiles` | Display name, setup choices, preferences and reset cutoff |
+| `books` | Shared catalogue facts and creator-private manual metadata |
+| `user_books` | Reader shelves, progress, dates, ratings, notes and learning flags |
+| `ai_settings` | Personalisation and independent data permissions |
+| `reading_dna_signals` | Traits, permitted evidence and influence state |
+| `recommendation_sessions` | Requests, filters and allowed context snapshots |
+| `recommendations` | Verified book results, rank, reason and provisional labels |
+| `recommendation_feedback` | Feedback, future preferences and explicit corrections |
+| `reader_book_stats` | Optional reading-format/genre/mood/pace facts |
+| `reading_dna_changes` | Versioned signal changes and Undo |
+| `reader_book_updates` | Idempotent reading operations, before-state and Undo |
+
+Private data belongs to the authenticated reader; request-supplied owner IDs do not grant access. Shared catalogue facts are intentionally available to authenticated readers, while manual metadata remains creator-private. New-reader optional learning permissions default off after all migrations.
+
+The [Data Model](docs/DATA_MODEL.md) includes relationships, constraints, RPCs, consent, reset and deletion behaviour.
+
+---
+
+## CRUD Operations
+
+| Area | Create | Read | Update | Remove / delete |
+| --- | --- | --- | --- | --- |
+| Library | Catalogue/manual/CSV additions | Shelves and book detail | Status, progress, dates, notes, ratings and favourites | Soft removal with Undo |
+| Reading activity | Progress/finish/DNF operations | Saved records and stats | Reflection and descriptive facts | Guarded Undo of an operation |
+| Recommendations | Atomic saved session/results | Results and explanations | Feedback/future preference/correction | Undo supported future preferences |
+| Reading DNA | Setup and permitted activity signals | Groups and evidence | Keep, Reduce or Stop | Preference-preserving reset |
+| Account | Supabase registration/profile | Own settings/export | Profile, verified email and preferences | Fresh-password verification and typed confirmation |
+
+Account deletion removes the intended private account data; shared public catalogue metadata remains. A soft-removed Library book is not a permanently deleted account record.
+
+---
+
+## Recommendations and Reading DNA
+
+Vela's recommendation flow combines the reader's current request with only the stored evidence they permit.
+
+1. Validate the request and filters.
+2. Load permitted preferences/activity and explicit corrections.
+3. Ask Gemini for a bounded search plan and public book leads.
+4. Retrieve and verify Google Books candidates; deduplicate works and editions.
+5. Validate suggested book/signal IDs and supporting quotes against supplied facts.
+6. Save the complete three-result session atomically, or return an honest recovery state.
+
+Book facts, personal evidence and interpretation are presented separately. Strong/Explore/Experimental presentation is not a measured accuracy percentage. Metadata gaps remain uncertainty; the application must not invent plot facts to fill them.
+
+Finishing/rating and approved structured activity can refresh DNA automatically. Global permissions, per-book learning choices, stopped/reduced traits and reset cutoffs still apply. Private notes are excluded from assembled AI payloads. Readers should avoid voluntarily typing sensitive information into search/request text.
+
+The Gemini deployment gate defaults closed until billing is independently verified. Bounded retries and process-local cooldowns provide recovery; they are not an account-wide spending cap.
+
+---
+
+## CSV Import and Book Covers
+
+Import supports UTF-8 Goodreads/StoryGraph-style CSV files or the supplied [Vela template](public/library-import-template.csv), up to **2 MB** and **2,000 rows**. Title and Author/Authors are required; supported optional fields include ISBN, shelf, rating, pages, dates, notes and favourites.
+
+The file is previewed in browser memory, then normalized rows are sent in small JSON batches. Individual rows are atomic and retryable. Existing books are skipped without overwriting history; unmatched books become private manual entries. Import does not enable AI permissions.
+
+Actual Google Books covers are used when verified. ISBN-10/13 equivalence and exact work matching improve recovery. Missing covers for older imports can resolve lazily through a reader-protected endpoint, including a paced Open Library ISBN fallback. The reading record is not replaced, and genuinely unavailable covers keep a placeholder.
+
+---
+
+## Responsive Interface and Accessibility
+
+### Mobile and Desktop
+
+Phones use bottom navigation and touch-friendly sheets. Desktop has persistent side navigation and layouts that use the available width. Tablet, narrow-screen and short-height states adapt without stretching a phone screenshot.
+
+### Reading Comfort
+
+Saved preferences include system/light/dark themes, comfortable/compact spacing, larger text, reduced motion and higher contrast. These settings are applied through the shared reader preference runtime.
+
+### Semantic Interaction
+
+Reusable controls use native inputs, labels, fieldsets and meaningful button/link roles. Focus visibility, validation messages, pending states, dialog focus management and dirty-edit confirmation support keyboard and assistive interaction.
+
+### Verification Limits
+
+Viewport checks support responsive testing but do not replace physical-device, accessibility or independent usability evaluation. See [Responsive Verification](docs/responsive-verification.md).
+
+---
+
+## Design System
+
+### Core Palette
+
+| Token | Colour | Role |
+| --- | --- | --- |
+| Parchment | `#F3EEE5` | Main canvas |
+| Paper | `#FCFAF6` | Cards and controls |
+| Ink | `#22201E` | Primary text |
+| Evergreen | `#183B34` | Brand and primary actions |
+| Plum | `#75465A` | Supporting emphasis |
+| Mauve | `#827AA6` | Secondary accents |
+| Brass | `#AE9157` | Book-like detail and highlights |
+
+### Typography
+
+**Cormorant Garamond** gives headings an editorial reading character. **Geist** supports body text, labels and controls. Font files and their SIL Open Font License texts are bundled locally.
+
+### Visual Principles
+
+- Book-inspired surfaces, cover imagery and shelf details.
+- Clear separation between facts, interpretation and actions.
+- Consistent rounded controls, spacing tokens and restrained depth.
+- Semantic theme colours rather than fixed light-only surfaces.
+- Native browser/device behaviour instead of drawn keyboards or status bars.
+
+Shared tokens live in `src/styles/tokens.css`; component styles use CSS Modules.
+
+---
+
+## Project Structure
+
+```text
+vela/
+├── src/
+│   ├── app/
+│   │   ├── (auth)/           # Entry, authentication and legal pages
+│   │   ├── (setup)/          # Optional reading setup
+│   │   ├── (app)/            # Protected product screens
+│   │   ├── api/              # Authenticated Route Handlers
+│   │   └── auth/             # Email/code callback handlers
+│   ├── components/           # Shared controls and feature screens
+│   ├── lib/                  # Validation, domain logic and server adapters
+│   ├── styles/               # Tokens, base styles and licensed fonts
+│   └── proxy.js              # Session verification and route protection
+├── public/                   # Local logo/artwork and CSV template
+├── supabase/
+│   ├── migrations/           # Ordered schema, policies and RPC changes
+│   └── tests/                # Manual hosted RLS boundary check
+├── tests/                    # Node and PGlite regression suites
+├── docs/
+│   ├── images/figma/         # Original cover and final UI exports
+│   ├── evidence/             # Dated sanitized verification
+│   └── *.md                  # Technical guides and project records
+├── .env.example              # Empty configuration template
+├── package.json
+└── package-lock.json
+```
+
+---
+
+## Prerequisites
+
+- Node.js **20.19 or later** and npm.
+- Git and an editor.
+- An active Supabase project with email/password authentication.
+- Google Books/Gemini server credentials for provider-dependent features.
+- Independent verification of the intended Gemini project's Free Tier/no-paid-billing configuration before enabling requests.
+
+Existing Library tracking and manual entry do not require successful AI generation. Durable saves and authentication still require a reachable Supabase project.
+
+---
+
+<a id="environment-variables"></a>
+
+## Environment Configuration
+
+Copy `.env.example` to `.env.local` in the repository root.
+
+| Variable | Visibility | Required / default |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Browser | Required project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser | Required publishable key; never service-role |
+| `GOOGLE_BOOKS_API_KEY` | Server | Catalogue search/lookup |
+| `GEMINI_API_KEY` | Server | AI generation and insights |
+| `GEMINI_FREE_TIER_VERIFIED` | Server | Defaults false; true only after independent billing verification |
+| `GEMINI_ENABLED` | Server | Defaults true; false pauses Gemini calls |
+| `GEMINI_MODEL` | Server | Optional; default `gemini-3.5-flash-lite` |
+| `GEMINI_FALLBACK_MODEL` | Server | Optional; default `gemini-3.1-flash-lite` |
+
+Only the two listed model IDs pass the code's allowlist; availability/quota is still provider-dependent. The verification flag does not change billing or impose a spending cap.
+
+Only `.env.example` is tracked. Do not commit real keys, `.env.local`, test-account credentials or callback tokens. Provider keys must never use a `NEXT_PUBLIC_` prefix. Public configuration is embedded at build time: rebuild after changing the public Supabase settings and restart after changing server settings. Next.js manages `NODE_ENV`.
+
+SMTP, Site URL and allowed redirects are configured in the Supabase dashboard, not additional app variables.
+
+---
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/AngievR05/vela.git
+cd vela
+```
+
+### 2. Install Dependencies
 
 ```bash
 npm ci
 ```
 
-Copy the environment template:
+Use the checked-in lockfile for a reproducible installation.
 
-```bash
-cp .env.example .env.local
-```
+### 3. Configure the Environment
 
-On Windows PowerShell:
+PowerShell:
 
 ```powershell
 Copy-Item .env.example .env.local
 ```
 
-Add your Supabase public URL/key and server-only Gemini/Google Books keys to `.env.local`. Set `GEMINI_FREE_TIER_VERIFIED=true` only after confirming that key's project is Free Tier with no paid billing linked; generation otherwise stays paused. `GEMINI_ENABLED=false` pauses AI independently of Library tracking. Apply the checked-in migrations in filename order using [Supabase setup and verification](supabase/README.md), and configure allowed callback URLs.
-
-| Variable | Visibility | Required / default |
-| --- | --- | --- |
-| `NEXT_PUBLIC_SUPABASE_URL` | Browser | Required project URL |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser | Required publishable key; never a service-role key |
-| `GOOGLE_BOOKS_API_KEY` | Server only | Needed for catalogue search/lookup; no bundled fallback key |
-| `GEMINI_API_KEY` | Server only | Needed for AI recommendations and insights |
-| `GEMINI_FREE_TIER_VERIFIED` | Server only | Defaults to false; set true only after checking billing independently |
-| `GEMINI_ENABLED` | Server only | Defaults to true; false pauses Gemini calls |
-| `GEMINI_MODEL` | Server only | Optional; defaults to `gemini-3.5-flash-lite` |
-| `GEMINI_FALLBACK_MODEL` | Server only | Optional; defaults to `gemini-3.1-flash-lite` |
-
-Only the two listed model IDs are accepted by the deployment guard. The verification flag does not change provider billing or impose a spending cap. An unavailable provider leaves recovery messages rather than mock results; manual books and existing Library tracking remain available.
-
-Environment files belong at the repository root. Only `.env.example` is tracked; real credentials belong in ignored `.env.local` or the deployment host's secret settings. Next.js embeds `NEXT_PUBLIC_` values at build time, so changing the public Supabase project requires a new build. Restart the server after changing server settings. `NODE_ENV` is managed by Next.js; do not set it in the template. SMTP, Site URL and allowed authentication redirects are configured in Supabase's dashboard, not invented application environment variables. Configure the intended production origin before public signup/reset acceptance.
-
-Start development:
+macOS/Linux:
 
 ```bash
-npm run dev
+cp .env.example .env.local
 ```
 
-Open `http://localhost:3000`.
+Populate the settings described above; keep real credentials out of version control.
 
-For another device on the same Wi-Fi, use `http://192.168.3.7:3000` and sign in there separately; sessions and offline caches belong to each browser origin. The development server allows that exact network hostname. If your computer’s IP changes, update `allowedDevOrigins` in `next.config.mjs` and the Supabase callback allowlist. Manual books and recommendation IDs use secure random bytes even on LAN HTTP, and book sharing offers selectable text when native sharing/clipboard is unavailable.
+### 4. Configure Supabase
 
-## Version milestones
+Apply the missing migrations in order and configure authentication callbacks/email as described in [Supabase Setup](#supabase-setup).
 
-The final package version is `1.0.0`. Annotated milestones through `v1.0-mvp`, their evidence and acceptance limits are documented in [Release milestones](docs/RELEASE_MILESTONES.md). Tags identify committed snapshots; they do not deploy the application.
-
-## Verification and production
+### 5. Check the Project
 
 ```bash
 npm test
 npm run lint
 npm run build
+```
+
+---
+
+## Running Vela
+
+### Development
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+### Another Device on the Same Network
+
+```bash
+npm run dev -- --hostname 0.0.0.0
+```
+
+Use the computer's current LAN IP, allow the local port through its firewall, and update `allowedDevOrigins` in `next.config.mjs` plus the Supabase callback allowlist. The checked-in development hostname is `192.168.3.7`; change it when the network changes. Each origin/device has its own login session and cache. Production uses HTTPS.
+
+### Production Build Locally
+
+```bash
+npm run build
 npm run start
 ```
 
-The latest run on 21 October passed **71 tests**, including 122 baseline RLS assertions and 142 full-schema privacy/reset/deletion assertions. See the [functional evidence](docs/evidence/functional-audit-2026-10-19.json) and [quota/security audit](docs/security-quota-audit-2026-10-18.md) for hosted API checks, secrets, dependency findings and verification limits. The [17 October hosted recommendation/DNA evaluation](docs/recommendation-evaluation-2026-10-17.md) records consent, feedback and corrections, plus remaining strict-exclusion and provider limitations. The tests execute the checked-in migrations with PGlite; they do not establish that every hosted policy/configuration is current. Browser checks include isolated state fixtures and real hosted authentication, identified separately in the [testing log](docs/BUG_AND_TEST_LOG.md).
+This starts the Next.js application server; it does not deploy a public site or apply database migrations.
 
-On 14 October, **157 responsive browser checks** passed across 320–1920px, larger text, short-height dialogs, forms, dark mode and recommendation states. Desktop has branded side navigation, balanced Home cards, compact Library tools, a flexible grid and two-column Book Detail; phones keep bottom navigation and touch-friendly sheets. The **49-test suite**, lint and production build were rerun successfully after this refinement. See [responsive verification](docs/responsive-verification.md) for coverage and limits.
+---
 
-Production deployment remains a release task. Set the production environment variables and Supabase Site URL/callback allowlist, then verify authentication, private access and core flows on the deployed origin. Keep `main` stable and use short branches/descriptive commits; retain the checked-in lockfile.
+## How to Use Vela
 
-## Important security rule
+### First Launch
 
-Never commit environment files or test-account credentials. `.env.local` and the private `.env.auth-test.local` are Git-ignored; `.env.example` contains placeholders only.
+Create an account, confirm the email when required, and sign in. Complete optional reading setup or continue without personalisation. Each learning source remains a separate choice.
 
-`GEMINI_API_KEY` is server-only. Do not expose it in a browser component and do not rename it with the `NEXT_PUBLIC_` prefix.
+### Build a Library
 
-## Implemented features
+Search a title, author or ISBN; inspect the result and save it. Use manual entry when the catalogue is unavailable, or preview/import an existing CSV Library. Select any book cover to open its details.
 
-- Google Books search and canonical metadata lookup power book discovery and saving to the reader's Library.
-- Supabase authentication and protected routes are implemented; public email delivery still needs custom SMTP configuration.
-- Reading setup, editable taste choices and independent data permissions are saved through a reader-protected Supabase operation.
-- Discover creates three validated Gemini recommendations using canonical Google Books metadata and permitted reader evidence when enough eligible works are available; insufficient matches have an explicit recovery state.
-- Recommendation sessions, feedback and explicit Reading DNA corrections persist in Supabase.
-- The five main product areas are Home, Library, Discover, DNA and Settings, with reading stats reachable from Home.
+### Track Reading
 
-Library, Add Book and Book Detail follow the completed **D / E / F** designs with shared Figma SVG artwork, shelf ledges, larger real Google Books covers, grid view and responsive scroll areas. All shelves include Reading, TBR, DNF and Finished. Search, filters, sorting, manual entry, duplicate protection, exact-page progress, notes, favourites, removal and Undo use the existing reader-protected backend. Shelf moves retain exact pages; rounded percentage-only progress is labelled approximate.
+Start a book and open Update progress from Home, Current Reading or Book Detail. Record pages or percent, save optional notes and review the saved result. Mark Finished explicitly when done.
 
-Book detail includes the full description, genre tags, edition and page length in every shelf state, plus a provisional fit summary based on explicit permitted Reading DNA choices. Readers can request mood, pace and trope clues through the authenticated `/api/library/[id]/insights` endpoint. The server loads only the reader's own book through RLS and sends its public Google Books description to Gemini, without notes, ratings or reading history. Every clue requires a verified description quote and is labelled as an interpretation; unsupported traits stay unknown. Manual entries remain private and are not sent to this provider. Personalisation-off readers still have all book facts. No additional migration is required.
-Vela's colour tokens and mobile-first visual foundation are included. Refer to the [Final UI state audit](docs/final-ui-state-audit.md) and [frozen scope in Notion](https://app.notion.com/p/3f8505c6697b8154bc6ee1047e5b1dab) before expanding features.
+### Reflect or Set Aside
 
-## Reading Home
+Add an optional rating/reflection or DNF reason, confirm dates and choose whether eligible structured activity may be used for learning. Private notes remain separate.
 
-`/home` follows Figma’s **C · Home** populated, no-current-book, new-reader, loading, offline and retry states. Greeting, current book, progress, annual finished count, rating average and permitted DNA evidence come from the authenticated reader’s Supabase data. Book search, adding to the Library, starting reading and saving progress use protected APIs. **Saving 100% progress keeps the book Reading** and offers a separate Mark finished action. Library shows saved books; Discover provides recommendations and protected catalogue details.
+### Find the Next Read
 
-Home, Current Reading and Book Detail use the shared progress modal with page/percentage validation, optional private notes, retained retry, Undo and confirmation before discarding edits. Finish and DNF each use one sheet with optional rating/reflection or reasons, dates and separate learning consent. Tracking remains available when learning is off. Saved structured reflections can be edited independently without changing finish dates.
+Open Discover, describe the current request and adjust filters. Inspect the recommendations and their evidence before saving. Use feedback and explicit signal controls when the assumptions do not fit.
 
-While an already-loaded Home is offline, reader-scoped local snapshots and a durable progress queue keep saved books usable. Updates sync after reconnection; conflicts remain visible for retry or explicit removal. Signing out or changing readers clears the old reader’s cached data. This is offline support for an open Home tab, not a service-worker-backed offline app launch.
+### Review Reading DNA and Stats
 
-Apply all migrations listed in [Supabase setup and verification](supabase/README.md). `npm test` exercises Home/reading operations against PostgreSQL, including consent, cross-reader denial, duplicate saves and reading transitions. Live writes, callback configuration and release behaviour need verification on the deployed environment.
+Inspect signal evidence, change influence or stop a signal. Review the records behind statistics. Reset DNA only when intended; it preserves Library/setup/permissions.
 
-## Authentication
+### Manage the Account
 
-Email/password sign-up, login, logout, password recovery, persistent cookie sessions and protected app/API routes are implemented. See [Supabase setup and verification](supabase/README.md) for migrations, email redirect configuration and security checks. Run `npm test` for return-route safety and PostgreSQL RLS tests.
+Use Settings for appearance, permissions, CSV import, export and account controls. Notifications require browser support, permission and an open app.
 
-The entry and authentication UI follows Figma’s **A · Entry and Authentication** section. `/` verifies the saved session, `/welcome` presents the entry choices, and the forms display focused, validation, pending, connection-error and success states. The supplied logo and decorative SVGs are local assets; Cormorant Garamond and Geist are bundled under their OFL licenses. Device status bars and home indicators belong to the device rather than the web page.
+---
 
-On 13 October, live checks verified signup activation, login, session persistence after reload, local-scope logout, protected route/API denial and input retention. The owner confirmed confirmation and reset emails reached the supplied inboxes. Custom SMTP remains disabled; arbitrary public delivery is not established. A complete disposable password-change cycle and same-browser PKCE callback remain open checks. The PostgreSQL suite verifies checked-in policies rather than hosted deployment configuration.
+## Supabase Setup
 
-## Reading setup
+1. Create or resume the intended Supabase project.
+2. Copy its public URL/publishable key into the environment; do not use a service-role key in browser configuration.
+3. Apply **all ten migrations in filename order** for a new project. Existing projects apply only missing migrations; do not rerun historical SQL blindly.
+4. Enable email/password authentication and configure Site URL and the intended callback allowlist.
+5. Configure custom SMTP before public signup/reset acceptance.
+6. Verify the hosted schema and two-reader privacy separately from local SQL tests.
 
-`/setup` follows Figma’s **B · Reading Setup and Permissions** reference states: intro, genres, story elements, pacing, mood, AI explanation, separate data permissions, editable review, completion, skip confirmation and save error/retry. All taste steps are optional. The supplied logo and Figma SVG artwork are local assets. Form choices remain available after recoverable failures, and completed settings reload from Supabase. Settings and Reading DNA reopen the setup for changes or pausing personalisation.
+The complete migration list, email templates and callback behaviour are in [Supabase Setup and Verification](supabase/README.md). The [Data Model](docs/DATA_MODEL.md) explains ownership and atomic operations.
 
-Apply the migrations listed in [Supabase setup and verification](supabase/README.md). `npm test` checks validation, atomic saves, new-reader opt-out defaults and reader isolation using PostgreSQL. The recommendation engine consumes only currently permitted signals.
+---
 
-## Discover and recommendations
+## APIs and Technical Documentation
 
-`/discover` implements Figma’s **J · Discover** and **K · Recommendations & Correction** states using Vela’s existing styling. Request and filter drafts survive recoverable errors and reloads. Source, genre, mood and length guide candidate selection; unavailable services, insufficient context and fewer than three eligible matches have explicit recovery states. Book covers open protected details with Google Books facts and Library save actions.
+The application has **24 API method contracts**, all requiring a verified reader session. Handlers validate bodies, load reader-scoped data and return endpoint-specific success/error responses. Signup/login/recovery use the Supabase Auth SDK and callback handlers, not a custom admin API.
 
-Apply `supabase/migrations/202610060003_recommendations.sql` after the earlier migrations. Sessions save three distinct validated recommendations atomically. Helpful and ordinary rejection feedback do not change Reading DNA. Show less records a separate future preference with Undo; Keep, Reduce and Remove change only the explicitly selected, permitted signal. Reader-scoped snapshots support browsing already-loaded results offline and clear on logout.
+| Guide | Contents |
+| --- | --- |
+| [Technical Architecture](docs/TECHNICAL.md) | Packages, source map, sessions, state and provider boundaries |
+| [API Reference](docs/API.md) | Paths, methods, schemas, responses, concurrency and error recovery |
+| [Data Model](docs/DATA_MODEL.md) | Tables, relationships, RLS, consent and lifecycle |
+| [Feature Behaviour](docs/FEATURES.md) | Detailed screen/flow behaviour and historical evidence |
+| [Testing](docs/TESTING.md) | Commands, coverage, hosted/manual checks and limits |
+| [Deployment](docs/DEPLOYMENT.md) | Host setup, production auth/email, smoke tests and rollback |
 
-The server uses `GEMINI_API_KEY` with `gemini-3.5-flash-lite` by default; server-only `GEMINI_MODEL` overrides it. Bounded transient-error retries use `gemini-3.1-flash-lite` by default, configurable with `GEMINI_FALLBACK_MODEL`. These are the code defaults, not a guarantee of provider availability or quota. Google Books supplies canonical candidates, facts and covers. Client-provided candidates, reader IDs and evidence are rejected. Generated book and signal IDs must belong to the server’s allowed lists.
+---
 
-The PostgreSQL tests cover atomic saves, idempotent retry, feedback, correction and anonymous/cross-reader denial. Live hosted generation, session persistence, Google Books covers and Helpful feedback were verified after the migration was applied. Temporary browser fixtures verified preference Undo, explicit corrections and retained input after feedback/save failures; fixtures are removed from the app.
+## Testing and Verification
 
-## Home and reading stats
+```bash
+npm test
+npm run lint
+npm run build
+```
 
-Home and `/stats` follow the completed **C · Home** and **P · Reading Stats** designs, using the supplied SVG logo, exact local Figma background/nav artwork and dynamic Google Books covers. The stats entry points are the Home summary, monthly chart and Stats quick action.
+The final cleanup run on **21 October 2026** passed:
 
-Stats include only visible finished books with valid finish dates up to today. Year/all-time selection, monthly/yearly counts, primary genres, formats, moods, story pace, edition length and whole-star ratings link to the records behind each count. Missing dates, page counts and descriptive facts are explicitly shown rather than inferred. Unrated finished books are excluded from the rating denominator. Current reading and DNF books are excluded from finish totals.
+- **71 tests**, with no failures.
+- **122 baseline RLS assertions** inside the test suite.
+- **142 full-schema privacy/reset/deletion assertions** inside the test suite.
+- Lint and production build, with **36 generated pages**.
 
-Migration `202610070001_reading_stats.sql` was applied successfully to the hosted project on 2026-10-07, including explicit anonymous grant revocation. It adds reader-private optional book facts and an atomic save operation for facts and finish dates. Editing a reading record preserves input on failed saves; stale records are rejected using the book's modification timestamp. These facts are included in account exports and cascade with account/library deletion. Stats have a separate reader-scoped offline cache, cleared at logout and reader changes. Offline stats are clearly marked as saved data.
+Assertion totals are not additional test cases. Tests use Node, PGlite, synthetic reader fixtures and simulated provider responses. They cover authentication rules, reading transitions, consent, imports/covers, recommendations, corrections, quotas and reader isolation. Existing module-type auto-detection warnings are non-failing.
 
-Verification: PostgreSQL tests cover real RLS, cross-reader and anonymous denial, atomic rollback, concurrent edits, date filtering and exact page/rating denominators. Live checks verified matching Home/stats totals, chart-to-book navigation, an unchanged-value record save and unsigned API/route denial. The temporary mobile verification route was removed after checking the requested screens.
+Separate browser/hosted records document real signed-in flows, controlled email receipt, imported cover recovery, responsive layouts and isolated error/Undo states. The Figma images in this README are design references, not evidence that a feature passed a hosted test.
 
-## Settings, account and CSV import
+See [Testing](docs/TESTING.md), the [Bug and Testing Log](docs/BUG_AND_TEST_LOG.md), and [release evidence](docs/evidence/release-cleanup-2026-10-21.json). These commands were not rerun for this README-only update.
 
-`/settings` follows **N · Settings & Account** using Vela’s existing styling and local Figma artwork. Profile name, independent AI permissions, theme, spacing, larger text, reduced motion, contrast and optional reminder preferences persist in Supabase. Failed saves retain the chosen values for retry. Logout clears reader caches. Privacy provides a reader-only JSON archive; email changes use password verification and the cookie-backed PKCE confirmation flow. Password recovery reuses the existing secure email flow.
+---
 
-Apply `supabase/migrations/202610060004_settings_import.sql` after the earlier migrations. The user confirmed it succeeded on 2026-10-06. Account deletion requires fresh password authentication, a short-lived HTTP-only verification cookie and typed confirmation. The database operation derives its target from the verified JWT and removes the reader’s account and dependent private data. Shared public Google Books catalogue facts remain. Deletion was tested only in disposable local PostgreSQL fixtures; the real reader’s account was preserved.
+## Deployment and Version Milestones
 
-Import Library accepts UTF-8 Goodreads/StoryGraph-style CSV files or the downloadable Vela template, up to 2 MB and 2,000 book rows. Title and Author/Authors are required. Supported optional columns include ISBN/ISBN13/ISBN-UID, Exclusive Shelf/Read Status, My Rating/Star Rating, Number of Pages, start/finish dates, Private Notes/My Review and favourites tags. Shelves map to Reading, TBR, DNF or Finished; unknown shelves and invalid rows are reported for correction. Fractional ratings round to whole stars with a preview warning. Non-ISBN StoryGraph UIDs use title/author matching.
+Vela requires a Node-capable Next.js deployment such as Vercel or a self-hosted Node server. Cookies, Proxy, Route Handlers and database access mean it cannot run as a static export. Configure production secrets, migrations, HTTPS origin, callbacks and SMTP before hosted acceptance.
 
-The preview precedes import. Small batches save each row atomically; interrupted batches retry safely. Existing books, including removed books, are skipped without overwriting status, notes or progress. Exact ISBN (including equivalent ISBN-10/13) or verified title/author matches use Google Books metadata; unmatched books become reader-private manual entries. Missing covers for new and older imports resolve separately through a reader-protected endpoint. Google Books provides the images; public Open Library title/author matches can supply missing ISBNs during catalogue failures. Requests are lazy, cached, paced and quota-aware; private notes and ratings are excluded. No re-import or database migration is required. See [cover verification](docs/evidence/csv-cover-verification-2026-10-20.json). Imported data does not enable any AI permission. Files and their unsaved previews remain in browser memory rather than being stored on a public server.
+| Tag | Milestone |
+| --- | --- |
+| `v0.8-feature-complete` | Historical core feature snapshot |
+| `v0.9-validated-beta` | Responsive/theme recovery and CSV covers |
+| `v1.0-mvp` | Tested final cleanup and package version 1.0.0 |
 
-Notifications run only while Vela is open, the browser supports notifications and permission is granted. Browser/OS restrictions and background-tab throttling can delay or prevent reminders; closed-app push and email scheduling are not configured. Public authentication-email delivery still needs the SMTP setup in [Supabase setup](supabase/README.md). Hosted profile saves, CSV duplicate preservation, export and anonymous denial were verified; isolated browser checks verified appearance, larger text, retained choices and deletion safeguards. `npm test` covers CSV parsing, canonical matching, retry, PKCE email handling, verification identity, RLS and deletion freshness.
+Tags identify committed code, not deployments. The README/documentation can advance after the tagged implementation; existing tags are not moved. No public production URL is asserted here.
 
-## Reading DNA
+Follow the [Deployment Runbook](docs/DEPLOYMENT.md) and [Release Milestones](docs/RELEASE_MILESTONES.md) for smoke tests, rollback and remaining acceptance work.
 
-`/dna` follows the completed **M · Reading DNA** designs with the exact local Figma background and navigation SVGs, Cormorant/Geist typography, responsive cards and fixed actions. The 21 reference states are driven by actual reader data and permissions: new/forming, overview, signal groups and evidence, Keep/Reduce/Stop, durable Undo, reset, personalisation off, loading, offline and recoverable failures. Recorded book evidence opens protected Library details. Chosen preferences are labelled explicitly; no sample books or inferred certainty are invented.
+---
 
-Migration `202610070002_reading_dna.sql` was applied successfully to the hosted project on 2026-10-07 with the user's approval. Changes and reset use reader-scoped security-invoker functions, idempotent operation IDs and concurrency checks. Reset clears inferred signals and corrections while preserving Library records, explicit setup choices and privacy permissions. A reset cutoff excludes old activity from subsequent signals. Settings uses the same reset operation.
+## Known Limitations
 
-Home, Discover and Reading DNA share evidence/permission filtering. Only visible reader-owned books with currently approved activity contribute evidence; unknown mixed provenance is excluded. Strong requires at least three distinct approved evidence items, rather than a weight threshold. Ratings alone do not explain why a reader liked a book. Reduced influence affects recommendation weights; stopped signals are excluded. Personalisation off permits reviewing stored signals without enabling it.
+### Email Delivery
 
-The automatic-reading-activity and reading-flow migrations refresh eligible DNA evidence when books are completed/rated or permitted reflections/reasons change; current permissions and reset cutoffs still apply. This is not unconditional learning from every update.
+Controlled confirmation/reset email receipt was verified. Custom SMTP and delivery to a controlled non-project-team inbox on production URLs remain public-launch acceptance items.
 
-Verification: the latest **71-test suite** includes PostgreSQL reader/anonymous isolation, duplicate retries, stale edits/Undo and preference-preserving reset. Hosted Reduce and Undo were saved and verified through the UI, restoring the original signal. Live reset was not executed on the reader's account. Mobile layouts and SVG assets were checked against the design; private caches clear at logout and reader changes.
+### External Services
 
-## Remaining service limitations
+Google Books/Gemini may be unavailable, quota-limited or unable to supply enough suitable verified works. Drafts are retained and tracking/manual entry remain available. Missing facts/covers are not invented.
 
-- **Email:** controlled confirmation/reset delivery is verified, but custom SMTP is still off. Supabase's default service is intended for development and restricts recipients/rates; configure SMTP and verify a non-team inbox before public signup. See [Supabase SMTP guidance](https://supabase.com/docs/guides/auth/auth-smtp).
-- **Notifications:** open-app reminders depend on browser support and permission; no background push/email scheduler or guaranteed delivery.
-- **Google Books/Gemini:** outages, timeouts, quota, credential/model configuration or insufficient catalogue candidates can interrupt search/recommendations and book insights. Drafts remain available for retry; manual entry and existing Library tracking do not require successful AI generation. Missing covers/facts stay visibly missing. Recommendation fit is provisional, not guaranteed accuracy.
-- **Supabase/offline:** authentication and durable saves need a reachable project. Cached/open-tab recovery does not guarantee offline app launch; conflicts need reader review. Local tests do not replace final hosted privacy and production smoke checks.
+### Recommendation Interpretation
 
-The [risks update](docs/RISKS_UPDATE.md) records impact, current safeguards, remaining checks and the milestone plan.
+Fit labels are provisional. Thin metadata cannot prove absence of a trope, exact reading order or suitability. Generated confidence is not an objective accuracy metric.
+
+### Notifications
+
+Reminders depend on browser permission, support and an open app. There is no guaranteed background push or email scheduler.
+
+### Offline and Hosted Privacy
+
+Reader-scoped recovery supports already-loaded pages, not guaranteed cold offline launch. Durable saves need Supabase, and conflicts require review. Local SQL tests do not certify the currently deployed policies.
+
+### Device and Accessibility Coverage
+
+Viewport testing does not replace physical-device checks or an independent accessibility/usability evaluation. Current release risks and historical dependency findings are recorded separately in the [Risks Update](docs/RISKS_UPDATE.md).
+
+---
+
+## Future Improvements
+
+Potential work beyond the current MVP, subject to a new scope decision:
+
+1. Complete public SMTP and production-domain acceptance.
+2. Expand documented human recommendation-relevance evaluation and exclusion checking.
+3. Broaden physical-device, assistive-technology and independent usability coverage.
+4. Evaluate background reminders and offline launch support as explicit new infrastructure work.
+5. Revisit distributed quota/operational monitoring before larger-scale deployment.
+
+These are not silently enabled features or new deadline commitments.
+
+---
+
+## Project Information
+
+**Project:** Vela<br />
+**Repository:** https://github.com/AngievR05/vela<br />
+**Tagline:** Your reading life, intelligently organised.<br />
+**Version:** 1.0.0 MVP<br />
+**Platform:** Responsive web application for mobile and desktop<br />
+**Primary Framework:** Next.js + React<br />
+**Backend:** Supabase Auth + PostgreSQL/RLS<br />
+**Book Data:** Google Books, with an Open Library ISBN fallback for cover recovery<br />
+**AI Service:** Gemini<br />
+**Design:** Figma final UI and interactive prototype
+
+---
+
+## Acknowledgements
+
+Vela uses Next.js, React, Supabase, Zod, Lucide React, PGlite, Google Books, Gemini and Open Library. Cormorant Garamond and Geist support the reading-led typography. The supplied logo and Figma artwork establish the project's visual identity.
+
+Book covers and catalogue content remain subject to their rights holders' terms. Third-party frameworks, libraries, services and font assets retain their respective licences.
+
+---
+
+## Licence
+
+No standalone application `LICENSE` file is currently declared in this repository. Project-specific code/design assets are not assigned a new open-source licence by this README. Bundled font licence texts are included under `src/styles/fonts/`; third-party code and book artwork remain subject to their own terms.
+
+---
+
+## Project Statement
+
+> **Vela connects the practical work of tracking books with a transparent, editable understanding of reading preferences. By combining a personal Library, deliberate reflection, permitted evidence and correctable recommendations, it keeps the reader involved in deciding what their next chapter should be.**
+
+<p align="center">
+  <strong>Vela — Your reading life, intelligently organised.</strong>
+</p>

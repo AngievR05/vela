@@ -1,0 +1,182 @@
+{
+  "date": "2026-10-21",
+  "scope": "README restyled from the user-supplied Treasi example using Vela content and original Figma exports",
+  "figmaFile": "KUdyt409wRaPTCSRdfeEH5",
+  "pages": {
+    "cover": "8:5",
+    "finalUi": "1:8"
+  },
+  "figmaModified": false,
+  "validation": {
+    "contentsTargets": 31,
+    "allContentsTargetsExist": true,
+    "relativeDocumentationLinksAndImagesChecked": 107,
+    "missingRelativeTargets": 0,
+    "exportedImages": 19,
+    "allImagesDecodedAndMatchExportSizes": true,
+    "apiMethodsRemainDocumented": 24,
+    "environmentVariablesRemainDocumented": 8,
+    "applicationTablesRemainDocumented": 11
+  },
+  "exports": [
+    {
+      "file": "docs/images/figma/cover.png",
+      "nodeId": "136:1705",
+      "width": 1920,
+      "height": 1080,
+      "bytes": 146330,
+      "sha256": "e946ff8accd51fb4bfe69f66ba78cdbf35660731d7b51dc7be301c9b2e642189"
+    },
+    {
+      "file": "docs/images/figma/home.png",
+      "nodeId": "316:33",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 490332,
+      "sha256": "d873d9b1f94c2b5807a0604b7181b2405516b4db29e94b6f000fddf98b286f96"
+    },
+    {
+      "file": "docs/images/figma/splash.png",
+      "nodeId": "308:3",
+      "width": 390,
+      "height": 844,
+      "bytes": 14286,
+      "sha256": "f8db02aa9f1c7e237177ce1a36cb43236139349b8d41038c039300fcf0cae43e"
+    },
+    {
+      "file": "docs/images/figma/welcome.png",
+      "nodeId": "308:138",
+      "width": 390,
+      "height": 844,
+      "bytes": 64971,
+      "sha256": "40f46f4955073a8483d2ac2ed63f0c619afe06957b5d4a15269559e9c88c95d9"
+    },
+    {
+      "file": "docs/images/figma/signup.png",
+      "nodeId": "308:181",
+      "width": 390,
+      "height": 844,
+      "bytes": 51158,
+      "sha256": "c5d77463a567c2521ad55a8d3456dd7c980f1af761a3e1b0f06fcc8a5c58601d"
+    },
+    {
+      "file": "docs/images/figma/login.png",
+      "nodeId": "308:476",
+      "width": 390,
+      "height": 844,
+      "bytes": 36929,
+      "sha256": "13f3c25f27263c2dd328be378ec839480c99ff758ef90561b73489dc4442f79c"
+    },
+    {
+      "file": "docs/images/figma/setup.png",
+      "nodeId": "309:3",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 272086,
+      "sha256": "71e2fcc2dae4a4cd9d3f62fb7c6fc0565fcaa356d9df6fef8d1d2a446584a40c"
+    },
+    {
+      "file": "docs/images/figma/permissions.png",
+      "nodeId": "309:489",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 284983,
+      "sha256": "b554bf285e0aa41236fad42a37ff64d60955549cf587c53e8c4a816c23cd9baa"
+    },
+    {
+      "file": "docs/images/figma/library.png",
+      "nodeId": "317:54",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 1180583,
+      "sha256": "f73aaf05702d7e7fecdc8623f76e8f15e6b9454e86df09707fe3ee2d26098e5a"
+    },
+    {
+      "file": "docs/images/figma/add-book.png",
+      "nodeId": "323:254",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 448836,
+      "sha256": "54c78c32cc35ccb204b3580e1bca076f7b17623b8789da3a2cc044abb32f7d77"
+    },
+    {
+      "file": "docs/images/figma/book-detail.png",
+      "nodeId": "320:134",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 657427,
+      "sha256": "ffcca56d7dd3e28b1bf8629a701d83d6c86f9c0fde5030e791c759b2677a01be"
+    },
+    {
+      "file": "docs/images/figma/progress.png",
+      "nodeId": "321:163",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 455823,
+      "sha256": "ac85c4a01c0d0c5178da1b6a48b967247c0419363a04935fa7c9fb360fefe91d"
+    },
+    {
+      "file": "docs/images/figma/finish.png",
+      "nodeId": "322:162",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 517399,
+      "sha256": "cd76f6923d5d7c80eae1c4406c46a457fbd344758ef4f91ef3d93b7761ba6ef0"
+    },
+    {
+      "file": "docs/images/figma/dnf.png",
+      "nodeId": "322:393",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 397370,
+      "sha256": "c42478b51a7bc9581deaee72a66a5410d442e8803a61ec5b11144d77f72d485e"
+    },
+    {
+      "file": "docs/images/figma/discover.png",
+      "nodeId": "333:354",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 269738,
+      "sha256": "160e4e64f9ecb35554d385fde445a5c2350fdfe0623b2083481f0c93f0e45c2a"
+    },
+    {
+      "file": "docs/images/figma/recommendations.png",
+      "nodeId": "333:719",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 891942,
+      "sha256": "e82572154a8ec78c29ef2797b83899e71be47caa56cf402b859fbe98c34f4c71"
+    },
+    {
+      "file": "docs/images/figma/dna.png",
+      "nodeId": "327:325",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 379047,
+      "sha256": "22ef7d910a7989d50077444d5a2a526852e1f4565403baa9776f9cd551e733a9"
+    },
+    {
+      "file": "docs/images/figma/settings.png",
+      "nodeId": "328:293",
+      "width": 1170,
+      "height": 2532,
+      "bytes": 375689,
+      "sha256": "9bf551b6fb6a53dfbdba9a0138b932719ed82c570437c117d90a33d58e4e3d10"
+    },
+    {
+      "file": "docs/images/figma/stats.png",
+      "nodeId": "454:6015",
+      "width": 390,
+      "height": 844,
+      "bytes": 76860,
+      "sha256": "05959086971399d924c369b803bbbeaaac776eeaf7c657fd2228abff40215a11"
+    }
+  ],
+  "notes": [
+    "Cover and representative screens visually inspected; no raster edits or invented wireframes.",
+    "Exports retain original configured scale and presentation chrome.",
+    "Browser screenshots remain separately labelled implementation evidence.",
+    "Documentation-only change; application tests/build were not repeated; existing 71-test result is dated.",
+    "No release tags, application behaviour or account data changed."
+  ]
+}

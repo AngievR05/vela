@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-21",
+  "scope": "README and technical documentation; no application behaviour changes",
+  "documentsChecked": ["README.md", "docs/TECHNICAL.md", "docs/API.md", "docs/DATA_MODEL.md", "docs/DEPLOYMENT.md", "docs/TESTING.md", "docs/FEATURES.md", "docs/images/README.md"],
+  "checks": {
+    "relativeLinksAndImages": {"checked": 86, "missing": 0},
+    "applicationApiMethodsDocumented": 24,
+    "applicationEnvironmentVariablesDocumented": 8,
+    "publicApplicationTablesDocumented": 11,
+    "runtimeAndDevelopmentPackageNamesDocumented": true,
+    "markdownCodeFencesPaired": true,
+    "whitespaceDiff": "passed"
+  },
+  "images": [
+    {"path": "docs/images/recommendation-desktop.png", "width": 1440, "height": 844, "source": "real local browser capture, 21 October 2026; visually inspected"},
+    {"path": "docs/images/recommendation-mobile.png", "width": 390, "height": 844, "source": "real local browser capture, 21 October 2026; visually inspected"},
+    {"path": "docs/images/architecture.svg", "width": 1200, "height": 690, "source": "repository-authored vector; rendered and visually inspected"}
+  ],
+  "limits": [
+    "Application tests/build were not rerun for this documentation-only change; the separately dated cleanup evidence records 71 tests, lint and build passing.",
+    "Local link validation checks file existence, not external site availability or every heading anchor.",
+    "Screenshots document the local app and are not new hosted acceptance or recommendation-accuracy evidence.",
+    "No Figma, account, Library, production configuration or release tags were changed."
+  ]
+}

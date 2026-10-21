@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="690" viewBox="0 0 1200 690" role="img" aria-labelledby="title desc">
+  <title id="title">Vela architecture and privacy boundaries</title>
+  <desc id="desc">The reader uses a responsive Next.js interface. Supabase Auth validates sessions. Next.js server handlers validate inputs, load reader-scoped PostgreSQL data through Row Level Security, and send only permitted data to Google Books, Gemini and the ISBN fallback.</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0 0 10 5 0 10" fill="none" stroke="#183b34" stroke-width="1.5"/></marker></defs>
+  <rect width="1200" height="690" rx="24" fill="#f3eee5"/>
+  <g font-family="Arial, sans-serif" fill="#22201e">
+    <text x="40" y="52" font-size="29" font-weight="700">Vela · architecture</text>
+    <text x="40" y="81" font-size="16" fill="#75465a">One Next.js application · reader-scoped data · explicit learning permissions</text>
+    <rect x="40" y="124" width="330" height="178" rx="18" fill="#dce8e4"/>
+    <text x="60" y="155" font-size="21" font-weight="700">Browser interface</text>
+    <text x="60" y="186" font-size="16">React screens + semantic controls</text>
+    <text x="60" y="214" font-size="16">Mobile nav / desktop sidebar</text>
+    <text x="60" y="242" font-size="16">Reader-scoped snapshots + drafts</text>
+    <text x="60" y="270" font-size="16">Cookie-backed sign-in session</text>
+    <rect x="430" y="124" width="330" height="178" rx="18" fill="#eee7d8"/>
+    <text x="450" y="155" font-size="21" font-weight="700">Next.js server</text>
+    <text x="450" y="186" font-size="16">Proxy + verified reader identity</text>
+    <text x="450" y="214" font-size="16">Route Handlers + Zod validation</text>
+    <text x="450" y="242" font-size="16">Consent / evidence filtering</text>
+    <text x="450" y="270" font-size="16">Provider keys remain server-side</text>
+    <rect x="820" y="124" width="340" height="178" rx="18" fill="#e7e4ef"/>
+    <text x="840" y="155" font-size="21" font-weight="700">Supabase</text>
+    <text x="840" y="186" font-size="16">Auth: sessions + email recovery</text>
+    <text x="840" y="214" font-size="16">PostgreSQL + RLS ownership</text>
+    <text x="840" y="242" font-size="16">Atomic RPCs + activity triggers</text>
+    <text x="840" y="270" font-size="16">Private Library / DNA / settings</text>
+    <g fill="none" stroke="#183b34" stroke-width="2" marker-end="url(#arrow)">
+      <path d="M374 210 H420"/><path d="M764 210 H810"/>
+      <path d="M595 306 V350 H220 V384"/><path d="M595 306 V384"/><path d="M595 350 H990 V384"/>
+    </g>
+    <text x="40" y="111" font-size="15" fill="#75465a">Browser Auth SDK also communicates directly with Supabase Auth.</text>
+    <rect x="40" y="395" width="330" height="164" rx="18" fill="#dce8e4"/>
+    <text x="60" y="429" font-size="21" font-weight="700">Google Books</text>
+    <text x="60" y="462" font-size="16">Verified book identities + metadata</text>
+    <text x="60" y="490" font-size="16">Search / edition facts / covers</text>
+    <text x="60" y="529" font-size="14" fill="#75465a">Verified image URL → browser image</text>
+    <rect x="430" y="395" width="330" height="164" rx="18" fill="#eee7d8"/>
+    <text x="450" y="429" font-size="21" font-weight="700">Gemini</text>
+    <text x="450" y="462" font-size="16">Request + permitted evidence</text>
+    <text x="450" y="490" font-size="16">Structured output → ID/quote checks</text>
+    <text x="450" y="529" font-size="14" fill="#75465a">Free Tier gate + bounded retries</text>
+    <rect x="820" y="395" width="340" height="164" rx="18" fill="#e7e4ef"/>
+    <text x="840" y="429" font-size="21" font-weight="700">Open Library fallback</text>
+    <text x="840" y="462" font-size="16">Public title + author → ISBN</text>
+    <text x="840" y="490" font-size="16">Google still supplies the cover</text>
+    <text x="840" y="529" font-size="14" fill="#75465a">Paced lookup; no notes or ratings</text>
+    <rect x="40" y="592" width="1120" height="62" rx="14" fill="#183b34"/>
+    <text x="62" y="618" font-size="16" font-weight="700" fill="#fbf8f2">Privacy boundary</text>
+    <text x="62" y="642" font-size="15" fill="#fbf8f2">Private notes stay out of AI payloads. Permissions and reset cutoffs filter learned evidence. RLS protects each reader.</text>
+  </g>
+</svg>
