@@ -8,5 +8,6 @@ export default defineConfig([
     "out/**",
     "build/**",
     "coverage/**",
+    ".temp/**",
   ]),
 ]);

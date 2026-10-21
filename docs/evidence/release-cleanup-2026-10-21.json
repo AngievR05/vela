@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-21",
+  "version": "1.0.0",
+  "releaseTag": "v1.0-mvp",
+  "milestones": [
+    {"tag": "v0.8-feature-complete", "revision": "fe16271", "verification": "historical evidence only"},
+    {"tag": "v0.9-validated-beta", "revision": "8ad1f5f", "verification": "historical 20 October evidence; 68 tests"},
+    {"tag": "v1.0-mvp", "revision": "commit containing this evidence", "verification": "current cleanup checks"}
+  ],
+  "checks": {
+    "tests": {"passed": 71, "failed": 0, "baselineRlsAssertions": 122, "fullSchemaPrivacyAssertions": 142},
+    "lint": "passed",
+    "productionBuild": "passed; 36 generated pages",
+    "dependencyResolution": "passed: npm ls --depth=0",
+    "packageLockVersionAndDependenciesAligned": true,
+    "documentedApplicationEnvironmentVariables": 8,
+    "temporaryPreviewImportsInApplication": 0,
+    "trackedEnvironmentFiles": [".env.example"],
+    "whitespaceDiff": "passed"
+  },
+  "removedFiles": [
+    "src/components/discover/BookDiscovery.jsx",
+    "src/components/navigation/BottomNav.jsx",
+    "src/components/navigation/BottomNav.module.css",
+    "src/utils/formatters.js"
+  ],
+  "removedUnusedDependencies": ["@hookform/resolvers", "react-hook-form"],
+  "preserved": ["shared semantic components and exports", "test fixtures and dated evidence", "CSV import template", "real missing-cover, loading, empty and error states"],
+  "limits": [
+    "Tags are local and do not deploy or publish the application.",
+    "No new hosted writes or external provider requests were needed for this source cleanup.",
+    "Public SMTP/production redirect acceptance, provider availability and hosted privacy checks remain separate release acceptance items.",
+    "Existing non-failing Node module-type auto-detection warnings remain in the test runner."
+  ]
+}

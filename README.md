@@ -44,7 +44,24 @@ On Windows PowerShell:
 Copy-Item .env.example .env.local
 ```
 
-Add your Supabase public URL/key and server-only Gemini/Google Books keys to `.env.local`. Set `GEMINI_FREE_TIER_VERIFIED=true` only after confirming that key's project is Free Tier with no paid billing linked; generation otherwise stays paused. `GEMINI_ENABLED=false` pauses AI independently of Library tracking. Apply the checked-in migrations in filename order using [Supabase setup and verification](supabase/README.md), and configure allowed callback URLs. Start development:
+Add your Supabase public URL/key and server-only Gemini/Google Books keys to `.env.local`. Set `GEMINI_FREE_TIER_VERIFIED=true` only after confirming that key's project is Free Tier with no paid billing linked; generation otherwise stays paused. `GEMINI_ENABLED=false` pauses AI independently of Library tracking. Apply the checked-in migrations in filename order using [Supabase setup and verification](supabase/README.md), and configure allowed callback URLs.
+
+| Variable | Visibility | Required / default |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Browser | Required project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Browser | Required publishable key; never a service-role key |
+| `GOOGLE_BOOKS_API_KEY` | Server only | Needed for catalogue search/lookup; no bundled fallback key |
+| `GEMINI_API_KEY` | Server only | Needed for AI recommendations and insights |
+| `GEMINI_FREE_TIER_VERIFIED` | Server only | Defaults to false; set true only after checking billing independently |
+| `GEMINI_ENABLED` | Server only | Defaults to true; false pauses Gemini calls |
+| `GEMINI_MODEL` | Server only | Optional; defaults to `gemini-3.5-flash-lite` |
+| `GEMINI_FALLBACK_MODEL` | Server only | Optional; defaults to `gemini-3.1-flash-lite` |
+
+Only the two listed model IDs are accepted by the deployment guard. The verification flag does not change provider billing or impose a spending cap. An unavailable provider leaves recovery messages rather than mock results; manual books and existing Library tracking remain available.
+
+Environment files belong at the repository root. Only `.env.example` is tracked; real credentials belong in ignored `.env.local` or the deployment host's secret settings. Next.js embeds `NEXT_PUBLIC_` values at build time, so changing the public Supabase project requires a new build. Restart the server after changing server settings. `NODE_ENV` is managed by Next.js; do not set it in the template. SMTP, Site URL and allowed authentication redirects are configured in Supabase's dashboard, not invented application environment variables. Configure the intended production origin before public signup/reset acceptance.
+
+Start development:
 
 ```bash
 npm run dev
@@ -53,6 +70,10 @@ npm run dev
 Open `http://localhost:3000`.
 
 For another device on the same Wi-Fi, use `http://192.168.3.7:3000` and sign in there separately; sessions and offline caches belong to each browser origin. The development server allows that exact network hostname. If your computer’s IP changes, update `allowedDevOrigins` in `next.config.mjs` and the Supabase callback allowlist. Manual books and recommendation IDs use secure random bytes even on LAN HTTP, and book sharing offers selectable text when native sharing/clipboard is unavailable.
+
+## Version milestones
+
+The final package version is `1.0.0`. Annotated milestones through `v1.0-mvp`, their evidence and acceptance limits are documented in [Release milestones](docs/RELEASE_MILESTONES.md). Tags identify committed snapshots; they do not deploy the application.
 
 ## Verification and production
 
