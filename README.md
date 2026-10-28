@@ -25,6 +25,7 @@
 ## Table of Contents
 
 - [Project Overview](#project-overview)
+- [Presentation Video](#presentation-video)
 - [Project Brief](#project-brief)
 - [Problem and Concept](#problem-and-concept)
 - [Core Experience](#core-experience)
@@ -77,6 +78,12 @@ The application combines:
 - Responsive desktop/mobile layouts, themes and accessibility preferences.
 
 The current application version is **1.0.0**, deployed on **21 October 2026** at [vela-sepia-nine.vercel.app](https://vela-sepia-nine.vercel.app). Latest verification passed **78 tests**, lint and the production build. Hosted checks cover login, persistent sessions, logout and mobile/desktop pages. Public email delivery and external provider availability have separate acceptance requirements.
+
+---
+
+## Presentation Video
+
+[Watch the Vela assessment presentation on Google Drive](https://drive.google.com/file/d/10OCOQrf3d5fMVC8NAkl5L6laIeEwVdMK/view?usp=sharing).
 
 ---
 
