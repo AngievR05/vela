@@ -1,7 +1,7 @@
 # Vela
 
 <p align="center">
-  <img src="./docs/images/figma/cover.png" alt="Vela Figma cover — your reading life, intelligently organised" width="100%" />
+  <img src="./docs/images/cover.png" alt="Vela cover with its reading logo and floral artwork" width="100%" />
 </p>
 
 <p align="center"><strong>Your reading life, intelligently organised.</strong></p>
